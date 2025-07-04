@@ -39,7 +39,8 @@ dependencies = [
     "langserve (>=0.3.1,<0.4.0)",
     "fastapi (>=0.115.14,<0.116.0)",
     "uvicorn (>=0.34.3,<0.35.0)",
-    "sse-starlette (>=2.3.6,<3.0.0)"
+    "sse-starlette (>=2.3.6,<3.0.0)",
+    "grandalf (>=0.8,<0.9)"
 ]
 [tool.poetry]
 packages = [{ include = "ai", from = "." }]
