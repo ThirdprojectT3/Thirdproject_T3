@@ -9,5 +9,4 @@ public class ThirdprojectBackApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(ThirdprojectBackApplication.class, args);
 	}
-
 }
