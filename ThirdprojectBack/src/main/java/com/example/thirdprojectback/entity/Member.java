@@ -1,8 +1,6 @@
 package com.example.thirdprojectback.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
 @Entity
@@ -30,6 +28,25 @@ public class Member {
 
     private int age;
 
+    @Enumerated(EnumType.STRING)
+    private Gender gender;
+
     private String goal;
 
+    // ✅ static 중첩 enum 정의
+    public static enum Gender {
+        MALE("남성"),
+        FEMALE("여성"),
+        OTHER("기타");
+
+        private final String description;
+
+        Gender(String description) {
+            this.description = description;
+        }
+
+        public String getDescription() {
+            return description;
+        }
+    }
 }
