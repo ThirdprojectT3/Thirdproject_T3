@@ -1,11 +1,13 @@
 import React from "react";
 import styled from "styled-components";
+import { useNavigate } from 'react-router-dom';
 
 export default function SignUpForm() {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log("회원가입 시도");
   };
+  const navigate = useNavigate();
 
   return (
     <Container>
@@ -56,7 +58,7 @@ export default function SignUpForm() {
         <Button type="submit">Sign Up</Button>
       </Form>
 
-      <LoginLink onClick={() => console.log("로그인으로 이동")}>
+      <LoginLink onClick={() => navigate("/")}>
         로그인으로 돌아가기
       </LoginLink>
     </Container>

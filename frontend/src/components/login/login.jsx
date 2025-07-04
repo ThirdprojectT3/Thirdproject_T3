@@ -1,11 +1,13 @@
 import React from "react";
 import styled from "styled-components";
+import { useNavigate } from 'react-router-dom';
 
 export default function LoginForm() {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log("로그인 시도");
   };
+  const navigate = useNavigate();
 
   return (
     <Container>
@@ -21,10 +23,10 @@ export default function LoginForm() {
           <Input type="password" placeholder="Value" />
         </InputGroup>
 
-        <Button type="submit">Sign In</Button>
+        <Button type="submit" onClick={() => navigate('/disease')}>Sign In</Button>
       </Form>
 
-      <RegisterLink onClick={() => console.log("회원가입 이동")}>
+      <RegisterLink onClick={() => navigate('/signup')}>
         계정이 없으신가요?
       </RegisterLink>
     </Container>

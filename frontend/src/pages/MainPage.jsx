@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import MainModal from '../components/main/MainModal';
+import { useNavigate } from 'react-router-dom';
 
 const MainPage = () => {
   const [showModal, setShowModal] = useState(true);
+  const navigate = useNavigate();
 
   return (
     <>
@@ -11,10 +13,10 @@ const MainPage = () => {
       {!showModal && (
         <MainPageWrapper>
           <Header>
-            <HeaderButton>로그아웃</HeaderButton>
+            <HeaderButton onClick={() => navigate('/')}>로그아웃</HeaderButton>
             <HeaderRight>
-              <HeaderButton>통계분석</HeaderButton>
-              <HeaderButton>회원이름</HeaderButton>
+              <HeaderButton onClick={() => navigate('/graph')}>통계분석</HeaderButton>
+              <HeaderButton onClick={() => navigate('/profile')}>회원이름</HeaderButton>
             </HeaderRight>
           </Header>
           <MainContent>
