@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import MainModal from '../components/MainModal';
+import MainModal from '../components/main/MainModal';
 
 const MainPage = () => {
   const [showModal, setShowModal] = useState(true);
@@ -67,7 +67,7 @@ const MainContent = styled.div`
 
 const Box = styled.div`
   flex: 1;
-  min-width: 600px;
+  min-width: 700px;
   min-height: 350px;
   border: 1.5px solid #222;
   border-radius: 8px;
@@ -80,6 +80,7 @@ const Box = styled.div`
 `;
 
 const TodoBox = styled(Box)`
+  min-width: 400px;
   font-size: 40px;
 `;
 
