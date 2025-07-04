@@ -1,17 +1,18 @@
 package com.example.thirdprojectback.entity;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.*;
 
-@Entity
-@Table(name = "todo_items")
 @Getter
 @Setter
+@Entity
+@Table(name = "todo_items")
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class Todo {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long todoItemId;
