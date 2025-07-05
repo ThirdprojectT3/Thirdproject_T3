@@ -2,7 +2,7 @@ from langchain_community.vectorstores import FAISS
 from ai import config
 def get_sleep_context(sleep)->str:    
     vectorstore = FAISS.load_local(
-        "vectorstores/diet_rag",
+        "ai/vectorstores/diet_rag",
         embeddings= config.embedding,
         allow_dangerous_deserialization=True
     )
