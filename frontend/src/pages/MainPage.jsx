@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import MainModal from '../components/main/MainModal';
 import Header from '../components/header/Header';
 import TodoList from '../components/main/Todolist';
+import Calendar from '../components/main/Calendar';
 
 const MainPage = () => {
   const [showModal, setShowModal] = useState(true);
@@ -14,7 +15,7 @@ const MainPage = () => {
         <MainPageWrapper>
           <Header/>
           <MainContent>
-            <Box>달력</Box>
+            <Calendar/>
             <TodoList/>
           </MainContent>
           <MealBox>식단</MealBox>
