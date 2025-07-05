@@ -8,6 +8,7 @@ def search_tip_from_db(state: GenState) -> GenState:
         query = f"{todo['todoItem']} 운동의 올바른 수행 팁을 알려줘"
         tip = query_tip_rag(query)
         found_tips.append({"todoItem": todo["todoItem"], "tip": tip})
+        print("tip db 검색")
     return {**state, "todo_tips": found_tips}
 
 def generate_tip_from_gpt(state: GenState) -> GenState:
