@@ -3,18 +3,17 @@ import styled from "styled-components";
 
 // 실제로는 props로 유저의 기존 정보를 받아오기
 
-export default function ProfileForm() {
+const ProfileForm = () => {
+  // 예시: 초기값을 userInfo에서 가져온다고 가정
+  // const [formData, setFormData] = useState(userInfo);
 
-  //이런 거
-//   const [formData, setFormData] = useState(userInfo);
-
-//   const handleChange = (e) => {
-//     const { name, value } = e.target;
-//     setFormData((prevData) => ({
-//       ...prevData,
-//       [name]: value,
-//     }));
-//   };
+  // const handleChange = (e) => {
+  //   const { name, value } = e.target;
+  //   setFormData((prevData) => ({
+  //     ...prevData,
+  //     [name]: value,
+  //   }));
+  // };
 
   const handleUpdate = (e) => {
     e.preventDefault();
@@ -36,23 +35,27 @@ export default function ProfileForm() {
           <Label>Email</Label>
           {/* 실제로는 value prop에 기존 데이터를 넣어줍니다. */}
           <Input type="email" placeholder="Value" />
-          {/* <Input 
+          {/* 
+          <Input 
             type="email"
-            name="email" // state의 key와 일치
+            name="email"
             value={formData.email} 
             onChange={handleChange}
-          /> */}
+          /> 
+          */}
         </InputGroup>
 
         <InputGroup>
           <Label>Name</Label>
           <Input type="text" placeholder="Value" />
-          {/* <Input
+          {/* 
+          <Input
             type="text"
             name="name"
             value={formData.name}
             onChange={handleChange}
-          /> */}
+          /> 
+          */}
         </InputGroup>
 
         <InputGroup>
@@ -64,50 +67,57 @@ export default function ProfileForm() {
         <InputGroup>
           <Label>Height</Label>
           <Input type="number" placeholder="Value" min="0" />
-          {/* <Input
+          {/* 
+          <Input
             type="number"
             name="height"
             value={formData.height}
             onChange={handleChange}
             min="0"
-          /> */}
+          /> 
+          */}
         </InputGroup>
 
         <InputGroup>
           <Label>Age</Label>
           <Input type="number" placeholder="Value" min="0" />
-          {/* <Input
+          {/* 
+          <Input
             type="number"
             name="age"
             value={formData.age}
             onChange={handleChange}
             min="0"
-          /> */}
+          /> 
+          */}
         </InputGroup>
 
         <InputGroup>
           <Label>Gender</Label>
           <RadioGroup>
             <label>
-              {/* 실제 데이터에 따라 checked 상태를 동적으로 설정해야 합니다. */}
               <input type="radio" name="gender" value="male" defaultChecked /> Male
-              {/* <input
+              {/* 
+              <input
                 type="radio"
                 name="gender"
                 value="male"
-                checked={formData.gender === 'male'} // state 값에 따라 checked 결정
+                checked={formData.gender === 'male'}
                 onChange={handleChange}
-              /> Male */}
+              /> 
+              */}
             </label>
             <label>
               <input type="radio" name="gender" value="female" /> Female
-              {/* <input
+              {/* 
+              <input
                 type="radio"
                 name="gender"
                 value="female"
-                checked={formData.gender === 'female'} // state 값에 따라 checked 결정
+                checked={formData.gender === 'female'}
                 onChange={handleChange}
-              /> Female */}
+              /> 
+              */}
             </label>
           </RadioGroup>
         </InputGroup>
@@ -124,7 +134,7 @@ export default function ProfileForm() {
       </Form>
     </Container>
   );
-}
+};
 
 //--- styled-components ---//
 
@@ -215,3 +225,5 @@ const CancelButton = styled(BaseButton)`
     background-color: #bbb;
   }
 `;
+
+export default ProfileForm;

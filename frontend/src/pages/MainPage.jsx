@@ -1,27 +1,21 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import MainModal from '../components/main/MainModal';
-import { useNavigate } from 'react-router-dom';
+import Header from '../components/header/Header';
+import TodoList from '../components/main/Todolist';
 
 const MainPage = () => {
   const [showModal, setShowModal] = useState(true);
-  const navigate = useNavigate();
 
   return (
     <>
       {showModal && <MainModal onClose={() => setShowModal(false)} />}
       {!showModal && (
         <MainPageWrapper>
-          <Header>
-            <HeaderButton onClick={() => navigate('/')}>로그아웃</HeaderButton>
-            <HeaderRight>
-              <HeaderButton onClick={() => navigate('/graph')}>통계분석</HeaderButton>
-              <HeaderButton onClick={() => navigate('/profile')}>회원이름</HeaderButton>
-            </HeaderRight>
-          </Header>
+          <Header/>
           <MainContent>
             <Box>달력</Box>
-            <TodoBox>todolist</TodoBox>
+            <TodoList/>
           </MainContent>
           <MealBox>식단</MealBox>
         </MainPageWrapper>
@@ -34,31 +28,6 @@ const MainPageWrapper = styled.div`
   min-height: 100vh;
   background: #fff;
   padding: 32px;
-`;
-
-const Header = styled.div`
-  display: flex;
-  justify-content: flex-start;
-  align-items: flex-start;
-  gap: 32px;
-  margin-bottom: 32px;
-`;
-
-const HeaderButton = styled.button`
-  background: #e0e0e0;
-  border: none;
-  border-radius: 8px;
-  padding: 12px 32px;
-  font-size: 16px;
-  font-weight: 500;
-  margin-right: 32px;
-  cursor: pointer;
-`;
-
-const HeaderRight = styled.div`
-  display: flex;
-  gap: 16px;
-  margin-left: auto;
 `;
 
 const MainContent = styled.div`
@@ -79,11 +48,6 @@ const Box = styled.div`
   font-size: 48px;
   font-weight: 400;
   background: #fff;
-`;
-
-const TodoBox = styled(Box)`
-  min-width: 400px;
-  font-size: 40px;
 `;
 
 const MealBox = styled.div`

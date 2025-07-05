@@ -2,12 +2,13 @@ import React from "react";
 import styled from "styled-components";
 import { useNavigate } from 'react-router-dom';
 
-export default function LoginForm() {
+const LoginForm = () => {
+  const navigate = useNavigate();
+
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log("로그인 시도");
   };
-  const navigate = useNavigate();
 
   return (
     <Container>
@@ -31,7 +32,7 @@ export default function LoginForm() {
       </RegisterLink>
     </Container>
   );
-}
+};
 
 // styled-components
 const Container = styled.div`
@@ -96,3 +97,5 @@ const RegisterLink = styled.p`
     color: #000;
   }
 `;
+
+export default LoginForm;

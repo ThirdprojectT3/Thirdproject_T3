@@ -2,12 +2,13 @@ import React from "react";
 import styled from "styled-components";
 import { useNavigate } from 'react-router-dom';
 
-export default function SignUpForm() {
+const SignUpForm = () => {
+  const navigate = useNavigate();
+
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log("회원가입 시도");
   };
-  const navigate = useNavigate();
 
   return (
     <Container>
@@ -63,8 +64,7 @@ export default function SignUpForm() {
       </LoginLink>
     </Container>
   );
-}
-
+};
 
 const Container = styled.div`
   display: flex;
@@ -142,3 +142,5 @@ const LoginLink = styled.p`
     color: #000;
   }
 `;
+
+export default SignUpForm;
