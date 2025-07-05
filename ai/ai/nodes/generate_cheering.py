@@ -1,6 +1,8 @@
 from ..schema import GenState
 from ..config import llm
+from .time_check import timeit
 
+@timeit
 def generate_cheering(state: GenState) -> GenState:
     todolists = state["todolists"]
     total = sum(len(day["items"]) for day in todolists)

@@ -1,13 +1,15 @@
 from langchain_community.vectorstores import FAISS
 from ai import config
-def get_sleep_context(sleep)->str:    
-    vectorstore = FAISS.load_local(
+
+#속도 개선을 위해 관련 문서 2개로 설정 및 모듈 로드 시 한 번만 실행됨
+vectorstore = FAISS.load_local(
         "ai/vectorstores/diet_rag",
         embeddings= config.embedding,
         allow_dangerous_deserialization=True
     )
-    retriever = vectorstore.as_retriever()
+retriever = vectorstore.as_retriever(search_kwargs={"k": 2})
 
+def get_sleep_context(sleep)->str:    
     if isinstance(sleep, (int, float)):
         if sleep < 6:
             sleep_query = f"수면 부족({sleep}시간) 시 도움이 되는 영양소와 식단 추천"

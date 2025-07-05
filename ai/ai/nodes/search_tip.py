@@ -1,7 +1,9 @@
 from ..schema import GenState
 from ..rag.tip_rag import query_tip_rag
 from ..config import llm
+from .time_check import timeit
 
+@timeit
 def search_tip_from_db(state: GenState) -> GenState:
     found_tips = []
     for todo in state["todo_items"]:

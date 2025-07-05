@@ -1,6 +1,8 @@
 from ..schema import GenState
 from ..config import llm
+from .time_check import timeit
 
+@timeit
 def generate_todo(state: GenState) -> GenState:
     prompt = state["prompt"]
     goal = state.get("goal", "")

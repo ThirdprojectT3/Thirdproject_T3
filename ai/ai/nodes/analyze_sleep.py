@@ -1,6 +1,8 @@
 from ..schema import GenState
 from ..rag.sleep_rag import query_sleep_rag
+from .time_check import timeit
 
+@timeit
 def analyze_sleep(state: GenState) -> GenState:
     recent_sleep = state["records"][-1]["sleep"]
     sleep_avg = "수면 양호" if recent_sleep >= 7 else "수면 부족"
