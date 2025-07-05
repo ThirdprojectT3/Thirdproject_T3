@@ -1,18 +1,21 @@
 from fastapi import APIRouter
 from langserve import add_routes
 from ai.graph_builder import build_graph
-from ai.nodes import format_output
+from fastapi.responses import StreamingResponse
+from typing import AsyncIterator
+import json
+
 router = APIRouter()
 
-# LangGraph 앱 불러오기
+# 1. 기존 동기식 엔드포인트 유지
 graph_app = build_graph()
-
-# LangGraph 앱을 "/healthai" 경로로 등록
 add_routes(
     router,
     graph_app,
     path="/healthai"
 )
+
+# 2. 스트리밍 엔드포인트 추가
 @router.post("/healthai/stream")
 async def stream_healthai(input_data: dict):
     """기존 입력 형식을 그대로 사용하는 스트리밍 엔드포인트"""
