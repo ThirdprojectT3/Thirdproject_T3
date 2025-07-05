@@ -1,12 +1,19 @@
 from langchain_community.vectorstores import FAISS
 from ai import config
+import os
+from .doc_to_vector import load_doc, save_doc
+
+VECTOR_PATH = "ai/vectorstores/diet_rag"
+if not os.path.exists(VECTOR_PATH):
+    docs = load_doc("data/Effects of Diet on Sleep Quality.pdf")  # 예시
+    save_doc(docs, output_path=VECTOR_PATH)
 
 #속도 개선을 위해 관련 문서 2개로 설정 및 모듈 로드 시 한 번만 실행됨
 vectorstore = FAISS.load_local(
-        "ai/vectorstores/diet_rag",
+        VECTOR_PATH,
         embeddings= config.embedding,
         allow_dangerous_deserialization=True
-    )
+)
 retriever = vectorstore.as_retriever(search_kwargs={"k": 2})
 
 def get_sleep_context(sleep)->str:    

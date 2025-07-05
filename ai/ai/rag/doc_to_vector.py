@@ -25,7 +25,7 @@ def load_doc(data_path: str)-> List[Document]:
     
     return documents
 
-def save_doc(documents: List[Document], chunk_size: int, chunk_overlap: int, output_path: str)->None:
+def save_doc(documents: List[Document], chunk_size: int = 500, chunk_overlap: int = 50, output_path: str = "ai/vectorstores")-> None:
     text_splitter = RecursiveCharacterTextSplitter(
         chunk_size= chunk_size, 
         chunk_overlap= chunk_overlap,
@@ -38,4 +38,3 @@ def save_doc(documents: List[Document], chunk_size: int, chunk_overlap: int, out
 
     os.makedirs(output_path, exist_ok=True)
     vectorstore.save_local(output_path)
-

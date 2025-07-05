@@ -13,6 +13,7 @@ def search_tip_from_db(state: GenState) -> GenState:
         print("tip db 검색")
     return {**state, "todo_tips": found_tips}
 
+@timeit
 def generate_tip_from_gpt(state: GenState) -> GenState:
     new_tips = []
     for todo in state["todo_items"]:
