@@ -1,0 +1,9 @@
+POSTMAN 기준
+
+http://localhost:8000/healthai/invoke
+body에 sample_data.txt 넣고 보내면 됩니다.
+
+STREAM 방식은 
+http://localhost:8000/healthai/stream
+body에 sample_data.txt 넣고
+headers에 key = Accept, value = text/event-stream 넣고 실행하면 됩니다.
