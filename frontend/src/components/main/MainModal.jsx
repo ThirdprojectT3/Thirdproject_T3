@@ -6,7 +6,7 @@ import { postRecord } from '../../api/record';
 
 const workoutPlaces = ['헬스장', '맨몸', '크로스핏', '쉬기'];
 
-const MainModal = ({ onClose }) => {
+const MainModal = ({ onClose, triggerToast }) => {
   const [showModal, setShowModal] = useState(false);
   const [step, setStep] = useState(1);
   const [form, setForm] = useState({
@@ -62,29 +62,26 @@ const MainModal = ({ onClose }) => {
 
   const handleSubmitStep1 = (e) => {
     e.preventDefault();
-    console.log('신체 정보:', form);
     setStep(2);
   };
 
-const handleSubmitStep2 = async (e) => {
-  e.preventDefault();
-  const today = new Date().toISOString().split('T')[0];
-  localStorage.setItem('modalShownDate', today);
-  setShowModal(false);
+  const handleSubmitStep2 = async (e) => {
+    e.preventDefault();
+    const today = new Date().toISOString().split('T')[0];
+    localStorage.setItem('modalShownDate', today);
+    setShowModal(false);
 
-  // const token = localStorage.getItem('jwtToken');
-  const token = "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjEsInN1YiI6ImFhQGEuY29tIiwiaWF0IjoxNzUxODAzNzM1LCJleHAiOjE3NTE4MDczMzV9.212Koqg1YCqlI7XwDPCRNNF-raW-6-xFi2UXXBUqWH0";
-  setShowModal(false);
+    const token = localStorage.getItem('jwtToken');
 
-  try {
-    await postRecord(form, token);
-    console.log('저장 성공');
-  } catch (error) {
-    console.error('저장 실패:', error);
-  }
+    try {
+      await postRecord(form, token);
+      if (triggerToast) triggerToast('저장 성공!');
+    } catch {
+      if (triggerToast) triggerToast('저장 실패!');
+    }
 
-  if (onClose) onClose();
-};
+    if (onClose) onClose();
+  };
 
   if (!showModal) return null;
 

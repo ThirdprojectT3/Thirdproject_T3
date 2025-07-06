@@ -4,15 +4,24 @@ import MainModal from '../components/main/MainModal';
 import Header from '../components/header/Header';
 import TodoList from '../components/main/Todolist';
 import Calendar from '../components/main/Calendar';
-
+import Toast from '../components/toast/Toast';
 
 const MainPage = () => {
   const [showModal, setShowModal] = useState(true);
   const [selectedDate, setSelectedDate] = useState(new Date());
+  const [showToast, setShowToast] = useState(false);
+  const [toastMessage, setToastMessage] = useState('');
+
+  const triggerToast = (msg) => {
+    setToastMessage(msg);
+    setShowToast(true);
+    setTimeout(() => setShowToast(false), 2000);
+  };
 
   return (
     <>
-      {showModal && <MainModal onClose={() => setShowModal(false)} />}
+      {showToast && <Toast message={toastMessage} />}
+      {showModal && <MainModal onClose={() => setShowModal(false)} triggerToast={triggerToast} />}
       {!showModal && (
         <MainPageWrapper>
           <Header/>
