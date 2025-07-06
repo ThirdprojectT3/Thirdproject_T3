@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "./Todolist.css";
 
-const TodoList = () => {
+const TodoList = ({ selectedDate }) => {
   const [todos, setTodos] = useState([
     { id: 1, text: "오늘 할 일 1", completed: false },
     { id: 2, text: "오늘 할 일 2", completed: false },
@@ -31,7 +31,13 @@ const TodoList = () => {
 
   return (
     <div className="todo-container">
-      <h1 className="title">Todo</h1>
+      <h1 className="title">
+        Todo{" "}
+        <span style={{ fontSize: "1.5rem", fontWeight: "normal", marginLeft: "12px" }}>
+          {selectedDate &&
+            `${selectedDate.getFullYear()}.${String(selectedDate.getMonth() + 1).padStart(2, "0")}.${String(selectedDate.getDate()).padStart(2, "0")}`}
+        </span>
+      </h1>
 
       <div className="todo-list-wrapper">
         {todos.map((todo) => (

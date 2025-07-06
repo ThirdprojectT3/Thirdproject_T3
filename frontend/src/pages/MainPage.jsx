@@ -7,6 +7,7 @@ import Calendar from '../components/main/Calendar';
 
 const MainPage = () => {
   const [showModal, setShowModal] = useState(true);
+  const [selectedDate, setSelectedDate] = useState(new Date());
 
   return (
     <>
@@ -15,8 +16,8 @@ const MainPage = () => {
         <MainPageWrapper>
           <Header/>
           <MainContent>
-            <Calendar/>
-            <TodoList/>
+            <Calendar selectedDate={selectedDate} setSelectedDate={setSelectedDate} />
+            <TodoList selectedDate={selectedDate} />
           </MainContent>
           <MealBox>식단</MealBox>
         </MainPageWrapper>
