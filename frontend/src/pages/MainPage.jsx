@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import MainModal from '../components/main/MainModal';
 import Header from '../components/header/Header';
@@ -7,10 +8,18 @@ import Calendar from '../components/main/Calendar';
 import Toast from '../components/toast/Toast';
 
 const MainPage = () => {
+  const navigate = useNavigate();
   const [showModal, setShowModal] = useState(true);
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
+
+  useEffect(() => {
+    const token = localStorage.getItem('jwtToken');
+    if (!token) {
+      navigate('/', { replace: true });
+    }
+  }, [navigate]);
 
   const triggerToast = (msg) => {
     setToastMessage(msg);
