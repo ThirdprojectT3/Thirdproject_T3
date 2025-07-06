@@ -2,10 +2,12 @@ package com.example.thirdprojectback.controller;
 
 import com.example.thirdprojectback.dto.TodoRequestDto;
 import com.example.thirdprojectback.dto.TodoResponseDto;
+import com.example.thirdprojectback.security.CustomUserDetails;
 import com.example.thirdprojectback.service.TodoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.YearMonth;
@@ -20,9 +22,14 @@ public class TodoController {
 
     // ✅ 투두 추가
     @PostMapping
-    public ResponseEntity<TodoResponseDto> add(@RequestBody TodoRequestDto dto) {
-        return ResponseEntity.ok(todoService.createTodo(dto));
+    public ResponseEntity<TodoResponseDto> add(
+            @RequestBody TodoRequestDto dto,
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        Long userId = userDetails.getUserId(); // JWT에서 가져온 사용자 ID
+        return ResponseEntity.ok(todoService.createTodo(dto, userId));
     }
+
 
     // ✅ 이번주 포함 최근 7일치 투두 조회
     @GetMapping("/week/{userId}")

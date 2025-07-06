@@ -2,9 +2,12 @@ package com.example.thirdprojectback.controller;
 
 import com.example.thirdprojectback.dto.RecordRequestDto;
 import com.example.thirdprojectback.dto.RecordResponseDto;
+import com.example.thirdprojectback.security.CustomUserDetails;
 import com.example.thirdprojectback.service.RecordService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,66 +20,69 @@ public class RecordController {
 
     private final RecordService recordService;
 
-    // ✅ [1] 기본 CRUD
-
-    // CREATE - 기록 생성
+    // 1. 기록 생성
     @PostMapping
-    public ResponseEntity<RecordResponseDto> create(@RequestBody RecordRequestDto dto) {
-        return ResponseEntity.ok(recordService.createRecord(dto));
+    public RecordResponseDto create(
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            @RequestBody RecordRequestDto dto) {
+        Long userId = userDetails.getUserId();
+        return recordService.createRecord(userId, dto);
     }
 
-    // READ - 단일 기록 조회
+    // 2. 단일 기록 조회
     @GetMapping("/{id}")
-    public ResponseEntity<RecordResponseDto> read(@PathVariable Long id) {
-        return ResponseEntity.ok(recordService.getRecord(id));
+    public RecordResponseDto get(@PathVariable Long id) {
+        return recordService.getRecord(id);
     }
 
-    // READ - 사용자별 전체 기록 조회
-    @GetMapping("/user/{userId}")
-    public ResponseEntity<List<RecordResponseDto>> readAllByUser(@PathVariable Long userId) {
-        return ResponseEntity.ok(recordService.getRecordsByUser(userId));
+    // 3. 내 기록 전체 조회
+    @GetMapping("/my")
+    public List<RecordResponseDto> getMyRecords(@AuthenticationPrincipal CustomUserDetails userDetails) {
+        Long userId = userDetails.getUserId();
+        return recordService.getRecordsByUser(userId);
     }
 
-    // UPDATE - 기록 수정
+    // 4. 페이징 전체 조회 (관리자용 등)
+    @GetMapping
+    public Page<RecordResponseDto> getAll(Pageable pageable) {
+        return recordService.getAll(pageable);
+    }
+
+    // 5. 기록 수정
     @PutMapping("/{id}")
-    public ResponseEntity<RecordResponseDto> update(@PathVariable Long id, @RequestBody RecordRequestDto dto) {
-        return ResponseEntity.ok(recordService.updateRecord(id, dto));
+    public RecordResponseDto update(
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            @PathVariable Long id,
+            @RequestBody RecordRequestDto dto) {
+        Long userId = userDetails.getUserId();
+        return recordService.updateRecord(id, userId, dto);
     }
 
-    // DELETE - 기록 삭제
+    // 6. 기록 삭제
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
-        recordService.deleteRecord(id);
-        return ResponseEntity.noContent().build();
-    }
-
-    // ✅ [2] 분석 및 시각화 기능
-
-    // 일일 기록 저장 (프론트 전용 응답 포맷)
-    @PostMapping("/daily")
-    public ResponseEntity<Map<String, Object>> saveDaily(@RequestBody RecordRequestDto dto) {
-        recordService.createRecord(dto);
-        return ResponseEntity.ok(Map.of(
-                "status", 200,
-                "code", null,
-                "message", "success",
-                "data", "ok"
-        ));
-    }
-
-    // 그래프 데이터 조회 (월별 item별)
-    @GetMapping("/graph")
-    public ResponseEntity<List<Double>> getGraph(
-            @RequestParam String date,      // 예: 2025-07
-            @RequestParam String item,
-            @RequestParam Long userId
+    public void delete(
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            @PathVariable Long id
     ) {
-        return ResponseEntity.ok(recordService.getGraphData(userId, date, item));
+        Long userId = userDetails.getUserId();
+        recordService.deleteRecord(id, userId);
     }
 
-    // 전체 사용자 통계 분석
+
+    // 7. 그래프 데이터 조회
+    @GetMapping("/graph")
+    public List<Double> getGraphData(
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            @RequestParam String date,
+            @RequestParam String item
+    ) {
+        Long userId = userDetails.getUserId();
+        return recordService.getGraphData(userId, date, item);
+    }
+
+    // 8. 전체 사용자 분석
     @GetMapping("/analysis")
-    public ResponseEntity<Map<String, Object>> analyzeAll() {
-        return ResponseEntity.ok(recordService.getTotalAnalysis());
+    public Map<String, Object> getTotalAnalysis() {
+        return recordService.getTotalAnalysis();
     }
 }

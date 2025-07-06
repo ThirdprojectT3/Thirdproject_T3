@@ -10,7 +10,6 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Builder
 public class TodolistRequestDto {
-    private Long userId;
     private LocalDate date;
     private boolean allclear;
 }

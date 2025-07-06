@@ -12,6 +12,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -71,7 +72,11 @@ public class AuthService {
             );
 
             // 2) 인증 통과 → JWT 발급
-            String token = jwtUtil.generateToken(loginRequest.getEmail());
+            Member member = memberRepository.findByEmail(loginRequest.getEmail())
+                    .orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수 없습니다."));
+
+            String token = jwtUtil.generateToken(member.getUserId(), member.getEmail());
+
 
             // 3) 토큰만 응답
             return new LoginResponse(token);
