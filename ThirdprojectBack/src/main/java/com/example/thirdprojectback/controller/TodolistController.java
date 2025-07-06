@@ -2,9 +2,11 @@ package com.example.thirdprojectback.controller;
 
 import com.example.thirdprojectback.dto.TodolistRequestDto;
 import com.example.thirdprojectback.dto.TodolistResponseDto;
+import com.example.thirdprojectback.security.CustomUserDetails;
 import com.example.thirdprojectback.service.TodolistService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -19,9 +21,14 @@ public class TodolistController {
 
     // ✅ 특정 날짜의 Todolist가 없으면 생성, 있으면 조회
     @PostMapping("/daily")
-    public ResponseEntity<TodolistResponseDto> getOrCreateToday(@RequestBody TodolistRequestDto dto) {
-        return ResponseEntity.ok(todolistService.getOrCreateTodolist(dto.getUserId(), dto.getDate()));
+    public ResponseEntity<TodolistResponseDto> getOrCreateToday(
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            @RequestBody TodolistRequestDto dto
+    ) {
+        Long userId = userDetails.getUserId(); // JWT에서 추출
+        return ResponseEntity.ok(todolistService.getOrCreateTodolist(userId, dto.getDate()));
     }
+
 
     // ✅ 특정 사용자 전체 Todolist 조회
     @GetMapping("/user/{userId}")

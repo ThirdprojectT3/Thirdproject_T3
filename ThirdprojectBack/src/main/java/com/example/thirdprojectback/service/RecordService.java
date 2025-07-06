@@ -20,8 +20,8 @@ public class RecordService {
     private final RecordRepository recordRepository;
 
     /* ---------- CREATE ---------- */
-    public RecordResponseDto createRecord(RecordRequestDto dto) {
-        Record saved = recordRepository.save(toEntity(dto));
+    public RecordResponseDto createRecord(Long userId, RecordRequestDto dto) {
+        Record saved = recordRepository.save(toEntity(dto, userId));
         return toDto(saved);
     }
 
@@ -43,35 +43,42 @@ public class RecordService {
     }
 
     /* ---------- UPDATE ---------- */
-    public RecordResponseDto updateRecord(Long id, RecordRequestDto dto) {
+    public RecordResponseDto updateRecord(Long id, Long userId, RecordRequestDto dto) {
         Record record = recordRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Record not found: " + id));
 
-        record.setSleep(dto.getSleep());
-        record.setWeight(dto.getWeight());
-        record.setFat(dto.getFat());
-        record.setMuscle(dto.getMuscle());
-        record.setBmr(dto.getBmr());
-        record.setBmi(dto.getBmi());
-        record.setVai(dto.getVai());
-        record.setDate(dto.getDate());
+        if (!record.getUserId().equals(userId)) {
+            throw new SecurityException("다른 사용자의 기록은 수정할 수 없습니다.");
+        }
+
+        Optional.ofNullable(dto.getSleep()).ifPresent(record::setSleep);
+        Optional.ofNullable(dto.getWeight()).ifPresent(record::setWeight);
+        Optional.ofNullable(dto.getFat()).ifPresent(record::setFat);
+        Optional.ofNullable(dto.getMuscle()).ifPresent(record::setMuscle);
+        Optional.ofNullable(dto.getBmr()).ifPresent(record::setBmr);
+        Optional.ofNullable(dto.getBmi()).ifPresent(record::setBmi);
+        Optional.ofNullable(dto.getVai()).ifPresent(record::setVai);
+        Optional.ofNullable(dto.getDate()).ifPresent(record::setDate);
 
         return toDto(recordRepository.save(record));
     }
 
     /* ---------- DELETE ---------- */
-    public void deleteRecord(Long id) {
-        if (!recordRepository.existsById(id)) {
-            throw new IllegalArgumentException("Record not found: " + id);
+    public void deleteRecord(Long id, Long userId) {
+        Record record = recordRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Record not found: " + id));
+
+        if (!record.getUserId().equals(userId)) {
+            throw new SecurityException("다른 사용자의 기록은 삭제할 수 없습니다.");
         }
+
         recordRepository.deleteById(id);
     }
 
     /* ---------- 분석 기능 ---------- */
 
-    // 그래프 데이터 (월별 항목 조회)
     public List<Double> getGraphData(Long userId, String date, String item) {
-        LocalDate start = LocalDate.parse(date + "-01"); // ex: 2025-07 → 2025-07-01
+        LocalDate start = LocalDate.parse(date + "-01");
         LocalDate end = start.withDayOfMonth(start.lengthOfMonth());
 
         List<Record> records = recordRepository.findByUserIdAndDateBetween(userId, start, end);
@@ -91,7 +98,6 @@ public class RecordService {
                 .collect(Collectors.toList());
     }
 
-    // 전체 사용자 통계 분석
     public Map<String, Object> getTotalAnalysis() {
         List<Record> records = recordRepository.findAll();
 
@@ -122,9 +128,9 @@ public class RecordService {
 
     /* ---------- 변환 메서드 ---------- */
 
-    private Record toEntity(RecordRequestDto dto) {
+    private Record toEntity(RecordRequestDto dto, Long userId) {
         return Record.builder()
-                .userId(dto.getUserId())
+                .userId(userId)
                 .sleep(dto.getSleep())
                 .weight(dto.getWeight())
                 .fat(dto.getFat())
