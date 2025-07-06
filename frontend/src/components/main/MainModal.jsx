@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import './MainModal.css';
 import { validNumberInput } from '../../utils/ValueValidation';
+import { postRecord } from '../../api/record';
+
 
 const workoutPlaces = ['헬스장', '맨몸', '크로스핏', '쉬기'];
 
@@ -64,14 +66,25 @@ const MainModal = ({ onClose }) => {
     setStep(2);
   };
 
-  const handleSubmitStep2 = (e) => {
-    e.preventDefault();
-    const today = new Date().toISOString().split('T')[0];
-    localStorage.setItem('modalShownDate', today);
-    setShowModal(false);
-    console.log('운동 관련 정보:', workoutForm);
-    if (onClose) onClose();
-  };
+const handleSubmitStep2 = async (e) => {
+  e.preventDefault();
+  const today = new Date().toISOString().split('T')[0];
+  localStorage.setItem('modalShownDate', today);
+  setShowModal(false);
+
+  // const token = localStorage.getItem('jwtToken');
+  const token = "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjEsInN1YiI6ImFhQGEuY29tIiwiaWF0IjoxNzUxODAzNzM1LCJleHAiOjE3NTE4MDczMzV9.212Koqg1YCqlI7XwDPCRNNF-raW-6-xFi2UXXBUqWH0";
+  setShowModal(false);
+
+  try {
+    await postRecord(form, token);
+    console.log('저장 성공');
+  } catch (error) {
+    console.error('저장 실패:', error);
+  }
+
+  if (onClose) onClose();
+};
 
   if (!showModal) return null;
 
