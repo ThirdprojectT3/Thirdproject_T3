@@ -8,7 +8,7 @@ const LoginPage = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log("로그인 시도");
-    navigate("/disease");  // 로그인 성공 시 이동
+    navigate("/main");  // 로그인 성공 시 이동
   };
 
   return (

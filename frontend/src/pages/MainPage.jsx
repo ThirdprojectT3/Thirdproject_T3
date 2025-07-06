@@ -37,20 +37,6 @@ const MainContent = styled.div`
   margin-bottom: 32px;
 `;
 
-const Box = styled.div`
-  flex: 1;
-  min-width: 700px;
-  min-height: 350px;
-  border: 1.5px solid #222;
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 48px;
-  font-weight: 400;
-  background: #fff;
-`;
-
 const MealBox = styled.div`
   min-width: 100%;
   min-height: 180px;
