@@ -45,6 +45,7 @@ const SignupPage = () => {
             <div className="radio-group">
               <label><input type="radio" name="gender" value="male" defaultChecked /> Male</label>
               <label><input type="radio" name="gender" value="female" /> Female</label>
+              <label><input type="radio" name="gender" value="female" /> Other</label>
             </div>
           </div>
 
