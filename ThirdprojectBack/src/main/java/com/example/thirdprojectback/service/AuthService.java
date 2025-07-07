@@ -27,62 +27,41 @@ public class AuthService {
     private final JwtUtil jwtUtil;
     private final AuthenticationManager authenticationManager;
 
-    /* -------------------------------------------------
-     * 회원가입
-     * ------------------------------------------------- */
-    public SignupResponse register(MemberRequestDto requestDto) {
-
-        // 1) 이메일 중복 체크
-        if (memberRepository.existsByEmail(requestDto.getEmail())) {
+    /* 회원가입 */
+    public SignupResponse register(MemberRequestDto dto) {
+        if (memberRepository.existsByEmail(dto.getEmail())) {
             throw new IllegalArgumentException("이미 가입된 이메일입니다.");
         }
 
-        // 2) 비밀번호 암호화
-        String encodedPw = passwordEncoder.encode(requestDto.getPassword());
-
-        // 3) Member 엔티티 생성 및 저장
-        Member newMember = Member.builder()
-                .email(requestDto.getEmail())
-                .name(requestDto.getName())
-                .password(encodedPw)
-                .height(requestDto.getHeight())
-                .age(requestDto.getAge())
-                .gender(requestDto.getGender())
-                .goal(requestDto.getGoal())
+        Member member = Member.builder()
+                .email(dto.getEmail())
+                .name(dto.getName())
+                .password(passwordEncoder.encode(dto.getPassword()))
+                .height(dto.getHeight())
+                .age(dto.getAge())
+                .gender(dto.getGender())     // enum
+                .goal(dto.getGoal())         // enum
+                .diseases(dto.getDiseases()) // List<String>
                 .build();
 
-        memberRepository.save(newMember);
-
-        // 4) 토큰을 굳이 발급하지 않고 “회원가입 성공” 메시지만 전달
+        memberRepository.save(member);
         return new SignupResponse("회원가입 성공");
     }
 
-    /* -------------------------------------------------
-     * 로그인
-     * ------------------------------------------------- */
-    public LoginResponse login(LoginRequest loginRequest) {
-
+    /* 로그인 */
+    public LoginResponse login(LoginRequest req) {
         try {
-            // 1) Spring Security AuthenticationManager로 인증 시도
-            Authentication authentication = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(
-                            loginRequest.getEmail(),
-                            loginRequest.getPassword()
-                    )
+            Authentication auth = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(req.getEmail(), req.getPassword())
             );
 
-            // 2) 인증 통과 → JWT 발급
-            Member member = memberRepository.findByEmail(loginRequest.getEmail())
+            Member member = memberRepository.findByEmail(req.getEmail())
                     .orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수 없습니다."));
 
             String token = jwtUtil.generateToken(member.getUserId(), member.getEmail());
-
-
-            // 3) 토큰만 응답
             return new LoginResponse(token);
 
         } catch (AuthenticationException ex) {
-            // 인증 실패
             throw new IllegalArgumentException("이메일 또는 비밀번호가 일치하지 않습니다.");
         }
     }

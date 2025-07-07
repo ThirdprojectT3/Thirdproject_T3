@@ -1,10 +1,13 @@
 package com.example.thirdprojectback.dto;
 
-import com.example.thirdprojectback.entity.Member; // Member.Gender를 사용하기 위해 임포트
+import com.example.thirdprojectback.entity.Member.Gender;
+import com.example.thirdprojectback.entity.Member.Goal;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.*;
+
+import java.util.List;
 
 @Getter
 @Setter
@@ -25,6 +28,7 @@ public class MemberRequestDto {
 
     private int height;
     private int age;
-    private Member.Gender gender; // Member 클래스의 중첩 Enum 사용
-    private String goal;
+    private Gender gender; // Member 클래스의 중첩 Enum 사용
+    private Goal goal;
+    private List<String> diseases;
 }
