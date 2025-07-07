@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
 import { postRegister } from "../api/auth";
+import ErrToast from "../components/toast/errToast"; // 추가
 import "./SignupPage.css";
 
 const SignupPage = () => {
   const navigate = useNavigate();
+  const [showErrToast, setShowErrToast] = useState(false); // 추가
+  const [errToastMessage, setErrToastMessage] = useState(""); // 추가
 
   useEffect(() => {
     const token = sessionStorage.getItem('jwtToken');
@@ -71,10 +74,11 @@ const SignupPage = () => {
       navigate("/");
     } catch (error) {
       console.error(error);
-      alert(error.response?.data?.error?.message || "회원가입 실패");
+      setErrToastMessage(error.response?.data?.error?.message || "회원가입 실패"); // 변경
+      setShowErrToast(true); // 변경
+      setTimeout(() => setShowErrToast(false), 2000); // 2초 후 자동 닫힘
     }
   };
-
 
   return (
     <div className="signup-wrapper">
@@ -143,11 +147,16 @@ const SignupPage = () => {
 
           <button className="signup-button" type="submit">Sign Up</button>
         </form>
-
         <p className="login-link" onClick={() => navigate("/")}>
           로그인으로 돌아가기
         </p>
       </div>
+      {showErrToast && (
+        <ErrToast
+          message={errToastMessage}
+          onClose={() => setShowErrToast(false)}
+        />
+      )}
     </div>
   );
 };

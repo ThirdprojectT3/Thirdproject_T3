@@ -6,6 +6,7 @@ import Header from '../components/header/Header';
 import TodoList from '../components/main/Todolist';
 import Calendar from '../components/main/Calendar';
 import Toast from '../components/toast/Toast';
+import ErrToast from '../components/toast/ErrToast';
 
 const MainPage = () => {
   const navigate = useNavigate();
@@ -13,6 +14,9 @@ const MainPage = () => {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
+  const [showErrToast, setShowErrToast] = useState(false);
+  const [errToastMessage, setErrToastMessage] = useState('');
+
 
   useEffect(() => {
     const token = sessionStorage.getItem('jwtToken');
@@ -27,10 +31,17 @@ const MainPage = () => {
     setTimeout(() => setShowToast(false), 2000);
   };
 
+  const triggerErrToast = (msg) => {
+    setErrToastMessage(msg);
+    setShowErrToast(true);
+    setTimeout(() => setShowErrToast(false), 2000);
+  };
+
   return (
     <>
       {showToast && <Toast message={toastMessage} />}
-      {showModal && <MainModal onClose={() => setShowModal(false)} triggerToast={triggerToast} />}
+      {showErrToast && (<ErrToast message={errToastMessage} onClose={() => setShowErrToast(false)} />)}
+      {showModal && <MainModal onClose={() => setShowModal(false)} triggerToast={triggerToast} triggerErrToast={triggerErrToast} />}
       {!showModal && (
         <MainPageWrapper>
           <Header/>

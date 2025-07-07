@@ -6,7 +6,7 @@ import { postRecord } from '../../api/record';
 
 const workoutPlaces = ['헬스장', '맨몸', '크로스핏', '쉬기'];
 
-const MainModal = ({ onClose, triggerToast }) => {
+const MainModal = ({ onClose, triggerToast, triggerErrToast }) => {
   const [showModal, setShowModal] = useState(false);
   const [step, setStep] = useState(1);
   const [form, setForm] = useState({
@@ -77,7 +77,7 @@ const MainModal = ({ onClose, triggerToast }) => {
       await postRecord(form, token);
       if (triggerToast) triggerToast('저장 성공!');
     } catch {
-      if (triggerToast) triggerToast('저장 실패!');
+      if (triggerErrToast) triggerErrToast('저장 실패!');
     }
 
     if (onClose) onClose();

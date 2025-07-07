@@ -1,12 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from 'react-router-dom';
 import { postLogin } from "../api/auth";
+import ErrToast from "../components/toast/errToast"; // 추가
 import "./LoginPage.css";
 
 const LoginPage = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showErrToast, setShowErrToast] = useState(false); // 추가
+  const [errToastMessage, setErrToastMessage] = useState(""); // 추가
 
   useEffect(() => {
     const token = sessionStorage.getItem('jwtToken');
@@ -26,7 +29,9 @@ const LoginPage = () => {
       navigate("/main");
     } catch (error) {
       console.error(error);
-      alert(error.response?.data?.error?.message || "로그인 실패"); // 실패 버전으로 보내서 수정하기
+      setErrToastMessage(error.response?.data?.error?.message || "로그인 실패"); // 변경
+      setShowErrToast(true); // 변경
+      setTimeout(() => setShowErrToast(false), 2000); // 2초 후 자동 닫힘
     }
   };
 
@@ -52,6 +57,12 @@ const LoginPage = () => {
           계정이 없으신가요?
         </p>
       </div>
+      {showErrToast && (
+        <ErrToast
+          message={errToastMessage}
+          onClose={() => setShowErrToast(false)}
+        />
+      )}
     </div>
   );
 };
