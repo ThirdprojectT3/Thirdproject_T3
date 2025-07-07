@@ -1,155 +1,168 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
+import { getUserInfo } from "../api/userinfo";
+import ErrToast from "../components/toast/errToast";
 import "./ProfilePage.css";
 
-// 실제로는 props로 유저의 기존 정보를 받아오기
+const diseasesList = ["고혈압", "당뇨병", "심장질환", "천식", "관절염", "디스크 질환"];
 
 const ProfilePage = () => {
   const navigate = useNavigate();
+  const [form, setForm] = useState({
+    email: "",
+    name: "",
+    password: "",
+    height: "",
+    age: "",
+    gender: "male",
+    goal: "체중감량",
+    diseases: [],
+  });
 
-  // 예시: 초기값을 userInfo에서 가져온다고 가정
-  // const [formData, setFormData] = useState(userInfo);
+  const [showErrToast, setShowErrToast] = useState(false);
+  const [errToastMessage, setErrToastMessage] = useState("");
 
-  // const handleChange = (e) => {
-  //   const { name, value } = e.target;
-  //   setFormData((prevData) => ({
-  //     ...prevData,
-  //     [name]: value,
-  //   }));
-  // };
+  useEffect(() => {
+    const fetchUserInfo = async () => {
+      try {
+        const res = await getUserInfo(1);
+        setForm({
+          email: res.email,
+          name: res.name,
+          password: "",
+          height: res.height,
+          age: res.age,
+          gender: res.gender.toLowerCase(),
+          goal: res.goal,
+          diseases: res.diseases || [],
+        });
+      } catch (error) {
+        console.error("내 정보 조회 실패", error);
+        setErrToastMessage("내 정보 불러오기 실패");
+        setShowErrToast(true);
+        setTimeout(() => setShowErrToast(false), 2000);
+      }
+    };
 
-  const handleUpdate = (e) => {
+    fetchUserInfo();
+  }, []);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setForm((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleDiseaseChange = (e) => {
+    const { value, checked } = e.target;
+    setForm((prev) => {
+      const diseases = checked
+        ? [...prev.diseases, value]
+        : prev.diseases.filter((d) => d !== value);
+      return { ...prev, diseases };
+    });
+  };
+
+  const handleUpdate = async (e) => {
     e.preventDefault();
-    // 여기에 실제 정보 수정 로직을 구현
-    console.log("정보 수정 시도");
+    try {
+      // TODO: 수정 API 호출 (예: await patchUserInfo(userId, form))
+      console.log("수정 데이터 보내기:", form);
+      navigate("/main", { state: { toastMessage: "정보 수정 성공!" } });
+    } catch (error) {
+      console.error(error);
+      setErrToastMessage("정보 수정 실패");
+      setShowErrToast(true);
+      setTimeout(() => setShowErrToast(false), 2000);
+    }
   };
 
   const handleCancel = () => {
     // setFormData(userInfo);
-    // 취소 로직 (예: 이전 페이지로 돌아가기)
     console.log("수정 취소");
-    navigate("/main");  // 취소 시 홈으로 이동 (원하면 다른 페이지로)
+    navigate("/main");
   };
 
   return (
     <div className="profile-wrapper">
       <div className="profile-container">
-        <h1 className="profile-title">내 정보</h1>
+        <h1 className="profile-title">내 정보 수정</h1>
         <form className="profile-form" onSubmit={handleUpdate}>
           <div className="input-group">
             <label>Email</label>
-            {/* 실제로는 value prop에 기존 데이터를 넣어줍니다. */}
-            <input type="email" placeholder="Value" />
-            {/*
-            <input 
-              type="email"
-              name="email"
-              value={formData.email} 
-              onChange={handleChange}
-            /> 
-            */}
+            <input name="email" value={form.email} onChange={handleChange} />
           </div>
 
           <div className="input-group">
             <label>Name</label>
-            <input type="text" placeholder="Value" />
-            {/*
-            <input
-              type="text"
-              name="name"
-              value={formData.name}
-              onChange={handleChange}
-            /> 
-            */}
+            <input name="name" value={form.name} onChange={handleChange} />
           </div>
 
           <div className="input-group">
             <label>Password</label>
-            {/* 비밀번호는 보통 새로 입력받습니다. */}
-            <input type="password" placeholder="새 비밀번호 입력" />
+            <input name="password" type="password" value={form.password} onChange={handleChange} placeholder="새 비밀번호 입력"/>
           </div>
 
           <div className="input-group">
             <label>Height</label>
-            <input type="number" placeholder="Value" min="0" />
-            {/*
-            <input
-              type="number"
-              name="height"
-              value={formData.height}
-              onChange={handleChange}
-              min="0"
-            /> 
-            */}
+            <input name="height" type="number" value={form.height} onChange={handleChange}/>
           </div>
 
           <div className="input-group">
             <label>Age</label>
-            <input type="number" placeholder="Value" min="0" />
-            {/*
-            <input
-              type="number"
-              name="age"
-              value={formData.age}
-              onChange={handleChange}
-              min="0"
-            /> 
-            */}
+            <input name="age" type="number" value={form.age} onChange={handleChange}/>
           </div>
 
           <div className="input-group">
             <label>Gender</label>
             <div className="radio-group">
               <label>
-                <input type="radio" name="gender" value="male" defaultChecked /> Male
-                {/*
-                <input
-                  type="radio"
-                  name="gender"
-                  value="male"
-                  checked={formData.gender === 'male'}
-                  onChange={handleChange}
-                /> 
-                */}
+                <input type="radio" name="gender" value="male" checked={form.gender === "male"} onChange={handleChange}/>{" "}Male
               </label>
               <label>
-                <input type="radio" name="gender" value="female" /> Female
-                {/*
-                <input
-                  type="radio"
-                  name="gender"
-                  value="female"
-                  checked={formData.gender === 'female'}
-                  onChange={handleChange}
-                /> 
-                */}
+                <input type="radio" name="gender" value="female" checked={form.gender === "female"} onChange={handleChange}/>{" "}Female
               </label>
               <label>
-                <input type="radio" name="gender" value="other" /> Other
-                {/*
-                <input
-                  type="radio"
-                  name="gender"
-                  value="other"
-                  checked={formData.gender === 'other'}
-                  onChange={handleChange}
-                /> 
-                */}
+                <input type="radio" name="gender" value="other" checked={form.gender === "other"} onChange={handleChange}/>{" "}Other
               </label>
             </div>
           </div>
 
           <div className="input-group">
             <label>Goal</label>
-            <input type="text" placeholder="Value" />
+            <div className="radio-group">
+              <label>
+                <input type="radio" name="goal" value="체중감량" checked={form.goal === "체중감량"} onChange={handleChange}/>{" "}체중 감량
+              </label>
+              <label>
+                <input type="radio" name="goal" value="근력향상" checked={form.goal === "근력향상"} onChange={handleChange}/>{" "}근력 향상
+              </label>
+            </div>
+          </div>
+
+          <div className="input-group">
+            <label>질병 (해당되는 항목 선택)</label>
+            <div className="checkbox-group">
+              {diseasesList.map((disease) => (
+                <label key={disease}>
+                  <input type="checkbox" name="diseases" value={disease} checked={form.diseases.includes(disease)} onChange={handleDiseaseChange}/>{disease}
+                </label>
+              ))}
+            </div>
           </div>
 
           <div className="button-group">
-            <button className="submit-button" type="submit">수정하기</button>
-            <button className="cancel-button" type="button" onClick={handleCancel}>취소</button>
+            <button className="submit-button" type="submit">
+              수정하기
+            </button>
+            <button className="cancel-button" type="button" onClick={handleCancel}>취소
+            </button>
           </div>
         </form>
       </div>
+      {showErrToast && (<ErrToast message={errToastMessage} onClose={() => setShowErrToast(false)}/>)}
     </div>
   );
 };
