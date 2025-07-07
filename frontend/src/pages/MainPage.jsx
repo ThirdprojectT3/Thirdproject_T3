@@ -7,6 +7,7 @@ import TodoList from '../components/main/Todolist';
 import Calendar from '../components/main/Calendar';
 import Toast from '../components/toast/Toast';
 import ErrToast from '../components/toast/ErrToast';
+import { fetchTodosByMonth } from "../api/todo";
 
 const MainPage = () => {
   const navigate = useNavigate();
@@ -16,6 +17,7 @@ const MainPage = () => {
   const [toastMessage, setToastMessage] = useState('');
   const [showErrToast, setShowErrToast] = useState(false);
   const [errToastMessage, setErrToastMessage] = useState('');
+  const [monthTodos, setMonthTodos] = useState([]);
 
 
   useEffect(() => {
@@ -46,8 +48,21 @@ const MainPage = () => {
         <MainPageWrapper>
           <Header/>
           <MainContent>
-            <Calendar selectedDate={selectedDate} setSelectedDate={setSelectedDate} />
-            <TodoList selectedDate={selectedDate} />
+            <Calendar
+              selectedDate={selectedDate}
+              setSelectedDate={setSelectedDate}
+              setMonthTodos={setMonthTodos}
+            />
+            <TodoList
+              selectedDate={selectedDate}
+              triggerErrToast={triggerErrToast}
+              triggerToast={triggerToast}
+              monthTodos={monthTodos}
+              onTodoAdded={() => {
+                const ym = `${selectedDate.getFullYear()}-${String(selectedDate.getMonth() + 1).padStart(2, "0")}`;
+                fetchTodosByMonth(1, ym).then(res => setMonthTodos(res.data));
+              }}
+            />
           </MainContent>
           <MealBox>식단</MealBox>
         </MainPageWrapper>

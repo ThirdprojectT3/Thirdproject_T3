@@ -1,32 +1,67 @@
 import React, { useState } from "react";
+import { postTodo, deleteTodo, patchTodo } from "../../api/todo";
 import "./Todolist.css";
 
-const TodoList = ({ selectedDate }) => {
-  const [todos, setTodos] = useState([
-    { id: 1, text: "오늘 할 일 1", completed: false },
-    { id: 2, text: "오늘 할 일 2", completed: false },
-    { id: 3, text: "오늘 할 일 3", completed: false },
-  ]);
-
+const TodoList = ({ selectedDate, triggerErrToast, triggerToast, monthTodos, onTodoAdded }) => {
   const [newTodo, setNewTodo] = useState("");
 
-  const handleAddTodo = () => {
-    if (newTodo.trim() === "") return;
-    setTodos([...todos, { id: Date.now(), text: newTodo, completed: false }]);
-    setNewTodo("");
+  const getDateString = (dateObj) => {
+    return `${dateObj.getFullYear()}-${String(dateObj.getMonth() + 1).padStart(2, "0")}-${String(dateObj.getDate()).padStart(2, "0")}`;
   };
 
-  const toggleTodo = (id) => {
-    setTodos(
-      todos.map((todo) =>
-        todo.id === id ? { ...todo, completed: !todo.completed } : todo
-      )
-    );
+  const todos = monthTodos.filter(todo => todo.date === getDateString(selectedDate));
+
+  const handleAddTodo = async () => {
+    if (newTodo.trim() === "") {
+      if (triggerErrToast) triggerErrToast("공백은 등록할 수 없습니다.");
+      setNewTodo("");
+      return;
+    }
+
+    const todoData = {
+      todoitem: newTodo,
+      complete: false,
+      date: getDateString(selectedDate),
+    };
+
+    console.log("백엔드로 전송되는 todoData:", todoData);
+
+    try {
+      await postTodo(todoData);
+      setNewTodo("");
+      if (onTodoAdded) onTodoAdded();
+      if (triggerToast) triggerToast("등록 성공!");
+    } catch {
+      if (triggerErrToast) {
+        triggerErrToast("할 일 추가 실패");
+      }
+    }
   };
 
-  // 삭제 함수 추가
-  const handleDeleteTodo = (id) => {
-    setTodos(todos.filter((todo) => todo.id !== id));
+  // 삭제 핸들러
+  const handleDeleteTodo = async (todoItemId) => {
+    try {
+      await deleteTodo(todoItemId);
+      if (onTodoAdded) onTodoAdded(); // 삭제 후 목록 갱신
+      if (triggerToast) triggerToast("삭제 성공!");
+    } catch {
+      if (triggerErrToast) triggerErrToast("삭제 실패");
+    }
+  };
+
+  // 체크박스 클릭 시 complete 토글 PATCH
+  const handleToggleComplete = async (todo) => {
+    const updatedTodo = {
+      todoitem: todo.todoitem,
+      complete: !todo.complete,
+      date: todo.date,
+    };
+    try {
+      await patchTodo(todo.todoItemId, updatedTodo);
+      if (onTodoAdded) onTodoAdded(); // 상태 갱신
+    } catch {
+      if (triggerErrToast) triggerErrToast("상태 변경 실패");
+    }
   };
 
   return (
@@ -41,19 +76,19 @@ const TodoList = ({ selectedDate }) => {
 
       <div className="todo-list-wrapper">
         {todos.map((todo) => (
-          <div className="todo-item" key={todo.id}>
+          <div className="todo-item" key={todo.todoItemId}>
             <div
-              className={`checkbox ${todo.completed ? "checked" : ""}`}
-              onClick={() => toggleTodo(todo.id)}
+              className={`checkbox ${todo.complete ? "checked" : ""}`}
+              onClick={() => handleToggleComplete(todo)}
             />
             <div className="todo-text-wrapper">
-              <span className={`todo-text ${todo.completed ? "completed" : ""}`}>
-                {todo.text}
+              <span className={`todo-text ${todo.complete ? "completed" : ""}`}>
+                {todo.todoitem}
               </span>
             </div>
             <button
               className="delete-button"
-              onClick={() => handleDeleteTodo(todo.id)}
+              onClick={() => handleDeleteTodo(todo.todoItemId)}
             >
               삭제
             </button>
