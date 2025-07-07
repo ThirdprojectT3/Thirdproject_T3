@@ -16,8 +16,8 @@ public class MemberResponseDto {
     private Long userId;
     private String email;
     private String name;
-    private int height;
-    private int age;
+    private Integer height;
+    private Integer age;
     private Gender gender;
     private Goal goal;
     private List<String> diseases;
