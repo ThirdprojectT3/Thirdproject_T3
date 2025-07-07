@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import './Calendar.css';
+import { fetchTodosByMonth } from "../../api/todo";
 
-const Calendar = ({ selectedDate, setSelectedDate }) => {
+const Calendar = ({ selectedDate, setSelectedDate, setMonthTodos }) => {
 
   const handlePrevMonth = () => {
     setSelectedDate(new Date(selectedDate.getFullYear(), selectedDate.getMonth() - 1, 1));
@@ -10,6 +11,13 @@ const Calendar = ({ selectedDate, setSelectedDate }) => {
   const handleNextMonth = () => {
     setSelectedDate(new Date(selectedDate.getFullYear(), selectedDate.getMonth() + 1, 1));
   };
+
+  useEffect(() => {
+    const ym = `${selectedDate.getFullYear()}-${String(selectedDate.getMonth() + 1).padStart(2, "0")}`;
+    fetchTodosByMonth(1, ym) // userId는 실제 값으로
+      .then(res => setMonthTodos(res.data))
+      .catch(() => setMonthTodos([]));
+  }, [selectedDate, setMonthTodos]);
 
   const renderDays = () => {
     const days = [];

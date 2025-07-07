@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useLocation } from 'react-router-dom';
 import { postLogin } from "../api/auth";
-import ErrToast from "../components/toast/errToast";
+import ErrToast from "../components/toast/ErrToast";
 import Toast from "../components/toast/Toast";
 import "./LoginPage.css";
 

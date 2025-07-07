@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
 import { postRegister } from "../api/auth";
-import ErrToast from "../components/toast/errToast";
+import ErrToast from "../components/toast/ErrToast";
 import "./SignupPage.css";
 
 const SignupPage = () => {
