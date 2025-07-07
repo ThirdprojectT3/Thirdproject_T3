@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import MainModal from '../components/main/MainModal';
 import Header from '../components/header/Header';
@@ -10,7 +9,6 @@ import ErrToast from '../components/toast/ErrToast';
 import { fetchTodosByMonth } from "../api/todo";
 
 const MainPage = () => {
-  const navigate = useNavigate();
   const [showModal, setShowModal] = useState(true);
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [showToast, setShowToast] = useState(false);
@@ -18,14 +16,6 @@ const MainPage = () => {
   const [showErrToast, setShowErrToast] = useState(false);
   const [errToastMessage, setErrToastMessage] = useState('');
   const [monthTodos, setMonthTodos] = useState([]);
-
-
-  useEffect(() => {
-    const token = sessionStorage.getItem('jwtToken');
-    if (!token) {
-      navigate('/', { replace: true });
-    }
-  }, [navigate]);
 
   const triggerToast = (msg) => {
     setToastMessage(msg);
@@ -42,11 +32,11 @@ const MainPage = () => {
   return (
     <>
       {showToast && <Toast message={toastMessage} />}
-      {showErrToast && (<ErrToast message={errToastMessage} onClose={() => setShowErrToast(false)} />)}
+      {showErrToast && <ErrToast message={errToastMessage} onClose={() => setShowErrToast(false)} />}
       {showModal && <MainModal onClose={() => setShowModal(false)} triggerToast={triggerToast} triggerErrToast={triggerErrToast} />}
       {!showModal && (
         <MainPageWrapper>
-          <Header/>
+          <Header />
           <MainContent>
             <Calendar
               selectedDate={selectedDate}
@@ -96,6 +86,5 @@ const MealBox = styled.div`
   font-weight: 400;
   background: #fff;
 `;
-
 
 export default MainPage;
