@@ -11,4 +11,5 @@ public interface RecordRepository extends JpaRepository<Record, Long> {
     List<Record> findAllByUserId(Long userId);
 
     List<Record> findByUserIdAndDateBetween(Long userId, LocalDate start, LocalDate end);
+    List<Record> findTop7ByUserIdOrderByDateDesc(Long userId); //최근 7일 기록 가져오기
 }

@@ -1,5 +1,6 @@
 package com.example.thirdprojectback.controller;
 
+import com.example.thirdprojectback.dto.AIResponseDto;
 import com.example.thirdprojectback.dto.RecordRequestDto;
 import com.example.thirdprojectback.dto.RecordResponseDto;
 import com.example.thirdprojectback.security.CustomUserDetails;
@@ -22,7 +23,7 @@ public class RecordController {
 
     // 1. 기록 생성
     @PostMapping
-    public RecordResponseDto create(
+    public AIResponseDto create(
             @AuthenticationPrincipal CustomUserDetails userDetails,
             @RequestBody RecordRequestDto dto) {
         Long userId = userDetails.getUserId();
