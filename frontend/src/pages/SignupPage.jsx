@@ -118,8 +118,8 @@ const SignupPage = () => {
           <div className="input-group">
             <label>Goal</label>
             <div className="radio-group">
-              <label><input type="radio" name="goal" value="체중 감량" checked={form.goal === "체중 감량"} onChange={handleChange}/> 체중 감량</label>
-              <label><input type="radio" name="goal" value="근력 향상" checked={form.goal === "근력 향상"} onChange={handleChange}/> 근력 향상</label>
+              <label><input type="radio" name="goal" value="체중감량" checked={form.goal === "체중감량"} onChange={handleChange}/> 체중 감량</label>
+              <label><input type="radio" name="goal" value="근력향상" checked={form.goal === "근력향상"} onChange={handleChange}/> 근력 향상</label>
             </div>
           </div>
 
