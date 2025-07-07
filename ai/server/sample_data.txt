@@ -1,0 +1,132 @@
+{
+  "input": {
+    "user_id": 1,
+    "goal": "근력 향상",
+    "diseases": ["당뇨", "고혈압"],
+    "records": [
+      {
+        "date": "2025-06-27",
+        "sleep": 6.5,
+        "weight": 70.2,
+        "fat": 17.5,
+        "muscle": 32.1,
+        "bmr": 1580,
+        "bmi": 23.5,
+        "vai": 1.2
+      },
+      {
+        "date": "2025-06-28",
+        "sleep": 6.5,
+        "weight": 70.2,
+        "fat": 17.5,
+        "muscle": 32.1,
+        "bmr": 1580,
+        "bmi": 23.5,
+        "vai": 1.2
+      },
+      {
+        "date": "2025-06-29",
+        "sleep": 6.5,
+        "weight": 70.2,
+        "fat": 17.5,
+        "muscle": 32.1,
+        "bmr": 1580,
+        "bmi": 23.5,
+        "vai": 1.2
+      },
+      {
+        "date": "2025-06-30",
+        "sleep": 6.5,
+        "weight": 70.2,
+        "fat": 17.5,
+        "muscle": 32.1,
+        "bmr": 1580,
+        "bmi": 23.5,
+        "vai": 1.2
+      },
+      {
+        "date": "2025-07-01",
+        "sleep": 6.5,
+        "weight": 70.2,
+        "fat": 17.5,
+        "muscle": 32.1,
+        "bmr": 1580,
+        "bmi": 23.5,
+        "vai": 1.2
+      },
+      {
+        "date": "2025-07-02",
+        "sleep": 6.5,
+        "weight": 70.2,
+        "fat": 17.5,
+        "muscle": 32.1,
+        "bmr": 1580,
+        "bmi": 23.5,
+        "vai": 1.2
+      },
+      {
+        "date": "2025-07-03",
+        "sleep": 6.5,
+        "weight": 70.2,
+        "fat": 17.5,
+        "muscle": 32.1,
+        "bmr": 1580,
+        "bmi": 23.5,
+        "vai": 1.2
+      }
+    ],
+    "todolists": [
+      {
+        "date": "2025-06-27",
+        "items": [
+          { "todo": "유산소 50분", "complete": true },
+          { "todo": "스트레칭 10분", "complete": false }
+        ]
+      },
+      {
+        "date": "2025-06-28",
+        "items": [
+          { "todo": "윗몸 일으키기 30개", "complete": true },
+          { "todo": "스트레칭 10분", "complete": true }
+        ]
+      },
+      {
+        "date": "2025-06-29",
+        "items": [
+          { "todo": "런지 30개", "complete": true },
+          { "todo": "스트레칭 10분", "complete": true }
+        ]
+      },
+      {
+        "date": "2025-06-30",
+        "items": [
+          { "todo": "스쿼트 40개", "complete": true },
+          { "todo": "스트레칭 10분", "complete": false }
+        ]
+      },
+      {
+        "date": "2025-07-01",
+        "items": [
+          { "todo": "스쿼트 30개", "complete": true },
+          { "todo": "스트레칭 10분", "complete": true }
+        ]
+      },
+      {
+        "date": "2025-07-02",
+        "items": [
+          { "todo": "스쿼트 30개", "complete": false },
+          { "todo": "스트레칭 10분", "complete": true }
+        ]
+      },
+      {
+        "date": "2025-07-03",
+        "items": [
+          { "todo": "스쿼트 30개", "complete": false },
+          { "todo": "스트레칭 10분", "complete": false }
+        ]
+      }
+    ],
+    "prompt": "오늘은 등 운동을 할거야",
+    "place": "헬스장"
+  }
+}

@@ -1,0 +1,47 @@
+# Python bytecode
+**/__pycache__/
+*.py[cod]
+*.so
+
+# Poetry artifacts
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# Virtualenvs
+**/.env
+.venv
+venv/
+ENV/
+env/
+
+# Jupyter & IPython
+.ipynb_checkpoints
+
+# OS junk
+.DS_Store
+Thumbs.db
+
+# VSCode, PyCharm, etc.
+.vscode/
+.idea/
+
+# Git
+.git/
+.gitignore
+
+# Logs and cache
+*.log
+.cache/
+ai/poetry.lock
+
+# Node/npm (if frontend shares same root)
+node_modules/
+*.tsbuildinfo
+
+# Ignore frontend and other irrelevant folders if you're only building AI image
+frontend/
+backend/
+
+

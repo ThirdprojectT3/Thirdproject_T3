@@ -1,0 +1,3 @@
+docker build -t health-ai . #도커 파일 빌드
+
+docker run -p 8003:8003 --env-file ai/.env health-ai ## local env 환경 변수 설정 + 8003번 컨테이너 올리기
