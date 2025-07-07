@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { postRegister } from "../api/auth";
 import ErrToast from "../components/toast/ErrToast";
 import "./SignupPage.css";
+import Cookies from "js-cookie";
 
 const SignupPage = () => {
   const navigate = useNavigate();
@@ -10,7 +11,7 @@ const SignupPage = () => {
   const [errToastMessage, setErrToastMessage] = useState("");
 
   useEffect(() => {
-    const token = sessionStorage.getItem('jwtToken');
+    const token = Cookies.get('jwtToken');
     if (token) {
       navigate('/main', { replace: true });
     }

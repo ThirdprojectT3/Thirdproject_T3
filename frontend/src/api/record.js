@@ -1,6 +1,6 @@
 import axios from "./axios";
 
-export async function postRecord(form, token) {
+export async function postRecord(form) {
   const today = new Date().toISOString().split('T')[0];
   const postData = {
     ...Object.fromEntries(
@@ -9,14 +9,6 @@ export async function postRecord(form, token) {
     date: today,
   };
 
-  const response = await axios.post(
-    '/records',
-    postData,
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    }
-  );
+  const response = await axios.post('/records', postData);
   return response.data;
 }
