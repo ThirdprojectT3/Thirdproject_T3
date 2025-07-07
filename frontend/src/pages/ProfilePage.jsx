@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { jwtDecode } from "jwt-decode";
 
 import { getUserInfo, patchUserInfo } from "../api/userinfo";
-import ErrToast from "../components/toast/errToast";
+import ErrToast from "../components/toast/ErrToast";
 import "./ProfilePage.css";
 
 const diseasesList = ["고혈압", "당뇨병", "심장질환", "천식", "관절염", "디스크 질환"];

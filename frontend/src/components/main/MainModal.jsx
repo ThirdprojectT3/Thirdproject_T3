@@ -17,10 +17,8 @@ const MainModal = ({ onClose, triggerToast, triggerErrToast }) => {
     bmi: '',
     vai: '',
     sleep: '',
-  });
-  const [workoutForm, setWorkoutForm] = useState({
-    workoutPart: '',
-    workoutPlace: '',
+    prompt: '',
+    place: '',
   });
 
   useEffect(() => {
@@ -40,23 +38,28 @@ const MainModal = ({ onClose, triggerToast, triggerErrToast }) => {
 
   const handleChange = (e) => {
     const { id, value } = e.target;
-    if (id === 'workoutPart' || id === 'workoutPlace') {
+    // 숫자 입력값은 유효성 검사
+    if (
+      id === 'weight' ||
+      id === 'fat' ||
+      id === 'muscle' ||
+      id === 'bmr' ||
+      id === 'bmi' ||
+      id === 'vai' ||
+      id === 'sleep'
+    ) {
+      const validValue = validNumberInput(value);
+      setForm((prev) => ({ ...prev, [id]: validValue }));
+    } else {
       setForm((prev) => ({ ...prev, [id]: value }));
-      return;
     }
-    const validValue = validNumberInput(value);
-    setForm((prev) => ({ ...prev, [id]: validValue }));
   };
 
-  const handleWorkoutChange = (e) => {
-    const { id, value } = e.target;
-    setWorkoutForm((prev) => ({ ...prev, [id]: value }));
-  };
   const handlePlaceSelect = (place) => {
-    setWorkoutForm((prev) => ({
+    setForm((prev) => ({
       ...prev,
-      workoutPlace: place,
-      workoutPart: place === '쉬기' ? '' : prev.workoutPart,
+      place: place, // workoutPlace -> place
+      prompt: place === '쉬기' ? '' : prev.prompt, // workoutPart -> prompt
     }));
   };
 
@@ -134,7 +137,7 @@ const MainModal = ({ onClose, triggerToast, triggerErrToast }) => {
                   <button
                     key={place}
                     type="button"
-                    className={`category-button${workoutForm.workoutPlace === place ? ' selected' : ''}`}
+                    className={`category-button${form.place === place ? ' selected' : ''}`}
                     onClick={() => handlePlaceSelect(place)}
                   >
                     {place}
@@ -142,17 +145,17 @@ const MainModal = ({ onClose, triggerToast, triggerErrToast }) => {
                 ))}
               </div>
             </div>
-            {(workoutForm.workoutPlace === '헬스장' ||
-              workoutForm.workoutPlace === '맨몸' ||
-              workoutForm.workoutPlace === '크로스핏') && (
+            {(form.place === '헬스장' ||
+              form.place === '맨몸' ||
+              form.place === '크로스핏') && (
               <div className="input-group" style={{ width: '100%' }}>
-                <label htmlFor="workoutPart" className="label">운동 선호 부위 요청</label>
+                <label htmlFor="prompt" className="label">운동 선호 부위 요청</label>
                 <input
-                  id="workoutPart"
+                  id="prompt"
                   type="text"
                   placeholder="운동 선호 부위를 요청해보세요. ex) 오늘은 등 운동 루틴을 만들어줘"
-                  value={workoutForm.workoutPart}
-                  onChange={handleWorkoutChange}
+                  value={form.prompt}
+                  onChange={handleChange}
                   className="input"
                 />
               </div>
