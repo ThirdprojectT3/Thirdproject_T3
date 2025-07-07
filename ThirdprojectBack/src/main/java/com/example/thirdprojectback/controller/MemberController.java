@@ -1,7 +1,9 @@
 package com.example.thirdprojectback.controller;
 
+import com.example.thirdprojectback.dto.MemberRequestDto;
 import com.example.thirdprojectback.dto.MemberResponseDto;
 import com.example.thirdprojectback.service.MemberService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -40,6 +42,25 @@ public class MemberController {
         List<MemberResponseDto> members = memberService.getAllMembers();
         return ResponseEntity.ok(members);
     }
+
+    // 전체 수정: 모든 값 필요
+    @PutMapping("/{id}")
+    public ResponseEntity<MemberResponseDto> updateMember(
+            @PathVariable Long id,
+            @RequestBody @Valid MemberRequestDto dto // 필수
+    ) {
+        return ResponseEntity.ok(memberService.updateMember(id, dto));
+    }
+
+    // 부분 수정: 일부만 수정
+    @PatchMapping("/{id}")
+    public ResponseEntity<MemberResponseDto> patchMember(
+            @PathVariable Long id,
+            @RequestBody MemberRequestDto dto // ❌ @Valid 제거!
+    ) {
+        return ResponseEntity.ok(memberService.patchMember(id, dto));
+    }
+
 
     // ✅ (선택) 회원 삭제 - 인증된 사용자만 접근 가능하도록 SecurityConfig에서 설정됨
     @DeleteMapping("/{id}")

@@ -49,6 +49,36 @@ public class MemberService {
         return toDto(member);
     }
 
+    @Transactional
+    public MemberResponseDto updateMember(Long id, MemberRequestDto dto) {
+        Member member = memberRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
+
+        member.setName(dto.getName());
+        member.setHeight(dto.getHeight());
+        member.setAge(dto.getAge());
+        member.setGender(dto.getGender());
+        member.setGoal(dto.getGoal());
+        member.setDiseases(dto.getDiseases());
+
+        return toDto(member);
+    }
+
+    @Transactional
+    public MemberResponseDto patchMember(Long id, MemberRequestDto dto) {
+        Member member = memberRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
+
+        if (dto.getName() != null) member.setName(dto.getName());
+        if (dto.getHeight() != null) member.setHeight(dto.getHeight());
+        if (dto.getAge() != null) member.setAge(dto.getAge());
+        if (dto.getGender() != null) member.setGender(dto.getGender());
+        if (dto.getGoal() != null) member.setGoal(dto.getGoal());
+        if (dto.getDiseases() != null) member.setDiseases(dto.getDiseases());
+
+        return toDto(member);
+    }
+
     // ✅ 전체 회원 조회
     public List<MemberResponseDto> getAllMembers() {
         return memberRepository.findAll().stream()
