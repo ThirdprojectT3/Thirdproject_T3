@@ -29,18 +29,21 @@ async def stream_healthai(input_data: dict):
     
     # 출력 정제 함수
     def refine_output(raw: dict) -> dict:
+        final_data = raw.get("output", {})
         return {
             "recommendations": {
                 "todos": [{"task": x["todoItem"], "tip": x["tip"]} 
-                         for x in raw.get("todo_tips", [])],
-                "diet": raw.get("diet", [])
+                         for x in final_data.get("todolists", [])],
+                "diet": final_data.get("diet", [])
             },
-            "motivation": raw.get("cheering", "")
+            "motivation": final_data.get("cheering", "")
         }
 
     # 스트리밍 생성기
     async def generate_stream():
-        async for chunk in graph.astream(input_data):
+        print("Streaming started") 
+        async for chunk in graph.astream(input_data["input"]):
+            print("Chunk received:", chunk)
             if "output" in chunk:
                 yield f"data: {json.dumps(refine_output(chunk['output']))}\n\n"
             elif "error" in chunk:

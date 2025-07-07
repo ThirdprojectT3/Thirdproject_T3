@@ -12,5 +12,7 @@ if not os.path.exists(VECTOR_PATH):
 tip_vectorstore = FAISS.load_local(VECTOR_PATH, embedding, allow_dangerous_deserialization=True)
 tip_rqa = RetrievalQA.from_chain_type(llm=llm, retriever=tip_vectorstore.as_retriever(), return_source_documents=True)
 
-def query_tip_rag(query: str) -> str:
-    return tip_rqa.invoke(query)["result"].strip()
+async def aquery_tip_rag(query: str) -> str:
+    return (await tip_rqa.ainvoke(query))["result"].strip()
+# def query_tip_rag(query: str) -> str:
+#     return tip_rqa.invoke(query)["result"].strip()
