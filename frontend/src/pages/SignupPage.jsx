@@ -13,6 +13,15 @@ const SignupPage = () => {
     }
   }, [navigate]);
 
+  const diseasesList = [
+    "고혈압",
+    "당뇨병",
+    "심장질환",
+    "천식",
+    "관절염",
+    "디스크 질환"
+  ];
+
   const [form, setForm] = useState({
     email: "",
     name: "",
@@ -20,12 +29,28 @@ const SignupPage = () => {
     height: "",
     age: "",
     gender: "male",
-    goal: "",
+    goal: "체중 감량",
+    diseases: [],
   });
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setForm({ ...form, [name]: value });
+  };
+
+  const handleDiseaseChange = (e) => {
+    const { value, checked } = e.target;
+    if (checked) {
+      setForm(prev => ({
+        ...prev,
+        diseases: [...prev.diseases, value],
+      }));
+    } else {
+      setForm(prev => ({
+        ...prev,
+        diseases: prev.diseases.filter(d => d !== value),
+      }));
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -40,6 +65,7 @@ const SignupPage = () => {
         age: Number(form.age),
         gender: form.gender.toUpperCase(),
         goal: form.goal,
+        diseases: form.diseases,
       });
       alert(res.message);
       navigate("/");
@@ -91,7 +117,28 @@ const SignupPage = () => {
 
           <div className="input-group">
             <label>Goal</label>
-            <input name="goal" value={form.goal} onChange={handleChange} placeholder="Value" />
+            <div className="radio-group">
+              <label><input type="radio" name="goal" value="체중 감량" checked={form.goal === "체중 감량"} onChange={handleChange}/> 체중 감량</label>
+              <label><input type="radio" name="goal" value="근력 향상" checked={form.goal === "근력 향상"} onChange={handleChange}/> 근력 향상</label>
+            </div>
+          </div>
+
+          <div className="input-group">
+            <label>질병 (해당되는 항목 선택)</label>
+            <div className="checkbox-group">
+              {diseasesList.map((disease) => (
+                <label key={disease} className="checkbox-label">
+                  <input
+                    type="checkbox"
+                    name="diseases"
+                    value={disease}
+                    checked={form.diseases.includes(disease)}
+                    onChange={handleDiseaseChange}
+                  />
+                  {disease}
+                </label>
+              ))}
+            </div>
           </div>
 
           <button className="signup-button" type="submit">Sign Up</button>
