@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
 import { postRegister } from "../api/auth";
-import ErrToast from "../components/toast/errToast"; // 추가
+import ErrToast from "../components/toast/errToast";
 import "./SignupPage.css";
 
 const SignupPage = () => {
   const navigate = useNavigate();
-  const [showErrToast, setShowErrToast] = useState(false); // 추가
-  const [errToastMessage, setErrToastMessage] = useState(""); // 추가
+  const [showErrToast, setShowErrToast] = useState(false);
+  const [errToastMessage, setErrToastMessage] = useState("");
 
   useEffect(() => {
     const token = sessionStorage.getItem('jwtToken');
@@ -70,13 +70,12 @@ const SignupPage = () => {
         goal: form.goal,
         diseases: form.diseases,
       });
-      alert(res.message);
-      navigate("/");
+      navigate("/", { state: { toastMessage: res.message || "회원가입 성공!" } });
     } catch (error) {
       console.error(error);
-      setErrToastMessage(error.response?.data?.error?.message || "회원가입 실패"); // 변경
-      setShowErrToast(true); // 변경
-      setTimeout(() => setShowErrToast(false), 2000); // 2초 후 자동 닫힘
+      setErrToastMessage(error.response?.data?.error?.message || "회원가입 실패");
+      setShowErrToast(true);
+      setTimeout(() => setShowErrToast(false), 2000);
     }
   };
 

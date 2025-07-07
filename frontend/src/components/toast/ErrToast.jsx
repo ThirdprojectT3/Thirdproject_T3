@@ -11,7 +11,7 @@ const ErrToast = ({ message = "저장에 실패했습니다. 다시 시도해 �
           clipRule="evenodd"
         />
       </svg>
-      <strong className="err-toast-title">Something went wrong</strong>
+      <strong className="err-toast-title">경고</strong>
     </div>
     <p className="err-toast-message">{message}</p>
     {onClose && (

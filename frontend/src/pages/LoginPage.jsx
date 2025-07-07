@@ -1,22 +1,32 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { postLogin } from "../api/auth";
-import ErrToast from "../components/toast/errToast"; // 추가
+import ErrToast from "../components/toast/errToast";
+import Toast from "../components/toast/Toast";
 import "./LoginPage.css";
 
 const LoginPage = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [showErrToast, setShowErrToast] = useState(false); // 추가
-  const [errToastMessage, setErrToastMessage] = useState(""); // 추가
+  const [showErrToast, setShowErrToast] = useState(false);
+  const [errToastMessage, setErrToastMessage] = useState("");
+  const [showToast, setShowToast] = useState(false);
+  const [toastMessage, setToastMessage] = useState("");
 
   useEffect(() => {
+    if (location.state?.toastMessage) {
+      setToastMessage(location.state.toastMessage);
+      setShowToast(true);
+      setTimeout(() => setShowToast(false), 2000);
+      navigate(location.pathname, { replace: true, state: {} });
+    }
     const token = sessionStorage.getItem('jwtToken');
     if (token) {
       navigate('/main', { replace: true });
     }
-  }, [navigate]);
+  }, [navigate, location]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -57,6 +67,12 @@ const LoginPage = () => {
           계정이 없으신가요?
         </p>
       </div>
+      {showToast && (
+        <Toast
+          message={toastMessage}
+          onClose={() => setShowToast(false)}
+        />
+      )}
       {showErrToast && (
         <ErrToast
           message={errToastMessage}
