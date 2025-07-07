@@ -1,10 +1,17 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
 import { postRegister } from "../api/auth";
 import "./SignupPage.css";
 
 const SignupPage = () => {
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const token = sessionStorage.getItem('jwtToken');
+    if (token) {
+      navigate('/main', { replace: true });
+    }
+  }, [navigate]);
 
   const [form, setForm] = useState({
     email: "",

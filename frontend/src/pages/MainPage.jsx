@@ -15,7 +15,7 @@ const MainPage = () => {
   const [toastMessage, setToastMessage] = useState('');
 
   useEffect(() => {
-    const token = localStorage.getItem('jwtToken');
+    const token = sessionStorage.getItem('jwtToken');
     if (!token) {
       navigate('/', { replace: true });
     }

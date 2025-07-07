@@ -5,7 +5,7 @@ import "./Header.css";
 const Header = () => {
   const navigate = useNavigate();
   const handleLogout = () => {
-    localStorage.removeItem('jwtToken');
+    sessionStorage.removeItem('jwtToken');
     navigate('/', { replace: true });
   };
   return (

@@ -9,7 +9,7 @@ const LoginPage = () => {
   const [password, setPassword] = useState("");
 
   useEffect(() => {
-    const token = localStorage.getItem('jwtToken');
+    const token = sessionStorage.getItem('jwtToken');
     if (token) {
       navigate('/main', { replace: true });
     }
@@ -22,11 +22,11 @@ const LoginPage = () => {
     try {
       const res = await postLogin({ email, password });
       console.log("로그인 성공", res);
-      localStorage.setItem('jwtToken', res.data.jwtToken);
+      sessionStorage.setItem('jwtToken', res.data.jwtToken);
       navigate("/main");
     } catch (error) {
       console.error(error);
-      alert(error.response?.data?.error?.message || "로그인 실패");//싷패 버전으로 보내서 수정하기
+      alert(error.response?.data?.error?.message || "로그인 실패"); // 실패 버전으로 보내서 수정하기
     }
   };
 
