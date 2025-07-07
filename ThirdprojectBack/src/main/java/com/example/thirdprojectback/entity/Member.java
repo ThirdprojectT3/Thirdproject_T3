@@ -1,7 +1,10 @@
 package com.example.thirdprojectback.entity;
 
+import com.example.thirdprojectback.converter.StringListConverter;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.List;
 
 @Entity
 @Table(name = "members")
@@ -29,9 +32,28 @@ public class Member {
     private int age;
 
     @Enumerated(EnumType.STRING)
-    private Gender gender;
+    @Column(nullable = false)
+    private Goal goal;
 
-    private String goal;
+    // 중첩 enum 정의
+    public static enum Goal {
+        체중감량("체중 감량"),
+        근육증가("근력 향상");
+
+        private final String description;
+
+        Goal(String description) {
+            this.description = description;
+        }
+
+        public String getDescription() {
+            return description;
+        }
+    }
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false) // ✅ gender 필드 추가
+    private Gender gender;
 
     // ✅ static 중첩 enum 정의
     public static enum Gender {
@@ -49,4 +71,9 @@ public class Member {
             return description;
         }
     }
+
+    @Convert(converter = StringListConverter.class)
+    @Column(name = "diseases")
+    private List<String> diseases;
+
 }

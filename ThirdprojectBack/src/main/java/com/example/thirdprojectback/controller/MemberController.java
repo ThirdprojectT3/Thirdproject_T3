@@ -1,6 +1,5 @@
 package com.example.thirdprojectback.controller;
 
-import com.example.thirdprojectback.dto.MemberRequestDto;
 import com.example.thirdprojectback.dto.MemberResponseDto;
 import com.example.thirdprojectback.service.MemberService;
 import lombok.RequiredArgsConstructor;

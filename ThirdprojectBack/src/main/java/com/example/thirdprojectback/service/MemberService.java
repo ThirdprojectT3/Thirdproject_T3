@@ -14,16 +14,15 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true) // 읽기 전용 트랜잭션 기본 설정
+@Transactional(readOnly = true)
 public class MemberService {
 
     private final MemberRepository memberRepository;
-    private final PasswordEncoder passwordEncoder; // PasswordEncoder 주입
+    private final PasswordEncoder passwordEncoder;
 
-    // ✅ 회원 등록 (비밀번호 암호화 포함)
-    @Transactional // 쓰기 작업이므로 @Transactional 명시
+    // ✅ 회원 등록
+    @Transactional
     public MemberResponseDto createMember(MemberRequestDto dto) {
-        // 이메일 중복 체크
         if (memberRepository.existsByEmail(dto.getEmail())) {
             throw new IllegalArgumentException("이미 사용 중인 이메일입니다.");
         }
@@ -31,11 +30,12 @@ public class MemberService {
         Member member = Member.builder()
                 .email(dto.getEmail())
                 .name(dto.getName())
-                .password(passwordEncoder.encode(dto.getPassword())) // 비밀번호 암호화
+                .password(passwordEncoder.encode(dto.getPassword()))
                 .height(dto.getHeight())
                 .age(dto.getAge())
                 .gender(dto.getGender())
                 .goal(dto.getGoal())
+                .diseases(dto.getDiseases()) // ✅ 추가됨
                 .build();
 
         Member saved = memberRepository.save(member);
@@ -56,7 +56,7 @@ public class MemberService {
                 .collect(Collectors.toList());
     }
 
-    // ✅ (선택) 회원 삭제
+    // ✅ 회원 삭제
     @Transactional
     public void deleteMember(Long id) {
         if (!memberRepository.existsById(id)) {
@@ -65,7 +65,7 @@ public class MemberService {
         memberRepository.deleteById(id);
     }
 
-    // ✅ Entity → DTO 변환 메서드
+    // ✅ Entity → DTO 변환
     private MemberResponseDto toDto(Member member) {
         return MemberResponseDto.builder()
                 .userId(member.getUserId())
@@ -75,6 +75,7 @@ public class MemberService {
                 .age(member.getAge())
                 .gender(member.getGender())
                 .goal(member.getGoal())
+                .diseases(member.getDiseases()) // ✅ 추가됨
                 .build();
     }
 }
