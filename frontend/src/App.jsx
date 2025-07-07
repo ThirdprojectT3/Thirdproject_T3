@@ -7,7 +7,7 @@ import ProfilePage from './pages/ProfilePage';
 import GraphPage from './pages/GraphPage';
 import DiseasePage from './pages/DiseasePage';
 
-import PrivateRoute from './routes/PrivateRoute';
+import PrivateRoute from './pages/PrivateRoute';
 
 function App() {
   return (
