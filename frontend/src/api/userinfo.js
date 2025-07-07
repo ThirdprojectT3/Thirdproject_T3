@@ -5,3 +5,7 @@ export const getUserInfo = async (userId) => {
   return res.data;
 };
 
+export const patchUserInfo = async (userId, data) => {
+  const res = await axios.put(`/members/${userId}`, data);
+  return res.data;
+};

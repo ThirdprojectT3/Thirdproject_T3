@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
-import { getUserInfo } from "../api/userinfo";
+import { getUserInfo, patchUserInfo } from "../api/userinfo";
 import ErrToast from "../components/toast/errToast";
 import "./ProfilePage.css";
 
@@ -68,8 +68,16 @@ const ProfilePage = () => {
   const handleUpdate = async (e) => {
     e.preventDefault();
     try {
-      // TODO: 수정 API 호출 (예: await patchUserInfo(userId, form))
-      console.log("수정 데이터 보내기:", form);
+      await patchUserInfo(1, {
+        email: form.email,
+        name: form.name,
+        password: form.password,
+        height: Number(form.height),
+        age: Number(form.age),
+        gender: form.gender.toUpperCase(),
+        goal: form.goal,
+        diseases: form.diseases,
+      });
       navigate("/main", { state: { toastMessage: "정보 수정 성공!" } });
     } catch (error) {
       console.error(error);
