@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
+import { jwtDecode } from "jwt-decode";
+
 import { getUserInfo, patchUserInfo } from "../api/userinfo";
 import ErrToast from "../components/toast/errToast";
 import "./ProfilePage.css";
@@ -25,7 +27,16 @@ const ProfilePage = () => {
   useEffect(() => {
     const fetchUserInfo = async () => {
       try {
-        const res = await getUserInfo(1);
+        // 1. 세션스토리지에서 토큰 꺼내기
+        const token = sessionStorage.getItem("jwtToken");
+        if (!token) throw new Error("로그인 필요");
+
+        // 2. 토큰 디코딩해서 userId 얻기
+        const decoded = jwtDecode(token);
+        const userId = decoded.userId; // 토큰 구조에 따라 userId, sub 등 다를 수 있음
+
+        // 3. userId로 API 호출
+        const res = await getUserInfo(userId);
         setForm({
           email: res.email,
           name: res.name,
@@ -68,7 +79,13 @@ const ProfilePage = () => {
   const handleUpdate = async (e) => {
     e.preventDefault();
     try {
-      await patchUserInfo(1, {
+      // 역시 userId도 여기서 토큰으로부터 뽑아 쓰면 좋아요
+      const token = sessionStorage.getItem("jwtToken");
+      if (!token) throw new Error("로그인 필요");
+      const decoded = jwtDecode(token);
+      const userId = decoded.userId;
+
+      await patchUserInfo(userId, {
         email: form.email,
         name: form.name,
         password: form.password,
@@ -88,7 +105,6 @@ const ProfilePage = () => {
   };
 
   const handleCancel = () => {
-    // setFormData(userInfo);
     console.log("수정 취소");
     navigate("/main");
   };
