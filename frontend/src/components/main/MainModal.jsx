@@ -71,7 +71,7 @@ const MainModal = ({ onClose, triggerToast }) => {
     localStorage.setItem('modalShownDate', today);
     setShowModal(false);
 
-    const token = localStorage.getItem('jwtToken');
+    const token = sessionStorage.getItem('jwtToken');
 
     try {
       await postRecord(form, token);
