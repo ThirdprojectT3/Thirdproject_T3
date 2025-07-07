@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -23,18 +22,33 @@ public class TodoService {
     private final TodolistRepository todolistRepository;
 
     /* ---------- CREATE ---------- */
-    public TodoResponseDto createTodo(TodoRequestDto dto) {
-        Todolist todolist = todolistRepository.findById(dto.getTodolistId())
-                .orElseThrow(() -> new IllegalArgumentException("Todolist not found: " + dto.getTodolistId()));
+    public TodoResponseDto createTodo(TodoRequestDto dto, Long userId) {
+        // 날짜가 누락되면 예외 발생
+        if (dto.getDate() == null) {
+            throw new IllegalArgumentException("날짜는 필수입니다.");
+        }
 
+        // userId + date 조합으로 Todolist 자동 생성 or 조회
+        Todolist todolist = todolistRepository.findByUserIdAndDate(userId, dto.getDate())
+                .orElseGet(() -> {
+                    Todolist newList = Todolist.builder()
+                            .userId(userId)
+                            .date(dto.getDate())
+                            .allclear(false)
+                            .build();
+                    return todolistRepository.save(newList);
+                });
+
+        // Todo 생성
         Todo todo = Todo.builder()
                 .todolist(todolist)
                 .todoitem(dto.getTodoitem())
-                .complete(dto.getComplete() != null && dto.getComplete())  // null-safe 처리
+                .complete(dto.getComplete() != null && dto.getComplete())
                 .build();
 
         return toDto(todoRepository.save(todo));
     }
+
 
     /* ---------- READ ---------- */
     public TodoResponseDto getTodo(Long todoItemId) {
@@ -44,16 +58,13 @@ public class TodoService {
     }
 
     public List<TodoResponseDto> getTodosByTodolist(Long todolistId) {
-        return todoRepository.findAllByTodolist_TodolistId(todolistId).stream()
-                .map(this::toDto)
-                .collect(Collectors.toList());
+        return todoRepository.findAllByTodolist_TodolistId(todolistId)
+                .stream().map(this::toDto).collect(Collectors.toList());
     }
 
     public List<TodoResponseDto> getTodosByUser(Long userId) {
-        List<Todo> todos = todoRepository.findAllByTodolist_UserId(userId);
-        return todos.stream()
-                .map(this::toDto)
-                .collect(Collectors.toList());
+        return todoRepository.findAllByTodolist_UserId(userId)
+                .stream().map(this::toDto).collect(Collectors.toList());
     }
 
     /* ---------- UPDATE ---------- */
@@ -61,10 +72,8 @@ public class TodoService {
         Todo todo = todoRepository.findById(todoItemId)
                 .orElseThrow(() -> new IllegalArgumentException("Todo not found: " + todoItemId));
 
-        if (dto.getTodoitem() != null)
-            todo.setTodoitem(dto.getTodoitem());
-        if (dto.getComplete() != null)
-            todo.setComplete(dto.getComplete());
+        if (dto.getTodoitem() != null)  todo.setTodoitem(dto.getTodoitem());
+        if (dto.getComplete() != null)  todo.setComplete(dto.getComplete());
 
         return toDto(todoRepository.save(todo));
     }
@@ -77,6 +86,23 @@ public class TodoService {
         todoRepository.deleteById(todoItemId);
     }
 
+    /* ---------- WEEK / MONTH ---------- */
+    public List<TodoResponseDto> getWeeklyTodos(Long userId) {
+        LocalDate end   = LocalDate.now();
+        LocalDate start = end.minusDays(6); // 최근 7일
+        return todoRepository
+                .findAllByTodolist_UserIdAndTodolist_DateBetween(userId, start, end)
+                .stream().map(this::toDto).collect(Collectors.toList());
+    }
+
+    public List<TodoResponseDto> getMonthlyTodos(Long userId, YearMonth ym) {
+        LocalDate start = ym.atDay(1);
+        LocalDate end   = ym.atEndOfMonth();
+        return todoRepository
+                .findAllByTodolist_UserIdAndTodolist_DateBetween(userId, start, end)
+                .stream().map(this::toDto).collect(Collectors.toList());
+    }
+
     /* ---------- Mapping ---------- */
     private TodoResponseDto toDto(Todo todo) {
         return TodoResponseDto.builder()
@@ -87,25 +113,5 @@ public class TodoService {
                 .date(todo.getTodolist().getDate())
                 .build();
     }
-    public List<TodoResponseDto> getWeeklyTodos(Long userId) {
-        LocalDate end = LocalDate.now();
-        LocalDate start = end.minusDays(6); // 오늘 포함 7일치
-        List<Todo> todos = todoRepository
-                .findAllByTodolist_UserIdAndTodolist_DateBetween(userId, start, end);
 
-        return todos.stream()
-                .map(this::toDto)
-                .collect(Collectors.toList());
-    }
-
-    public List<TodoResponseDto> getMonthlyTodos(Long userId, YearMonth yearMonth) {
-        LocalDate start = yearMonth.atDay(1);
-        LocalDate end = yearMonth.atEndOfMonth();
-        List<Todo> todos = todoRepository
-                .findAllByTodolist_UserIdAndTodolist_DateBetween(userId, start, end);
-
-        return todos.stream()
-                .map(this::toDto)
-                .collect(Collectors.toList());
-    }
 }

@@ -10,7 +10,6 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Builder
 public class RecordRequestDto {
-    private Long userId;
     private Float sleep;
     private Long weight;
     private Double fat;

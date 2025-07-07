@@ -1,7 +1,11 @@
 package com.example.thirdprojectback.dto;
 
+import com.example.thirdprojectback.entity.Member;
 import com.example.thirdprojectback.entity.Member.Gender;
+import com.example.thirdprojectback.entity.Member.Goal;
 import lombok.*;
+
+import java.util.List;
 
 @Getter
 @Setter
@@ -12,8 +16,9 @@ public class MemberResponseDto {
     private Long userId;
     private String email;
     private String name;
-    private int height;
-    private int age;
+    private Integer height;
+    private Integer age;
     private Gender gender;
-    private String goal;
+    private Goal goal;
+    private List<String> diseases;
 }
