@@ -13,4 +13,5 @@ class GenState(TypedDict):
     todo_tips: Optional[List[dict]]
     diet: Optional[List[dict]]
     cheering: Optional[str]
-    
+    output: Optional[dict]
+    _no_tips: Optional[List[dict]]

@@ -8,12 +8,18 @@ import json
 router = APIRouter()
 
 # 1. 기존 동기식 엔드포인트 유지
-graph_app = build_graph()
-add_routes(
-    router,
-    graph_app,
-    path="/healthai"
-)
+# graph_app = build_graph()
+# add_routes(
+#     router,
+#     graph_app,
+#     path="/healthai"
+# )
+
+@router.post("/healthai/invoke")
+async def custom_invoke(input_data: dict):
+    graph = build_graph()
+    result = await graph.ainvoke(input_data["input"])
+    return result.get("output", {"error": "No output generated"})
 
 # 2. 스트리밍 엔드포인트 추가
 @router.post("/healthai/stream")
