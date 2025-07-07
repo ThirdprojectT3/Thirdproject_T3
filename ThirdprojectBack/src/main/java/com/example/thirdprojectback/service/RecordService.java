@@ -1,5 +1,6 @@
 package com.example.thirdprojectback.service;
 
+import com.example.thirdprojectback.dto.GraphResponseDto;
 import com.example.thirdprojectback.dto.RecordRequestDto;
 import com.example.thirdprojectback.dto.RecordResponseDto;
 import com.example.thirdprojectback.entity.Record;
@@ -77,26 +78,63 @@ public class RecordService {
 
     /* ---------- 분석 기능 ---------- */
 
-    public List<Double> getGraphData(Long userId, String date, String item) {
-        LocalDate start = LocalDate.parse(date + "-01");
-        LocalDate end = start.withDayOfMonth(start.lengthOfMonth());
+    public GraphResponseDto getGraphData(Long userId, String duration, String category) {
+        LocalDate endDate = LocalDate.now();
+        LocalDate startDate = switch (duration.toLowerCase()) {
+            case "1w" -> endDate.minusWeeks(1);
+            case "1m" -> endDate.minusMonths(1);
+            default -> throw new IllegalArgumentException("지원하지 않는 기간 형식: " + duration);
+        };
 
-        List<Record> records = recordRepository.findByUserIdAndDateBetween(userId, start, end);
+        String item = mapKoreanCategoryToItemKey(category);
 
-        return records.stream()
-                .map(r -> switch (item.toLowerCase()) {
-                    case "weight" -> toDouble(r.getWeight());
-                    case "bmi" -> r.getBmi();
-                    case "fat" -> r.getFat();
-                    case "muscle" -> r.getMuscle();
-                    case "bmr" -> r.getBmr();
-                    case "vai" -> r.getVai();
-                    case "sleep" -> toDouble(r.getSleep());
-                    default -> throw new IllegalArgumentException("지원하지 않는 항목: " + item);
+        List<Record> records = recordRepository.findByUserIdAndDateBetween(userId, startDate, endDate);
+        if (records == null || records.isEmpty()) {
+            return new GraphResponseDto(List.of(), category);
+        }
+
+        records.sort(Comparator.comparing(Record::getDate));
+
+        List<GraphResponseDto.DataPoint> points = records.stream()
+                .map(record -> {
+                    Double value = switch (item) {
+                        case "weight" -> toDouble(record.getWeight());
+                        case "bmi" -> record.getBmi();
+                        case "fat" -> record.getFat();
+                        case "muscle" -> record.getMuscle();
+                        case "bmr" -> record.getBmr();
+                        case "vai" -> record.getVai();
+                        case "sleep" -> toDouble(record.getSleep());
+                        default -> null;
+                    };
+
+                    if (value == null) return null;
+
+                    return GraphResponseDto.DataPoint.builder()
+                            .date(record.getDate().toString())
+                            .value(value)
+                            .build();
                 })
                 .filter(Objects::nonNull)
-                .collect(Collectors.toList());
+                .toList();
+
+        return new GraphResponseDto(points, category);
     }
+
+    private String mapKoreanCategoryToItemKey(String category) {
+        category = category.trim();
+        return switch (category) {
+            case "체중" -> "weight";
+            case "BMI" -> "bmi";
+            case "체지방" -> "fat";
+            case "골격근량" -> "muscle";
+            case "기초대사량" -> "bmr";
+            case "내장지방지수" -> "vai";
+            case "수면시간" -> "sleep";
+            default -> throw new IllegalArgumentException("지원하지 않는 항목: " + category);
+        };
+    }
+
 
     public Map<String, Object> getTotalAnalysis() {
         List<Record> records = recordRepository.findAll();
