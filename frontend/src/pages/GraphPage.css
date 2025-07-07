@@ -1,0 +1,38 @@
+.graphPageWrapper {
+  min-height: 100vh;
+  min-width: 1000px;
+  background: #fff;
+  padding: 32px;
+  max-width: 1200px;
+  margin: 0 auto;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 40px; /* 그래프 간 간격 */
+}
+
+.homeButton {
+  z-index: 10;
+  background: #e0e0e0;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 24px;
+  font-size: 18px;
+  font-weight: 500;
+  margin-bottom: 24px;
+  cursor: pointer;
+  align-self: flex-start;
+}
+
+/* 그래프 영역 감싸는 박스 */
+.graphBox {
+  width: 100%;
+  min-height: 300px;
+  border: 1.5px solid #222;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+  padding: 20px;
+}
