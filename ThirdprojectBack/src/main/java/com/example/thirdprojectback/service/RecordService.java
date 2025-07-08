@@ -52,7 +52,7 @@ public class RecordService {
 
         // 4. AI 서버 호출
         AIResponseDto aiResponse = aiService.getRecommendation(request);
-
+        System.out.println(aiResponse);
         // 5. AI가 응답한 todolists를 DB에 저장
         saveAiResponse(userId, aiResponse.getTodolists(), aiResponse.getDiet());
 
@@ -298,7 +298,7 @@ public class RecordService {
     }
 
     @Transactional
-    public void saveAiResponse(Long userId, List<AIResponseDto.TodoItem> todoItems, List<AIResponseDto.DietItem> dietItem) {
+    public void saveAiResponse(Long userId, List<AIResponseDto.TodoItem> todoItems, List<AIResponseDto.DietItem> dietItems) {
         Todolist todolist = Todolist.builder()
                 .userId(userId)
                 .date(LocalDate.now()) // 오늘 날짜
@@ -313,19 +313,33 @@ public class RecordService {
                         .complete(false) // 기본값: 미완료
                         .build())
                 .toList();
-
+        System.out.println("dietItems 출력");
+        System.out.println(dietItems);
         Diet diet = null;
-        if (dietItem != null && !dietItem.isEmpty()) {
-            AIResponseDto.DietItem dItem = dietItem.get(0); // 리스트의 첫 번째 DietItem 추출
+        if (dietItems != null && !dietItems.isEmpty()) { // dietItems (리스트) 확인
+            String breakfast = null;
+            String lunch = null;
+            String dinner = null;
+
+            for (AIResponseDto.DietItem dItem : dietItems) {
+                if (dItem.getBreakfast() != null) {
+                    breakfast = dItem.getBreakfast();
+                }
+                if (dItem.getLunch() != null) {
+                    lunch = dItem.getLunch();
+                }
+                if (dItem.getDinner() != null) {
+                    dinner = dItem.getDinner();
+                }
+            }
             diet = Diet.builder()
                     .todolist(todolist)
-                    .breakfast(dItem.getBreakfast())
-                    .lunch(dItem.getLunch())
-                    .dinner(dItem.getDinner())
+                    .breakfast(breakfast)
+                    .lunch(lunch)
+                    .dinner(dinner)
                     .build();
-        }
-        else {
-            System.out.println("AI 응답에 식단 정보가 없습니다 (dietItem이 비어있음).");
+        } else {
+            System.out.println("AI 응답에 식단 정보가 없습니다 (dietItems 리스트가 비어있음).");
         }
 
         todolist.setTodos(todos);
