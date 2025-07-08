@@ -105,3 +105,16 @@
 .delete-button:hover {
   background-color: #333333;
 }
+
+.tip-popup {
+  position: fixed;
+  background: #222;
+  color: #fff;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  z-index: 9999;
+  pointer-events: none;
+  white-space: pre-line;
+  max-width: 250px;
+}

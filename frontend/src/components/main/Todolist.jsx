@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { postTodo, deleteTodo, patchTodo } from "../../api/todo";
 import "./Todolist.css";
 
 const TodoList = ({ selectedDate, triggerErrToast, triggerToast, monthTodos, onTodoAdded }) => {
   const [newTodo, setNewTodo] = useState("");
+  const [tipInfo, setTipInfo] = useState({ show: false, tip: "", x: 0, y: 0, full: false });
 
   const getDateString = (dateObj) => {
     return `${dateObj.getFullYear()}-${String(dateObj.getMonth() + 1).padStart(2, "0")}-${String(dateObj.getDate()).padStart(2, "0")}`;
@@ -23,8 +24,6 @@ const TodoList = ({ selectedDate, triggerErrToast, triggerToast, monthTodos, onT
       complete: false,
       date: getDateString(selectedDate),
     };
-
-    console.log("백엔드로 전송되는 todoData:", todoData);
 
     try {
       await postTodo(todoData);
@@ -64,8 +63,62 @@ const TodoList = ({ selectedDate, triggerErrToast, triggerToast, monthTodos, onT
     }
   };
 
+  // tip: hover시 "tip", 클릭시 실제 tip
+  const handleTextMouseEnter = (e) => {
+    setTipInfo({
+      show: true,
+      tip: "tip보기",
+      x: e.clientX + 10,
+      y: e.clientY + 10,
+      full: false,
+    });
+  };
+
+  const handleTextMouseMove = (e) => {
+    setTipInfo(info => info.show ? { ...info, x: e.clientX + 10, y: e.clientY + 10 } : info);
+  };
+
+  const handleTextMouseLeave = () => {
+    setTipInfo({ show: false, tip: "", x: 0, y: 0, full: false });
+  };
+
+  const handleTextClick = (e, tip) => {
+    e.stopPropagation();
+    setTipInfo({
+      show: true,
+      tip,
+      x: e.clientX + 10,
+      y: e.clientY + 10,
+      full: true,
+    });
+  };
+
+  // 바깥 클릭 시 tip 닫기
+  useEffect(() => {
+    if (!tipInfo.full) return;
+    const closeTip = () => setTipInfo({ show: false, tip: "", x: 0, y: 0, full: false });
+    window.addEventListener("mousedown", closeTip);
+    return () => window.removeEventListener("mousedown", closeTip);
+  }, [tipInfo.full]);
+
+  // 숫자로 시작하는 todoitem이 있으면 오름차순 정렬
+  const sortedTodos = [...todos].sort((a, b) => {
+    const numA = parseInt(a.todoitem, 10);
+    const numB = parseInt(b.todoitem, 10);
+
+    const isNumA = !isNaN(numA) && /^\d/.test(a.todoitem);
+    const isNumB = !isNaN(numB) && /^\d/.test(b.todoitem);
+
+    if (isNumA && isNumB) {
+      return numA - numB;
+    }
+    if (isNumA) return -1;
+    if (isNumB) return 1;
+    return 0;
+  });
+
   return (
-    <div className="todo-container">
+    <div className="todo-container" style={{ position: "relative" }}>
       <h1 className="title">
         Todo{" "}
         <span style={{ fontSize: "1.5rem", fontWeight: "normal", marginLeft: "12px" }}>
@@ -75,14 +128,21 @@ const TodoList = ({ selectedDate, triggerErrToast, triggerToast, monthTodos, onT
       </h1>
 
       <div className="todo-list-wrapper">
-        {todos.map((todo) => (
+        {sortedTodos.map((todo) => (
           <div className="todo-item" key={todo.todoItemId}>
             <div
               className={`checkbox ${todo.complete ? "checked" : ""}`}
               onClick={() => handleToggleComplete(todo)}
             />
             <div className="todo-text-wrapper">
-              <span className={`todo-text ${todo.complete ? "completed" : ""}`}>
+              <span
+                className={`todo-text ${todo.complete ? "completed" : ""}`}
+                onMouseEnter={todo.tip ? handleTextMouseEnter : undefined}
+                onMouseMove={todo.tip ? handleTextMouseMove : undefined}
+                onMouseLeave={todo.tip ? handleTextMouseLeave : undefined}
+                onClick={todo.tip ? (e) => handleTextClick(e, todo.tip) : undefined}
+                style={{ cursor: todo.tip ? "pointer" : "default" }}
+              >
                 {todo.todoitem}
               </span>
             </div>
@@ -95,7 +155,17 @@ const TodoList = ({ selectedDate, triggerErrToast, triggerToast, monthTodos, onT
           </div>
         ))}
       </div>
-
+      {tipInfo.show && tipInfo.tip && (
+        <div
+          className="tip-popup"
+          style={{
+            top: tipInfo.y,
+            left: tipInfo.x,
+          }}
+        >
+          {tipInfo.full ? tipInfo.tip : "tip보기"}
+        </div>
+      )}
       <div className="add-todo-wrapper">
         <input
           type="text"
