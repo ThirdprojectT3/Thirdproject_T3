@@ -24,5 +24,8 @@ public class Todo {
     @Column(nullable = false)
     private String todoitem;
 
+    @Column(nullable = false)
+    private String tip;
+
     private boolean complete;
 }

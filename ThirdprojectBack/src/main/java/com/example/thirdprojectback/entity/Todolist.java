@@ -31,4 +31,7 @@ public class Todolist {
 
     @OneToMany(mappedBy = "todolist", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Todo> todos = new ArrayList<>();
+
+    @OneToOne(mappedBy = "todolist", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private Diet diet;
 }

@@ -1,6 +1,7 @@
 package com.example.thirdprojectback.service;
 
 import com.example.thirdprojectback.dto.*;
+import com.example.thirdprojectback.entity.Diet;
 import com.example.thirdprojectback.entity.Record;
 import com.example.thirdprojectback.entity.Todo;
 import com.example.thirdprojectback.entity.Todolist;
@@ -49,7 +50,7 @@ public class RecordService {
         AIResponseDto aiResponse = aiService.getRecommendation(request);
 
         // 5. AI가 응답한 todolists를 DB에 저장
-        saveAiTodoResponse(userId, aiResponse.getTodolists());
+        saveAiResponse(userId, aiResponse.getTodolists(), aiResponse.getDiet());
 
         // 6. 프론트로 응답 전달
         return aiResponse;
@@ -269,7 +270,7 @@ public class RecordService {
     }
 
     @Transactional
-    public void saveAiTodoResponse(Long userId, List<AIResponseDto.TodoItem> todoItems) {
+    public void saveAiResponse(Long userId, List<AIResponseDto.TodoItem> todoItems, List<AIResponseDto.DietItem> dietItem) {
         Todolist todolist = Todolist.builder()
                 .userId(userId)
                 .date(LocalDate.now()) // 오늘 날짜
@@ -280,12 +281,27 @@ public class RecordService {
                 .map(item -> Todo.builder()
                         .todolist(todolist)
                         .todoitem(item.getTodoItem())
+                        .tip(item.getTip())
                         .complete(false) // 기본값: 미완료
                         .build())
                 .toList();
 
-        todolist.setTodos(todos);
+        Diet diet = null;
+        if (dietItem != null && !dietItem.isEmpty()) {
+            AIResponseDto.DietItem dItem = dietItem.get(0); // 리스트의 첫 번째 DietItem 추출
+            diet = Diet.builder()
+                    .todolist(todolist)
+                    .breakfast(dItem.getBreakfast())
+                    .lunch(dItem.getLunch())
+                    .dinner(dItem.getDinner())
+                    .build();
+        }
+        else {
+            System.out.println("AI 응답에 식단 정보가 없습니다 (dietItem이 비어있음).");
+        }
 
+        todolist.setTodos(todos);
+        todolist.setDiet(diet);
         todolistRepository.save(todolist);
     }
 }

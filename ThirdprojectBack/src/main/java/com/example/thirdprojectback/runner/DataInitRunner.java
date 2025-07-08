@@ -78,12 +78,14 @@ public class DataInitRunner {
                     todos.add(Todo.builder()
                             .todolist(todolist)
                             .todoitem("스쿼트 " + (20 + i * 5) + "개")
+                            .tip("엉덩이를 뒤로 빼면서 의자에 앉듯이 무릎이 발끝을 넘어가지 않게 앉고 일어서는 것이 중요해요.")
                             .complete(i % 2 == 0) // 짝수날 완료
                             .build());
 
                     todos.add(Todo.builder()
                             .todolist(todolist)
                             .todoitem("스트레칭 10분")
+                            .tip("스트레칭은 무리해서 하지 않습니다.")
                             .complete(i % 3 == 0) // 3일마다 완료
                             .build());
 
