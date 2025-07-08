@@ -33,6 +33,7 @@ const ProfilePage = () => {
 
         // 2. 토큰 디코딩해서 userId 얻기
         const decoded = jwtDecode(token);
+        console.log("decoded token:", decoded); 
         const userId = decoded.userId; // 토큰 구조에 따라 userId, sub 등 다를 수 있음
 
         // 3. userId로 API 호출
