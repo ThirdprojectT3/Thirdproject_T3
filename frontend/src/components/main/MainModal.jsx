@@ -100,7 +100,7 @@ const MainModal = ({ onClose, triggerToast, triggerErrToast, setIsLoading, onSav
     if (setIsLoading) setIsLoading(true);
 
     try {
-      await postRecord(form, token);
+      await postRecord(form);
       if (triggerToast) triggerToast('저장 성공!');
       if (onSaved) onSaved();
     } catch {
