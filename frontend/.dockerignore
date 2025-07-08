@@ -1,0 +1,25 @@
+# 의존성
+node_modules
+npm-debug.log
+yarn-error.log
+.pnpm-debug.log
+
+# 빌드 결과
+dist
+
+# 환경 변수
+.env
+.env.*
+
+# 운영체제 파일
+.DS_Store
+Thumbs.db
+
+# Git 관련
+.git
+.gitignore
+
+# Docker 자체
+Dockerfile
+docker-compose.yml
+# docker
