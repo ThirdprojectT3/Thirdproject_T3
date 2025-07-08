@@ -112,6 +112,7 @@ public class RecordService {
         LocalDate startDate = switch (duration.toLowerCase()) {
             case "1w" -> endDate.minusWeeks(1);
             case "1m" -> endDate.minusMonths(1);
+            case "3m" -> endDate.minusMonths(3); // ✅ 3개월 추가
             default -> throw new IllegalArgumentException("지원하지 않는 기간 형식: " + duration);
         };
 
@@ -149,6 +150,7 @@ public class RecordService {
 
         return new GraphResponseDto(points, category);
     }
+
 
     private String mapKoreanCategoryToItemKey(String category) {
         category = category.trim();

@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios from './axios'; // 인스턴스지만 이름을 axios로 사용
 
 export const getUserAnalysis = async () => {
   const res = await axios.get('/records/analysis');

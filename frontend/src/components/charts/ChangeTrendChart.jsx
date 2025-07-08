@@ -7,7 +7,7 @@ export default function ChangeTrendChart() {
   const [duration, setDuration] = useState('1w');
   const [chartData, setChartData] = useState([]);
 
-  const categories = ['체지방', '골격근량', '기초대사량', 'BMI', '내장지방'];
+  const categories = ['체지방', '골격근량', '기초대사량', 'BMI', '내장지방지수'];
 
   useEffect(() => {
     async function fetchData() {
