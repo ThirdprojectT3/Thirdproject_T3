@@ -12,7 +12,7 @@ def generate_todo(state: GenState) -> GenState:
     sleep_effect = state.get("sleep_effect", "")
 
     instruction = (
-        f"사용자의 오늘 목표는 '{goal}'이고 운동 장소는 '{place}'입니다. "
+        f"사용자의 오늘 목표는 '{goal}'이고 운동 장소는 '{place}'입니다."
     )
     if place == "쉬기":
         instruction += (
@@ -21,6 +21,7 @@ def generate_todo(state: GenState) -> GenState:
         )
     else:
         instruction += (
+            f"오늘의 사용자 프롬프트는 '{prompt}'입니다." 
             f"운동 장소별 가능한 운동 예시: 헬스장(벤치프레스, 데드리프트), 집(맨몸 스쿼트, 푸쉬업, 플랭크, 홈 요가), 크로스핏(와드, 박스점프). "
             f"**오직 '{place}'에서 가능한 운동만을 추천해야 합니다.** 절대 다른 장소에서만 가능한 운동은 포함하지 마세요."
         )
@@ -34,7 +35,7 @@ def generate_todo(state: GenState) -> GenState:
         items = ", ".join([item["todo"] for item in day["items"]])
         instruction += f"- {day['date']}: {items}\n"
 
-    instruction += f"오늘의 사용자 프롬프트는 '{prompt}'입니다. 이를 종합해 적절한 운동을 3~4개 추천해줘. 각 운동은 한 줄로 운동 종목만 말해줘, 예:스쿼트\n푸쉬업\n플랭크\n 예시처럼 출력해줘"
+    instruction += f"이를 종합해 적절한 운동을 3~4개 추천해줘. 각 운동은 한 줄로 운동 종목만 말해줘, 예:스쿼트\n푸쉬업\n플랭크\n 예시처럼 출력해줘"
 
     response = llm.invoke(instruction).content
     todo_items = []
