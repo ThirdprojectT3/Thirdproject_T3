@@ -1,0 +1,58 @@
+services:
+  backend:
+    build: ./ThirdprojectBack
+    container_name: health-backend
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mariadb
+    environment:
+      - DB_HOST=mariadb
+      - DB_PORT=3306
+      - DB_DATABASE=healthdb
+      - DB_USERNAME=gym
+      - DB_PASSWORD=gym
+      - AI_SERVER_URL=http://ai-server:8003/healthai/invoke
+    networks:
+      - health-net
+
+  frontend:
+    build: ./frontend
+    container_name: health-frontend
+    ports:
+      - "80:80"
+    networks:
+      - health-net
+
+  ai-server:
+    build: ./ai
+    container_name: health-ai
+    ports:
+      - "8003:8003"
+    env_file:
+      - ./ai/ai/.env
+    networks:
+      - health-net
+
+  mariadb:
+    image: mariadb:10.9
+    container_name: health-db
+    restart: always
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=healthdb
+      - MYSQL_USER=gym
+      - MYSQL_PASSWORD=gym
+    ports:
+      - "3306:3306"
+    volumes:
+      - mariadb-data:/var/lib/mysql
+    networks:
+      - health-net
+
+volumes:
+  mariadb-data:
+
+networks:
+  health-net:
+    driver: bridge

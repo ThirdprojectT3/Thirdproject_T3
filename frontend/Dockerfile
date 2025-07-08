@@ -1,10 +1,14 @@
 # 1단계: Vite 앱 빌드
 FROM node:18-alpine AS build
 WORKDIR /app
+
 COPY package*.json ./
 RUN npm install
+
 COPY . .
-RUN npm run build
+#배포용
+
+RUN npm run build -- --mode production
 
 # 2단계: Nginx로 서빙
 FROM nginx:alpine
