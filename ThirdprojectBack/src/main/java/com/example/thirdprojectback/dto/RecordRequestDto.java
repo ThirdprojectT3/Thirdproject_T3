@@ -18,4 +18,6 @@ public class RecordRequestDto {
     private Double bmi;
     private Double vai;
     private LocalDate date;
+    private String prompt;
+    private String place;
 }

@@ -1,13 +1,16 @@
 package com.example.thirdprojectback.service;
 
-import com.example.thirdprojectback.dto.RecordRequestDto;
-import com.example.thirdprojectback.dto.RecordResponseDto;
+import com.example.thirdprojectback.dto.*;
 import com.example.thirdprojectback.entity.Record;
+import com.example.thirdprojectback.entity.Todo;
+import com.example.thirdprojectback.entity.Todolist;
 import com.example.thirdprojectback.repository.RecordRepository;
+import com.example.thirdprojectback.repository.TodolistRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.*;
@@ -18,11 +21,38 @@ import java.util.stream.Collectors;
 public class RecordService {
 
     private final RecordRepository recordRepository;
-
+    private final TodolistRepository todolistRepository;
+    private final AIService aiService;
     /* ---------- CREATE ---------- */
-    public RecordResponseDto createRecord(Long userId, RecordRequestDto dto) {
-        Record saved = recordRepository.save(toEntity(dto, userId));
-        return toDto(saved);
+    public AIResponseDto createRecord(Long userId, RecordRequestDto dto) {
+        // 1. 오늘 날짜로 기록 저장
+        Record savedRecord = recordRepository.save(toEntity(dto, userId));
+
+        // 2. 최근 7일 기록 + todo 불러오기
+        List<Map<String, Object>> records = fetchRecent7RecordsAsMap(userId);
+        List<Map<String, Object>> todolists = fetchRecentTodosAsMap(userId);
+
+        // 3. AI 요청 구성
+        AIRequestDto request = AIRequestDto.builder()
+                .input(AIRequestDto.AIRequestInput.builder()
+                        .user_id(userId)
+                        .goal("근력 향상")
+                        .diseases(List.of("당뇨", "고혈압"))
+                        .records(records)
+                        .todolists(todolists)
+                        .prompt(dto.getPrompt())
+                        .place(dto.getPlace())
+                        .build())
+                .build();
+
+        // 4. AI 서버 호출
+        AIResponseDto aiResponse = aiService.getRecommendation(request);
+
+        // 5. AI가 응답한 todolists를 DB에 저장
+        saveAiTodoResponse(userId, aiResponse.getTodolists());
+
+        // 6. 프론트로 응답 전달
+        return aiResponse;
     }
 
     /* ---------- READ ---------- */
@@ -77,26 +107,63 @@ public class RecordService {
 
     /* ---------- 분석 기능 ---------- */
 
-    public List<Double> getGraphData(Long userId, String date, String item) {
-        LocalDate start = LocalDate.parse(date + "-01");
-        LocalDate end = start.withDayOfMonth(start.lengthOfMonth());
+    public GraphResponseDto getGraphData(Long userId, String duration, String category) {
+        LocalDate endDate = LocalDate.now();
+        LocalDate startDate = switch (duration.toLowerCase()) {
+            case "1w" -> endDate.minusWeeks(1);
+            case "1m" -> endDate.minusMonths(1);
+            default -> throw new IllegalArgumentException("지원하지 않는 기간 형식: " + duration);
+        };
 
-        List<Record> records = recordRepository.findByUserIdAndDateBetween(userId, start, end);
+        String item = mapKoreanCategoryToItemKey(category);
 
-        return records.stream()
-                .map(r -> switch (item.toLowerCase()) {
-                    case "weight" -> toDouble(r.getWeight());
-                    case "bmi" -> r.getBmi();
-                    case "fat" -> r.getFat();
-                    case "muscle" -> r.getMuscle();
-                    case "bmr" -> r.getBmr();
-                    case "vai" -> r.getVai();
-                    case "sleep" -> toDouble(r.getSleep());
-                    default -> throw new IllegalArgumentException("지원하지 않는 항목: " + item);
+        List<Record> records = recordRepository.findByUserIdAndDateBetween(userId, startDate, endDate);
+        if (records == null || records.isEmpty()) {
+            return new GraphResponseDto(List.of(), category);
+        }
+
+        records.sort(Comparator.comparing(Record::getDate));
+
+        List<GraphResponseDto.DataPoint> points = records.stream()
+                .map(record -> {
+                    Double value = switch (item) {
+                        case "weight" -> toDouble(record.getWeight());
+                        case "bmi" -> record.getBmi();
+                        case "fat" -> record.getFat();
+                        case "muscle" -> record.getMuscle();
+                        case "bmr" -> record.getBmr();
+                        case "vai" -> record.getVai();
+                        case "sleep" -> toDouble(record.getSleep());
+                        default -> null;
+                    };
+
+                    if (value == null) return null;
+
+                    return GraphResponseDto.DataPoint.builder()
+                            .date(record.getDate().toString())
+                            .value(value)
+                            .build();
                 })
                 .filter(Objects::nonNull)
-                .collect(Collectors.toList());
+                .toList();
+
+        return new GraphResponseDto(points, category);
     }
+
+    private String mapKoreanCategoryToItemKey(String category) {
+        category = category.trim();
+        return switch (category) {
+            case "체중" -> "weight";
+            case "BMI" -> "bmi";
+            case "체지방" -> "fat";
+            case "골격근량" -> "muscle";
+            case "기초대사량" -> "bmr";
+            case "내장지방지수" -> "vai";
+            case "수면시간" -> "sleep";
+            default -> throw new IllegalArgumentException("지원하지 않는 항목: " + category);
+        };
+    }
+
 
     public Map<String, Object> getTotalAnalysis() {
         List<Record> records = recordRepository.findAll();
@@ -159,5 +226,64 @@ public class RecordService {
 
     private Double toDouble(Number number) {
         return number == null ? null : number.doubleValue();
+    }
+
+    //7일 데이터
+    public List<Map<String, Object>> fetchRecent7RecordsAsMap(Long userId) {
+        List<Record> records = recordRepository.findTop7ByUserIdOrderByDateDesc(userId);
+        return records.stream().map(record -> {
+            Map<String, Object> map = new HashMap<>();
+            map.put("date", record.getDate().toString());
+            map.put("sleep", record.getSleep());
+            map.put("weight", record.getWeight());
+            map.put("fat", record.getFat());
+            map.put("muscle", record.getMuscle());
+            map.put("bmr", record.getBmr());
+            map.put("bmi", record.getBmi());
+            map.put("vai", record.getVai());
+            return map;
+        }).collect(Collectors.toList());
+    }
+
+    public List<Map<String, Object>> fetchRecentTodosAsMap(Long userId) {
+        List<Todolist> todolists = todolistRepository.findTop7ByUserIdOrderByDateDesc(userId);
+
+        return todolists.stream().map(todolist -> {
+            Map<String, Object> dayMap = new HashMap<>();
+            dayMap.put("date", todolist.getDate().toString());
+
+            List<Map<String, Object>> items = todolist.getTodos().stream()
+                    .map(todo -> {
+                        Map<String, Object> todoMap = new HashMap<>();
+                        todoMap.put("todo", todo.getTodoitem());     // ✅ 필드명: todoitem
+                        todoMap.put("complete", todo.isComplete());
+                        return todoMap;
+                    })
+                    .collect(Collectors.toList());
+
+            dayMap.put("items", items);
+            return dayMap;
+        }).collect(Collectors.toList());
+    }
+
+    @Transactional
+    public void saveAiTodoResponse(Long userId, List<AIResponseDto.TodoItem> todoItems) {
+        Todolist todolist = Todolist.builder()
+                .userId(userId)
+                .date(LocalDate.now()) // 오늘 날짜
+                .allclear(false)
+                .build();
+
+        List<Todo> todos = todoItems.stream()
+                .map(item -> Todo.builder()
+                        .todolist(todolist)
+                        .todoitem(item.getTodoItem())
+                        .complete(false) // 기본값: 미완료
+                        .build())
+                .toList();
+
+        todolist.setTodos(todos);
+
+        todolistRepository.save(todolist);
     }
 }

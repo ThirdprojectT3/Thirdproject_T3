@@ -10,4 +10,6 @@ import java.util.Optional;
 public interface TodolistRepository extends JpaRepository<Todolist, Long> {
     Optional<Todolist> findByUserIdAndDate(Long userId, LocalDate date);
     List<Todolist> findAllByUserId(Long userId);
+
+    List<Todolist> findTop7ByUserIdOrderByDateDesc(Long userId);
 }

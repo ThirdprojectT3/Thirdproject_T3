@@ -1,0 +1,1 @@
+poetry install --sync #가상 환경 활성화 후 의존성 재확인 

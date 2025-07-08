@@ -1,5 +1,7 @@
 package com.example.thirdprojectback.controller;
 
+import com.example.thirdprojectback.dto.AIResponseDto;
+import com.example.thirdprojectback.dto.GraphResponseDto;
 import com.example.thirdprojectback.dto.RecordRequestDto;
 import com.example.thirdprojectback.dto.RecordResponseDto;
 import com.example.thirdprojectback.security.CustomUserDetails;
@@ -7,6 +9,7 @@ import com.example.thirdprojectback.service.RecordService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,7 +25,7 @@ public class RecordController {
 
     // 1. 기록 생성
     @PostMapping
-    public RecordResponseDto create(
+    public AIResponseDto create(
             @AuthenticationPrincipal CustomUserDetails userDetails,
             @RequestBody RecordRequestDto dto) {
         Long userId = userDetails.getUserId();
@@ -68,16 +71,15 @@ public class RecordController {
         recordService.deleteRecord(id, userId);
     }
 
-
-    // 7. 그래프 데이터 조회
     @GetMapping("/graph")
-    public List<Double> getGraphData(
+    public ResponseEntity<GraphResponseDto> getGraphData(
             @AuthenticationPrincipal CustomUserDetails userDetails,
-            @RequestParam String date,
-            @RequestParam String item
+            @RequestParam String duration,
+            @RequestParam String category
     ) {
         Long userId = userDetails.getUserId();
-        return recordService.getGraphData(userId, date, item);
+        GraphResponseDto result = recordService.getGraphData(userId, duration, category);
+        return ResponseEntity.ok(result);
     }
 
     // 8. 전체 사용자 분석

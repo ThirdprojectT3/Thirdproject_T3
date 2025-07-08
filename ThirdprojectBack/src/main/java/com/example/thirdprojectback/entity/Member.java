@@ -37,8 +37,8 @@ public class Member {
 
     // 중첩 enum 정의
     public static enum Goal {
-        체중감량("체중 감량"),
-        근력향상("근력 향상");
+        체중감량("체중감량"),
+        근력향상("근력향상");
 
         private final String description;
 
