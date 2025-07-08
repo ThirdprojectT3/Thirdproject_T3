@@ -1,11 +1,11 @@
-import React from "react";
 import { useNavigate } from 'react-router-dom';
 import "./Header.css";
+import Cookies from "js-cookie";
 
 const Header = () => {
   const navigate = useNavigate();
   const handleLogout = () => {
-    sessionStorage.removeItem('jwtToken');
+    Cookies.remove('jwtToken');
     navigate('/', { replace: true });
   };
   return (

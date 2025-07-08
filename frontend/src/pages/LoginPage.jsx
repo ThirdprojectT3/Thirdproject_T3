@@ -4,6 +4,7 @@ import { postLogin } from "../api/auth";
 import ErrToast from "../components/toast/ErrToast";
 import Toast from "../components/toast/Toast";
 import "./LoginPage.css";
+import Cookies from "js-cookie";
 
 const LoginPage = () => {
   const navigate = useNavigate();
@@ -22,7 +23,7 @@ const LoginPage = () => {
       setTimeout(() => setShowToast(false), 2000);
       navigate(location.pathname, { replace: true, state: {} });
     }
-    const token = sessionStorage.getItem('jwtToken');
+    const token = Cookies.get('jwtToken');
     if (token) {
       navigate('/main', { replace: true });
     }
@@ -35,7 +36,8 @@ const LoginPage = () => {
     try {
       const res = await postLogin({ email, password });
       console.log("로그인 성공", res);
-      sessionStorage.setItem('jwtToken', res.data.jwtToken);
+      const token = res.data.jwtToken;
+      Cookies.set('jwtToken', token, { expires: 1 }); // 1일간 유지
       navigate("/main");
     } catch (error) {
       console.error(error);

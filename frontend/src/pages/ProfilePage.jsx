@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
 import { jwtDecode } from "jwt-decode";
-
+import Cookies from "js-cookie";
 import { getUserInfo, patchUserInfo } from "../api/userinfo";
 import ErrToast from "../components/toast/ErrToast";
 import "./ProfilePage.css";
@@ -28,7 +28,7 @@ const ProfilePage = () => {
     const fetchUserInfo = async () => {
       try {
         // 1. 세션스토리지에서 토큰 꺼내기
-        const token = sessionStorage.getItem("jwtToken");
+        const token = Cookies.get('jwtToken');
         if (!token) throw new Error("로그인 필요");
 
         // 2. 토큰 디코딩해서 userId 얻기
@@ -80,7 +80,7 @@ const ProfilePage = () => {
     e.preventDefault();
     try {
       // 역시 userId도 여기서 토큰으로부터 뽑아 쓰면 좋아요
-      const token = sessionStorage.getItem("jwtToken");
+      const token = Cookies.get('jwtToken');
       if (!token) throw new Error("로그인 필요");
       const decoded = jwtDecode(token);
       const userId = decoded.userId;

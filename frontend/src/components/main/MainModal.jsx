@@ -2,11 +2,12 @@ import React, { useEffect, useState } from 'react';
 import './MainModal.css';
 import { validNumberInput } from '../../utils/ValueValidation';
 import { postRecord } from '../../api/record';
-
+import Cookies from "js-cookie";
+import { jwtDecode } from "jwt-decode";
 
 const workoutPlaces = ['헬스장', '맨몸', '크로스핏', '쉬기'];
 
-const MainModal = ({ onClose, triggerToast, triggerErrToast }) => {
+const MainModal = ({ onClose, triggerToast, triggerErrToast, setIsLoading }) => {
   const [showModal, setShowModal] = useState(false);
   const [step, setStep] = useState(1);
   const [form, setForm] = useState({
@@ -22,7 +23,18 @@ const MainModal = ({ onClose, triggerToast, triggerErrToast }) => {
   });
 
   useEffect(() => {
-    const modalShownDate = localStorage.getItem('modalShownDate');
+    const token = Cookies.get('jwtToken');
+    let userId = '';
+    if (token) {
+      try {
+        const decoded = jwtDecode(token);
+        userId = decoded.userId;
+      } catch {
+        userId = '';
+      }
+    }
+    const modalKey = userId ? `modalShownDate_${userId}` : 'modalShownDate';
+    const modalShownDate = Cookies.get(modalKey);
     const today = new Date().toISOString().split('T')[0];
     if (modalShownDate !== today) {
       setShowModal(true);
@@ -58,8 +70,8 @@ const MainModal = ({ onClose, triggerToast, triggerErrToast }) => {
   const handlePlaceSelect = (place) => {
     setForm((prev) => ({
       ...prev,
-      place: place, // workoutPlace -> place
-      prompt: place === '쉬기' ? '' : prev.prompt, // workoutPart -> prompt
+      place: place,
+      prompt: place === '쉬기' ? '' : prev.prompt,
     }));
   };
 
@@ -70,11 +82,25 @@ const MainModal = ({ onClose, triggerToast, triggerErrToast }) => {
 
   const handleSubmitStep2 = async (e) => {
     e.preventDefault();
+    const token = Cookies.get('jwtToken');
+    let userId = '';
+    if (token) {
+      try {
+        const decoded = jwtDecode(token);
+        userId = decoded.userId;
+      } catch {
+        userId = '';
+      }
+    }
+    const modalKey = userId ? `modalShownDate_${userId}` : 'modalShownDate';
     const today = new Date().toISOString().split('T')[0];
-    localStorage.setItem('modalShownDate', today);
+    Cookies.set(modalKey, today, { expires: 1 }); // 쿠키에 저장
     setShowModal(false);
 
-    const token = sessionStorage.getItem('jwtToken');
+    if (setIsLoading) {
+      setIsLoading(true);
+      setTimeout(() => setIsLoading(false), 3000);
+    }
 
     try {
       await postRecord(form, token);

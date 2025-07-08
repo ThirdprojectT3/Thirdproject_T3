@@ -7,6 +7,7 @@ import Calendar from '../components/main/Calendar';
 import Toast from '../components/toast/Toast';
 import ErrToast from '../components/toast/ErrToast';
 import { fetchTodosByMonth } from "../api/todo";
+import Loading from '../components/loading/Loading';
 
 const MainPage = () => {
   const [showModal, setShowModal] = useState(true);
@@ -16,6 +17,7 @@ const MainPage = () => {
   const [showErrToast, setShowErrToast] = useState(false);
   const [errToastMessage, setErrToastMessage] = useState('');
   const [monthTodos, setMonthTodos] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const triggerToast = (msg) => {
     setToastMessage(msg);
@@ -31,9 +33,15 @@ const MainPage = () => {
 
   return (
     <>
+      {isLoading && <Loading fullscreen />}
       {showToast && <Toast message={toastMessage} />}
       {showErrToast && <ErrToast message={errToastMessage} onClose={() => setShowErrToast(false)} />}
-      {showModal && <MainModal onClose={() => setShowModal(false)} triggerToast={triggerToast} triggerErrToast={triggerErrToast} />}
+      {showModal && <MainModal 
+        onClose={() => setShowModal(false)}
+        triggerToast={triggerToast}
+        triggerErrToast={triggerErrToast}
+        setIsLoading={setIsLoading}
+      />}
       {!showModal && (
         <MainPageWrapper>
           <Header />
