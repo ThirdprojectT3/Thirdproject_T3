@@ -4,7 +4,6 @@ import { postLogin } from "../api/auth";
 import ErrToast from "../components/toast/ErrToast";
 import Toast from "../components/toast/Toast";
 import "./LoginPage.css";
-import Cookies from "js-cookie";
 
 const LoginPage = () => {
   const navigate = useNavigate();
@@ -23,10 +22,7 @@ const LoginPage = () => {
       setTimeout(() => setShowToast(false), 2000);
       navigate(location.pathname, { replace: true, state: {} });
     }
-    const token = Cookies.get('jwtToken');
-    if (token) {
-      navigate('/main', { replace: true });
-    }
+
   }, [navigate, location]);
 
   const handleSubmit = async (e) => {
@@ -34,16 +30,14 @@ const LoginPage = () => {
     console.log("로그인 시도");
 
     try {
-      const res = await postLogin({ email, password });
-      console.log("로그인 성공", res);
-      const token = res.data.jwtToken;
-      Cookies.set('jwtToken', token, { expires: 1 }); // 1일간 유지
+      await postLogin({ email, password });
+      console.log("로그인 성공");
       navigate("/main");
     } catch (error) {
       console.error(error);
-      setErrToastMessage(error.response?.data?.error?.message || "로그인 실패"); // 변경
-      setShowErrToast(true); // 변경
-      setTimeout(() => setShowErrToast(false), 2000); // 2초 후 자동 닫힘
+      setErrToastMessage(error.response?.data?.error?.message || "로그인 실패");
+      setShowErrToast(true);
+      setTimeout(() => setShowErrToast(false), 2000);
     }
   };
 
@@ -70,16 +64,10 @@ const LoginPage = () => {
         </p>
       </div>
       {showToast && (
-        <Toast
-          message={toastMessage}
-          onClose={() => setShowToast(false)}
-        />
+        <Toast message={toastMessage} onClose={() => setShowToast(false)} />
       )}
       {showErrToast && (
-        <ErrToast
-          message={errToastMessage}
-          onClose={() => setShowErrToast(false)}
-        />
+        <ErrToast message={errToastMessage} onClose={() => setShowErrToast(false)} />
       )}
     </div>
   );
