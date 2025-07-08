@@ -79,31 +79,53 @@ const MainModal = ({ onClose, triggerToast, triggerErrToast, setIsLoading, onSav
 
   const handleSubmitStep1 = (e) => {
     e.preventDefault();
+    // 필수값 체크
+    const requiredFields = [
+      { key: "weight", label: "몸무게" },
+      { key: "fat", label: "체지방량" },
+      { key: "muscle", label: "골격근량" },
+      { key: "bmr", label: "기초대사량" },
+      { key: "bmi", label: "BMI" },
+      { key: "vai", label: "내장 지방 지수" },
+      { key: "sleep", label: "수면 시간" },
+    ];
+    for (const field of requiredFields) {
+      if (!form[field.key] || form[field.key].toString().trim() === "") {
+        if (triggerErrToast) triggerErrToast(`${field.label} 값을 입력하세요.`);
+        return;
+      }
+    }
     setStep(2);
   };
 
-const handleSubmitStep2 = async (e) => {
-  e.preventDefault();
-  const today = new Date().toISOString().split('T')[0];
+  const handleSubmitStep2 = async (e) => {
+    e.preventDefault();
+    // 운동 위치 필수 체크
+    if (!form.place || form.place.trim() === "") {
+      if (triggerErrToast) triggerErrToast("운동 위치를 선택하세요.");
+      return;
+    }
+    // prompt는 제외(선택사항)
+    const today = new Date().toISOString().split('T')[0];
 
-  if (setIsLoading) setIsLoading(true);
+    if (setIsLoading) setIsLoading(true);
 
-  try {
-    const userId = await fetchMyUserId(); // ✅ await으로 userId 가져오기
-    const modalKey = userId ? `modalShownDate_${userId}` : 'modalShownDate';
-    Cookies.set(modalKey, today, { expires: 1 }); // ✅ 쿠키에 저장
-    setShowModal(false);
+    try {
+      const userId = await fetchMyUserId();
+      const modalKey = userId ? `modalShownDate_${userId}` : 'modalShownDate';
+      Cookies.set(modalKey, today, { expires: 1 });
+      setShowModal(false);
 
-    await postRecord(form); // ✅ 기록 저장
-    if (triggerToast) triggerToast('저장 성공!');
-    if (onSaved) onSaved();
-  } catch (error) {
-    if (triggerErrToast) triggerErrToast('저장 실패!');
-  } finally {
-    if (setIsLoading) setIsLoading(false);
-    if (onClose) onClose();
-  }
-};
+      await postRecord(form);
+      if (triggerToast) triggerToast('저장 성공!');
+      if (onSaved) onSaved();
+    } catch {
+      if (triggerErrToast) triggerErrToast('저장 실패!');
+    } finally {
+      if (setIsLoading) setIsLoading(false);
+      if (onClose) onClose();
+    }
+  };
 
 
   if (!showModal) return null;

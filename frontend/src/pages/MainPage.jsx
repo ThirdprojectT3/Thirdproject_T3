@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import styled from 'styled-components';
 import MainModal from '../components/main/MainModal';
 import Header from '../components/header/Header';
@@ -34,10 +34,15 @@ const MainPage = () => {
 
 
   // 월별 todo 동기화 함수
-  const syncMonthTodos = () => {
+  const syncMonthTodos = useCallback(() => {
     const ym = `${selectedDate.getFullYear()}-${String(selectedDate.getMonth() + 1).padStart(2, "0")}`;
-  fetchTodosByMonth(ym).then(res => setMonthTodos(res.data));
-  };
+    fetchTodosByMonth(ym).then(res => setMonthTodos(res.data));
+  }, [selectedDate]);
+
+  // 메인 페이지 진입 시 달력 동기화
+  useEffect(() => {
+    syncMonthTodos();
+  }, [syncMonthTodos]);
 
   return (
     <>
