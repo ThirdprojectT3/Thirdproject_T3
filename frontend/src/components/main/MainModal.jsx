@@ -3,11 +3,12 @@ import './MainModal.css';
 import { validNumberInput } from '../../utils/ValueValidation';
 import { postRecord } from '../../api/record';
 import Cookies from "js-cookie";
-import { jwtDecode } from "jwt-decode";
 
-const workoutPlaces = ['헬스장', '맨몸', '크로스핏', '쉬기'];
+import { fetchMyUserId } from '../../api/user';
 
-const MainModal = ({ onClose, triggerToast, triggerErrToast, setIsLoading }) => {
+const workoutPlaces = ['헬스장', '집', '크로스핏', '쉬기'];
+
+const MainModal = ({ onClose, triggerToast, triggerErrToast, setIsLoading, onSaved }) => {
   const [showModal, setShowModal] = useState(false);
   const [step, setStep] = useState(1);
   const [form, setForm] = useState({
@@ -23,26 +24,27 @@ const MainModal = ({ onClose, triggerToast, triggerErrToast, setIsLoading }) => 
   });
 
   useEffect(() => {
-    const token = Cookies.get('jwtToken');
-    let userId = '';
-    if (token) {
-      try {
-        const decoded = jwtDecode(token);
-        userId = decoded.userId;
-      } catch {
-        userId = '';
-      }
-    }
-    const modalKey = userId ? `modalShownDate_${userId}` : 'modalShownDate';
-    const modalShownDate = Cookies.get(modalKey);
     const today = new Date().toISOString().split('T')[0];
-    if (modalShownDate !== today) {
-      setShowModal(true);
-      document.body.style.overflow = 'hidden';
-    } else {
-      setShowModal(false);
-      if (onClose) onClose();
-    }
+
+    fetchMyUserId()
+      .then((userId) => {
+        const modalKey = `modalShownDate_${userId}`;
+        const modalShownDate = Cookies.get(modalKey);
+
+        if (modalShownDate !== today) {
+          setShowModal(true);
+          document.body.style.overflow = 'hidden';
+        } else {
+          setShowModal(false);
+          if (onClose) onClose();
+        }
+      })
+      .catch(() => {
+        // 인증 안 된 경우 등 fallback
+        setShowModal(false);
+        if (onClose) onClose();
+      });
+
     return () => {
       document.body.style.overflow = '';
     };
@@ -80,37 +82,29 @@ const MainModal = ({ onClose, triggerToast, triggerErrToast, setIsLoading }) => 
     setStep(2);
   };
 
-  const handleSubmitStep2 = async (e) => {
-    e.preventDefault();
-    const token = Cookies.get('jwtToken');
-    let userId = '';
-    if (token) {
-      try {
-        const decoded = jwtDecode(token);
-        userId = decoded.userId;
-      } catch {
-        userId = '';
-      }
-    }
+const handleSubmitStep2 = async (e) => {
+  e.preventDefault();
+  const today = new Date().toISOString().split('T')[0];
+
+  if (setIsLoading) setIsLoading(true);
+
+  try {
+    const userId = await fetchMyUserId(); // ✅ await으로 userId 가져오기
     const modalKey = userId ? `modalShownDate_${userId}` : 'modalShownDate';
-    const today = new Date().toISOString().split('T')[0];
-    Cookies.set(modalKey, today, { expires: 1 }); // 쿠키에 저장
+    Cookies.set(modalKey, today, { expires: 1 }); // ✅ 쿠키에 저장
     setShowModal(false);
 
-    if (setIsLoading) {
-      setIsLoading(true);
-      setTimeout(() => setIsLoading(false), 3000);
-    }
-
-    try {
-      await postRecord(form, token);
-      if (triggerToast) triggerToast('저장 성공!');
-    } catch {
-      if (triggerErrToast) triggerErrToast('저장 실패!');
-    }
-
+    await postRecord(form); // ✅ 기록 저장
+    if (triggerToast) triggerToast('저장 성공!');
+    if (onSaved) onSaved();
+  } catch (error) {
+    if (triggerErrToast) triggerErrToast('저장 실패!');
+  } finally {
+    if (setIsLoading) setIsLoading(false);
     if (onClose) onClose();
-  };
+  }
+};
+
 
   if (!showModal) return null;
 
@@ -172,7 +166,7 @@ const MainModal = ({ onClose, triggerToast, triggerErrToast, setIsLoading }) => 
               </div>
             </div>
             {(form.place === '헬스장' ||
-              form.place === '맨몸' ||
+              form.place === '집' ||
               form.place === '크로스핏') && (
               <div className="input-group" style={{ width: '100%' }}>
                 <label htmlFor="prompt" className="label">운동 선호 부위 요청</label>

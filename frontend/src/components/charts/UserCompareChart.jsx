@@ -1,6 +1,8 @@
-// components/charts/UserCompareChart.jsx
 import React, { useEffect, useState } from 'react';
-import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend, CartesianGrid, ResponsiveContainer } from 'recharts';
+import {
+  BarChart, Bar, XAxis, YAxis, Tooltip,
+  Legend, CartesianGrid, ResponsiveContainer
+} from 'recharts';
 import { getUserAnalysis } from '../../api/charts';
 
 export default function UserCompareChart() {
@@ -35,7 +37,7 @@ export default function UserCompareChart() {
       <BarChart data={chartData}>
         <CartesianGrid strokeDasharray="3 3" />
         <XAxis dataKey="name" />
-        <YAxis />
+        <YAxis scale="log" domain={['auto', 'auto']} />
         <Tooltip />
         <Legend />
         <Bar dataKey="나" fill="#8884d8" />

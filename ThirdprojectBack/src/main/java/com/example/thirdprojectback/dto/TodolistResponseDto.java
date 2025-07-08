@@ -1,6 +1,7 @@
 package com.example.thirdprojectback.dto;
 
 import com.example.thirdprojectback.dto.TodoResponseDto;
+import com.example.thirdprojectback.entity.Diet;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -17,4 +18,5 @@ public class TodolistResponseDto {
     private LocalDate date;
     private boolean allclear;
     private List<TodoResponseDto> todos;
+    private Diet diet;
 }

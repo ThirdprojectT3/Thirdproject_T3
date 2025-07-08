@@ -13,6 +13,7 @@ public class TodoResponseDto {
     private Long todoItemId;
     private Long todolistId;
     private String todoitem;
+    private String tip;
     private boolean complete;
     private LocalDate date;   // Todolist에 연결된 날짜
 }
