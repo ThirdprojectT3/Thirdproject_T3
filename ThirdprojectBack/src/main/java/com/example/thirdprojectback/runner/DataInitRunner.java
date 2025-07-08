@@ -27,7 +27,7 @@ public class DataInitRunner {
     @Bean
     public CommandLineRunner initData() {
         return args -> {
-            // 1. 사용자 2명 생성
+            // ✅ 5명의 사용자 생성
             Member user1 = memberRepository.save(Member.builder()
                     .email("a@a.com")
                     .name("홍길동")
@@ -50,25 +50,62 @@ public class DataInitRunner {
                     .diseases(List.of("당뇨"))
                     .build());
 
-            // 2. 사용자별로 7일치 기록 및 투두 생성
-            for (Member user : List.of(user1, user2)) {
-                for (int i = 0; i < 7; i++) {
+            Member user3 = memberRepository.save(Member.builder()
+                    .email("c@c.com")
+                    .name("이민호")
+                    .password(passwordEncoder.encode("123"))
+                    .age(28)
+                    .height(178)
+                    .goal(Member.Goal.근력향상)
+                    .gender(Member.Gender.MALE)
+                    .diseases(List.of())
+                    .build());
+
+            Member user4 = memberRepository.save(Member.builder()
+                    .email("d@d.com")
+                    .name("박지은")
+                    .password(passwordEncoder.encode("123"))
+                    .age(32)
+                    .height(165)
+                    .goal(Member.Goal.체중감량)
+                    .gender(Member.Gender.FEMALE)
+                    .diseases(List.of("빈혈"))
+                    .build());
+
+            Member user5 = memberRepository.save(Member.builder()
+                    .email("e@e.com")
+                    .name("장동건")
+                    .password(passwordEncoder.encode("123"))
+                    .age(40)
+                    .height(182)
+                    .goal(Member.Goal.체중감량)
+                    .gender(Member.Gender.MALE)
+                    .diseases(List.of("고지혈증"))
+                    .build());
+
+            Random random = new Random();
+            List<Member> users = List.of(user1, user2, user3, user4, user5);
+            String[] exerciseItems = {"스쿼트", "푸쉬업", "런지", "플랭크", "버피", "스트레칭"};
+
+            // ✅ 각 사용자에 대해 30일치 기록 및 투두 생성
+            for (Member user : users) {
+                for (int i = 0; i < 30; i++) {
                     LocalDate date = LocalDate.now().minusDays(i);
 
-                    // 기록 생성
+                    // 기록 저장
                     recordRepository.save(Record.builder()
                             .userId(user.getUserId())
                             .date(date)
-                            .weight(60L + i + (user.getUserId() * 5)) // 임의로 유저별로 다르게
-                            .fat(15.0 + i)
-                            .muscle(30.0 + i)
-                            .bmr(1500.0 + i)
-                            .bmi(22.0 + i)
-                            .vai(1.0 + i)
-                            .sleep(6.0f + i)
+                            .weight(50L + random.nextInt(30)) // 50~80kg
+                            .fat(10.0 + random.nextDouble() * 15) // 10~25%
+                            .muscle(25.0 + random.nextDouble() * 10)
+                            .bmr(1400.0 + random.nextDouble() * 400)
+                            .bmi(18.0 + random.nextDouble() * 10)
+                            .vai(0.5 + random.nextDouble() * 2.0)
+                            .sleep(5.0f + random.nextFloat() * 3.0f)
                             .build());
 
-                    // Todolist + Todo 생성
+                    // Todolist 및 Todo 생성
                     Todolist todolist = Todolist.builder()
                             .userId(user.getUserId())
                             .date(date)
@@ -76,9 +113,7 @@ public class DataInitRunner {
                             .build();
 
                     List<Todo> todos = new ArrayList<>();
-
-                    String[] exerciseItems = {"스쿼트", "푸쉬업", "런지", "플랭크", "버피", "스트레칭"};
-                    int todoCount = 1 + random.nextInt(3); // 하루에 1~3개 생성
+                    int todoCount = 1 + random.nextInt(3); // 1~3개
 
                     for (int t = 0; t < todoCount; t++) {
                         String todoText = exerciseItems[random.nextInt(exerciseItems.length)] + " " + (10 + random.nextInt(30)) + "회";
@@ -86,7 +121,7 @@ public class DataInitRunner {
                         todos.add(Todo.builder()
                                 .todolist(todolist)
                                 .todoitem(todoText)
-                                .complete(random.nextBoolean()) // 랜덤 완료 여부
+                                .complete(random.nextBoolean())
                                 .build());
                     }
 
@@ -94,50 +129,6 @@ public class DataInitRunner {
                     todolistRepository.save(todolist);
                 }
             }
-
-//            // 2. 사용자별로 7일치 기록 및 투두 생성
-//            for (Member user : List.of(user1, user2)) {
-//                for (int i = 0; i < 30; i++) {
-//                    LocalDate date = LocalDate.now().minusDays(i);
-//
-//                    // 기록 생성
-//                    recordRepository.save(Record.builder()
-//                            .userId(user.getUserId())
-//                            .date(date)
-//                            .weight(60L + i + (user.getUserId() * 5)) // 임의로 유저별로 다르게
-//                            .fat(15.0 + i)
-//                            .muscle(30.0 + i)
-//                            .bmr(1500.0 + i)
-//                            .bmi(22.0 + i)
-//                            .vai(1.0 + i)
-//                            .sleep(6.0f + i)
-//                            .build());
-//
-//                    // Todolist + Todo 생성
-//                    Todolist todolist = Todolist.builder()
-//                            .userId(user.getUserId())
-//                            .date(date)
-//                            .allclear(false)
-//                            .build();
-//
-//                    List<Todo> todos = new ArrayList<>();
-//
-//                    todos.add(Todo.builder()
-//                            .todolist(todolist)
-//                            .todoitem("스쿼트 " + (20 + i * 5) + "개")
-//                            .complete(i % 2 == 0) // 짝수날 완료
-//                            .build());
-//
-//                    todos.add(Todo.builder()
-//                            .todolist(todolist)
-//                            .todoitem("스트레칭 10분")
-//                            .complete(i % 3 == 0) // 3일마다 완료
-//                            .build());
-//
-//                    todolist.setTodos(todos);
-//                    todolistRepository.save(todolist);
-//                }
-//            }
 
             System.out.println("✅ 사용자 5명 + 30일치 기록(record) 및 투두 데이터 삽입 완료!");
         };
