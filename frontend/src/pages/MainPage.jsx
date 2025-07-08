@@ -8,6 +8,8 @@ import Toast from '../components/toast/Toast';
 import ErrToast from '../components/toast/ErrToast';
 import { fetchTodosByMonth } from "../api/todo";
 import Loading from '../components/loading/Loading';
+import Cookies from "js-cookie";
+import { jwtDecode } from "jwt-decode";
 
 const MainPage = () => {
   const [showModal, setShowModal] = useState(true);
@@ -31,6 +33,25 @@ const MainPage = () => {
     setTimeout(() => setShowErrToast(false), 2000);
   };
 
+  let userId = null;
+  const token = Cookies.get('jwtToken');
+  if (token) {
+    try {
+      const decoded = jwtDecode(token);
+      userId = decoded.userId;
+    } catch {
+      userId = null;
+    }
+  }
+
+  // 월별 todo 동기화 함수
+  const syncMonthTodos = () => {
+    const ym = `${selectedDate.getFullYear()}-${String(selectedDate.getMonth() + 1).padStart(2, "0")}`;
+    if (userId) {
+      fetchTodosByMonth(userId, ym).then(res => setMonthTodos(res.data));
+    }
+  };
+
   return (
     <>
       {isLoading && <Loading fullscreen />}
@@ -41,6 +62,7 @@ const MainPage = () => {
         triggerToast={triggerToast}
         triggerErrToast={triggerErrToast}
         setIsLoading={setIsLoading}
+        onSaved={syncMonthTodos}
       />}
       {!showModal && (
         <MainPageWrapper>
@@ -50,16 +72,15 @@ const MainPage = () => {
               selectedDate={selectedDate}
               setSelectedDate={setSelectedDate}
               setMonthTodos={setMonthTodos}
+              userId={userId}
+              monthTodos={monthTodos}
             />
             <TodoList
               selectedDate={selectedDate}
               triggerErrToast={triggerErrToast}
               triggerToast={triggerToast}
               monthTodos={monthTodos}
-              onTodoAdded={() => {
-                const ym = `${selectedDate.getFullYear()}-${String(selectedDate.getMonth() + 1).padStart(2, "0")}`;
-                fetchTodosByMonth(1, ym).then(res => setMonthTodos(res.data));
-              }}
+              onTodoAdded={syncMonthTodos}
             />
           </MainContent>
           <MealBox>식단</MealBox>

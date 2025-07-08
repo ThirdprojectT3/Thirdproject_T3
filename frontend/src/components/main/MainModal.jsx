@@ -5,9 +5,9 @@ import { postRecord } from '../../api/record';
 import Cookies from "js-cookie";
 import { jwtDecode } from "jwt-decode";
 
-const workoutPlaces = ['헬스장', '맨몸', '크로스핏', '쉬기'];
+const workoutPlaces = ['헬스장', '집', '크로스핏', '쉬기'];
 
-const MainModal = ({ onClose, triggerToast, triggerErrToast, setIsLoading }) => {
+const MainModal = ({ onClose, triggerToast, triggerErrToast, setIsLoading, onSaved }) => {
   const [showModal, setShowModal] = useState(false);
   const [step, setStep] = useState(1);
   const [form, setForm] = useState({
@@ -97,16 +97,16 @@ const MainModal = ({ onClose, triggerToast, triggerErrToast, setIsLoading }) => 
     Cookies.set(modalKey, today, { expires: 1 }); // 쿠키에 저장
     setShowModal(false);
 
-    if (setIsLoading) {
-      setIsLoading(true);
-      setTimeout(() => setIsLoading(false), 3000);
-    }
+    if (setIsLoading) setIsLoading(true);
 
     try {
       await postRecord(form, token);
       if (triggerToast) triggerToast('저장 성공!');
+      if (onSaved) onSaved();
     } catch {
       if (triggerErrToast) triggerErrToast('저장 실패!');
+    } finally {
+      if (setIsLoading) setIsLoading(false);
     }
 
     if (onClose) onClose();
@@ -172,7 +172,7 @@ const MainModal = ({ onClose, triggerToast, triggerErrToast, setIsLoading }) => 
               </div>
             </div>
             {(form.place === '헬스장' ||
-              form.place === '맨몸' ||
+              form.place === '집' ||
               form.place === '크로스핏') && (
               <div className="input-group" style={{ width: '100%' }}>
                 <label htmlFor="prompt" className="label">운동 선호 부위 요청</label>

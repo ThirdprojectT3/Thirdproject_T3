@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import './Calendar.css';
 import { fetchTodosByMonth } from "../../api/todo";
 
-const Calendar = ({ selectedDate, setSelectedDate, setMonthTodos }) => {
+const Calendar = ({ selectedDate, setSelectedDate, setMonthTodos, userId, monthTodos = [] }) => {
 
   const handlePrevMonth = () => {
     setSelectedDate(new Date(selectedDate.getFullYear(), selectedDate.getMonth() - 1, 1));
@@ -13,11 +13,32 @@ const Calendar = ({ selectedDate, setSelectedDate, setMonthTodos }) => {
   };
 
   useEffect(() => {
+    if (!userId) return;
     const ym = `${selectedDate.getFullYear()}-${String(selectedDate.getMonth() + 1).padStart(2, "0")}`;
-    fetchTodosByMonth(1, ym) // userId는 실제 값으로
+    fetchTodosByMonth(userId, ym)
       .then(res => setMonthTodos(res.data))
       .catch(() => setMonthTodos([]));
-  }, [selectedDate, setMonthTodos]);
+  }, [selectedDate, setMonthTodos, userId]);
+
+  // 날짜별 todo 통계 계산 함수
+  const getTodoStatsForDate = (dateObj) => {
+    const dateStr = `${dateObj.getFullYear()}-${String(dateObj.getMonth() + 1).padStart(2, "0")}-${String(dateObj.getDate()).padStart(2, "0")}`;
+    const todos = monthTodos.filter(todo => todo.date === dateStr);
+    const total = todos.length;
+    const completed = todos.filter(todo => todo.complete).length;
+    return { total, completed };
+  };
+
+const getCircleColor = (total, completed) => {
+  if (total === 0) return "#e0e0e0"; // 회색(기본)
+  const ratio = completed / total;
+  if (ratio === 1) return "#4caf50"; // 100% 초록
+  if (ratio >= 0.8) return "#8bc34a"; // 80% 이상 연두
+  if (ratio >= 0.6) return "#cddc39"; // 60% 이상 연노랑
+  if (ratio >= 0.4) return "#ffeb3b"; // 40% 이상 노랑
+  if (ratio >= 0.2) return "#ff9800"; // 20% 이상 주황
+  return "#f44336"; // 20% 미만 빨강
+};
 
   const renderDays = () => {
     const days = [];
@@ -31,12 +52,19 @@ const Calendar = ({ selectedDate, setSelectedDate, setMonthTodos }) => {
     for (let i = 1; i <= daysInMonth; i++) {
       const date = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), i);
       const dayOfWeek = date.getDay();
-      days.push(
+      const { total, completed } = getTodoStatsForDate(date);
+      const circleColor = getCircleColor(total, completed);
+
+        days.push(
         <div className="day-wrapper" key={i}>
           <div
             className="top-circle"
+            title={total > 0 ? `총 ${total}개, 완료 ${completed}개` : "할 일 없음"}
+            style={{ background: circleColor }}
             onClick={() => setSelectedDate(date)}
-          />
+          >
+            {/* 숫자 표시 제거 */}
+          </div>
           <div
             className={`day-circle${selectedDate.getDate() === i ? ' selected' : ''} day-${dayOfWeek}`}
             onClick={() => setSelectedDate(date)}
