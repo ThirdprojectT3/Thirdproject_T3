@@ -84,7 +84,7 @@ public class RecordController {
 
     // 8. 전체 사용자 분석
     @GetMapping("/analysis")
-    public Map<String, Object> getTotalAnalysis() {
-        return recordService.getTotalAnalysis();
+    public Map<String, Object> getTotalAnalysis(@AuthenticationPrincipal CustomUserDetails userDetails) {
+        return recordService.getTotalAnalysis(userDetails.getUserId());
     }
 }
