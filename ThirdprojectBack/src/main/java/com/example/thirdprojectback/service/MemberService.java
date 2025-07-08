@@ -2,6 +2,7 @@ package com.example.thirdprojectback.service;
 
 import com.example.thirdprojectback.dto.MemberRequestDto;
 import com.example.thirdprojectback.dto.MemberResponseDto;
+import com.example.thirdprojectback.dto.MemberUpdateDto;
 import com.example.thirdprojectback.entity.Member;
 import com.example.thirdprojectback.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -50,19 +51,24 @@ public class MemberService {
     }
 
     @Transactional
-    public MemberResponseDto updateMember(Long id, MemberRequestDto dto) {
+    public MemberResponseDto updateMember(Long id, MemberUpdateDto dto) {
         Member member = memberRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
 
-        member.setName(dto.getName());
-        member.setHeight(dto.getHeight());
-        member.setAge(dto.getAge());
-        member.setGender(dto.getGender());
-        member.setGoal(dto.getGoal());
-        member.setDiseases(dto.getDiseases());
+        if (dto.getName() != null) member.setName(dto.getName());
+        if (dto.getHeight() != null) member.setHeight(dto.getHeight());
+        if (dto.getAge() != null) member.setAge(dto.getAge());
+        if (dto.getGender() != null) member.setGender(dto.getGender());
+        if (dto.getGoal() != null) member.setGoal(dto.getGoal());
+        if (dto.getDiseases() != null) member.setDiseases(dto.getDiseases());
+        if (dto.getPassword() != null && !dto.getPassword().isBlank()) {
+            String encoded = passwordEncoder.encode(dto.getPassword());
+            member.setPassword(encoded);
+        }
 
         return toDto(member);
     }
+
 
     @Transactional
     public MemberResponseDto patchMember(Long id, MemberRequestDto dto) {
