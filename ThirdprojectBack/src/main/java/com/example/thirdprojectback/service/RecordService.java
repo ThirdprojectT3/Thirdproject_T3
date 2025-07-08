@@ -1,9 +1,11 @@
 package com.example.thirdprojectback.service;
 
 import com.example.thirdprojectback.dto.*;
+import com.example.thirdprojectback.entity.Member;
 import com.example.thirdprojectback.entity.Record;
 import com.example.thirdprojectback.entity.Todo;
 import com.example.thirdprojectback.entity.Todolist;
+import com.example.thirdprojectback.repository.MemberRepository;
 import com.example.thirdprojectback.repository.RecordRepository;
 import com.example.thirdprojectback.repository.TodolistRepository;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +24,8 @@ public class RecordService {
 
     private final RecordRepository recordRepository;
     private final TodolistRepository todolistRepository;
+    private final MemberRepository memberRepository;
+
     private final AIService aiService;
     /* ---------- CREATE ---------- */
     public AIResponseDto createRecord(Long userId, RecordRequestDto dto) {
@@ -167,33 +171,57 @@ public class RecordService {
     }
 
 
-    public Map<String, Object> getTotalAnalysis() {
-        List<Record> records = recordRepository.findAll();
+    public Map<String, Object> getTotalAnalysis(Long userId) {
 
-        double avgBmi = records.stream()
-                .filter(r -> r.getBmi() != null)
-                .mapToDouble(Record::getBmi)
-                .average()
-                .orElse(0.0);
+        Member member = memberRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("사용자 없음"));;
+        int age = member.getAge();
+        int minAge = age - 3;
+        int maxAge = age + 3;
 
-        double avgMuscle = records.stream()
-                .filter(r -> r.getMuscle() != null)
-                .mapToDouble(Record::getMuscle)
-                .average()
-                .orElse(0.0);
+        List<Long> userIds = memberRepository.findUserIdsByAgeRange(minAge, maxAge);
 
-        double avgFat = records.stream()
-                .filter(r -> r.getFat() != null)
-                .mapToDouble(Record::getFat)
-                .average()
-                .orElse(0.0);
+        // 2. 해당 사용자들의 기록만 조회
+        List<Record> records = recordRepository.findByUserIdIn(userIds);
+
+        // 3. 평균 계산
+        double avgWeight = records.stream().filter(r -> r.getWeight() != null).mapToDouble(Record::getWeight).average().orElse(0.0);
+        double avgFat = records.stream().filter(r -> r.getFat() != null).mapToDouble(Record::getFat).average().orElse(0.0);
+        double avgMuscle = records.stream().filter(r -> r.getMuscle() != null).mapToDouble(Record::getMuscle).average().orElse(0.0);
+        double avgBmr = records.stream().filter(r -> r.getBmr() != null).mapToDouble(Record::getBmr).average().orElse(0.0);
+        double avgBmi = records.stream().filter(r -> r.getBmi() != null).mapToDouble(Record::getBmi).average().orElse(0.0);
+        double avgVai = records.stream().filter(r -> r.getVai() != null).mapToDouble(Record::getVai).average().orElse(0.0);
+        String avgDate = records.stream().map(Record::getDate).max(LocalDate::compareTo).map(LocalDate::toString).orElse(null);
+
+        // 4. 내 최신 기록
+        Record myRecord = recordRepository.findTopByUserIdOrderByDateDesc(userId).orElse(null);
+
+        Map<String, Object> average = Map.of(
+                "weight", avgWeight,
+                "fat", avgFat,
+                "muscle", avgMuscle,
+                "bmr", avgBmr,
+                "bmi", avgBmi,
+                "vai", avgVai,
+                "date", avgDate
+        );
+
+        Map<String, Object> myrecord = myRecord == null ? Map.of() : Map.of(
+                "weight", myRecord.getWeight(),
+                "fat", myRecord.getFat(),
+                "muscle", myRecord.getMuscle(),
+                "bmr", myRecord.getBmr(),
+                "bmi", myRecord.getBmi(),
+                "vai", myRecord.getVai(),
+                "date", myRecord.getDate().toString()
+        );
 
         return Map.of(
-                "average_bmi", avgBmi,
-                "average_muscle", avgMuscle,
-                "average_fat", avgFat
+                "age", age,
+                "average", average,
+                "myrecord", myrecord
         );
     }
+
 
     /* ---------- 변환 메서드 ---------- */
 
