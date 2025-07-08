@@ -45,6 +45,7 @@ public class MemberController {
         MemberResponseDto member = memberService.getMemberById(userId);
         return ResponseEntity.ok(member);
     }
+
     @PutMapping("/me")
     public ResponseEntity<MemberResponseDto> updateMyInfo(
             @AuthenticationPrincipal CustomUserDetails userDetails,
@@ -58,6 +59,12 @@ public class MemberController {
     public ResponseEntity<List<MemberResponseDto>> getAllMembers() {
         List<MemberResponseDto> members = memberService.getAllMembers();
         return ResponseEntity.ok(members);
+    }
+
+    @GetMapping("/myUserId")
+    public Long getMyUserInfo(@AuthenticationPrincipal CustomUserDetails userDetails) {
+        Long userId = userDetails.getUserId(); // 또는 getId() 구조에 따라
+        return userId;
     }
 
     // 전체 수정: 모든 값 필요

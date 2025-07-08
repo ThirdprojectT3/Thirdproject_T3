@@ -49,57 +49,22 @@ public class DataInitRunner {
                     .diseases(List.of("당뇨"))
                     .build());
 
-            Member user3 = memberRepository.save(Member.builder()
-                    .email("c@c.com")
-                    .name("이민호")
-                    .password(passwordEncoder.encode("123"))
-                    .age(28)
-                    .height(178)
-                    .goal(Member.Goal.근력향상)
-                    .gender(Member.Gender.MALE)
-                    .diseases(List.of()) // 질병 없음
-                    .build());
-
-            Member user4 = memberRepository.save(Member.builder()
-                    .email("d@d.com")
-                    .name("박지은")
-                    .password(passwordEncoder.encode("123"))
-                    .age(32)
-                    .height(165)
-                    .goal(Member.Goal.체중감량)
-                    .gender(Member.Gender.FEMALE)
-                    .diseases(List.of("빈혈"))
-                    .build());
-
-            Member user5 = memberRepository.save(Member.builder()
-                    .email("e@e.com")
-                    .name("장동건")
-                    .password(passwordEncoder.encode("123"))
-                    .age(40)
-                    .height(182)
-                    .goal(Member.Goal.체중감량)
-                    .gender(Member.Gender.MALE)
-                    .diseases(List.of("고지혈증"))
-                    .build());
-
-            Random random = new Random();
-
-            // ✅ 모든 사용자 대상으로 30일치 기록 및 투두 생성
-            for (Member user : List.of(user1, user2, user3, user4, user5)) {
-                for (int i = 0; i < 30; i++) {
+            // 2. 사용자별로 7일치 기록 및 투두 생성
+            for (Member user : List.of(user1, user2)) {
+                for (int i = 0; i < 7; i++) {
                     LocalDate date = LocalDate.now().minusDays(i);
 
                     // 기록 생성
                     recordRepository.save(Record.builder()
                             .userId(user.getUserId())
                             .date(date)
-                            .weight(50L + random.nextInt(30)) // 50~80kg 사이 랜덤
-                            .fat(10.0 + random.nextDouble() * 15) // 10~25%
-                            .muscle(25.0 + random.nextDouble() * 10)
-                            .bmr(1400.0 + random.nextDouble() * 400)
-                            .bmi(18.0 + random.nextDouble() * 10)
-                            .vai(0.5 + random.nextDouble() * 2.0)
-                            .sleep(5.0f + random.nextFloat() * 3.0f) // 5~8시간
+                            .weight(60L + i + (user.getUserId() * 5)) // 임의로 유저별로 다르게
+                            .fat(15.0 + i)
+                            .muscle(30.0 + i)
+                            .bmr(1500.0 + i)
+                            .bmi(22.0 + i)
+                            .vai(1.0 + i)
+                            .sleep(6.0f + i)
                             .build());
 
                     // Todolist + Todo 생성

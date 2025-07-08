@@ -11,6 +11,7 @@ public class TodoMapper {
                 .todoItemId(todo.getTodoItemId())
                 .todolistId(todo.getTodolist().getTodolistId())
                 .todoitem(todo.getTodoitem())
+                .tip(todo.getTip())
                 .complete(todo.isComplete())
                 .date(todo.getTodolist().getDate())
                 .build();
