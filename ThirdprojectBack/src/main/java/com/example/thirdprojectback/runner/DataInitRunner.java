@@ -130,7 +130,7 @@ public class DataInitRunner {
                 }
             }
 
-            System.out.println("✅ 사용자 5명 + 30일치 기록(record) 및 투두 데이터 삽입 완료!");
+            System.out.println("사용자 5명 + 30일치 기록(record) 및 투두 데이터 삽입 완료!"+"테스트!");
         };
     }
 }
