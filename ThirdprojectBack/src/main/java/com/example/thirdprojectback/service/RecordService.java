@@ -1,9 +1,6 @@
 package com.example.thirdprojectback.service;
 
-import com.example.thirdprojectback.dto.AIRequestDto;
-import com.example.thirdprojectback.dto.AIResponseDto;
-import com.example.thirdprojectback.dto.RecordRequestDto;
-import com.example.thirdprojectback.dto.RecordResponseDto;
+import com.example.thirdprojectback.dto.*;
 import com.example.thirdprojectback.entity.Record;
 import com.example.thirdprojectback.entity.Todo;
 import com.example.thirdprojectback.entity.Todolist;

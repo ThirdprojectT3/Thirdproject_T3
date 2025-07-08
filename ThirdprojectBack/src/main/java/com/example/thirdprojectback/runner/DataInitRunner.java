@@ -40,7 +40,7 @@ public class DataInitRunner {
             Member user2 = memberRepository.save(Member.builder()
                     .email("b@b.com")
                     .name("김영희")
-                    .password("123")
+                    .password(passwordEncoder.encode("123"))
                     .age(30)
                     .height(160)
                     .goal(Member.Goal.체중감량)
