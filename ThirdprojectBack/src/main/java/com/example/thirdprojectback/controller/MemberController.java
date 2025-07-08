@@ -2,11 +2,14 @@ package com.example.thirdprojectback.controller;
 
 import com.example.thirdprojectback.dto.MemberRequestDto;
 import com.example.thirdprojectback.dto.MemberResponseDto;
+import com.example.thirdprojectback.dto.MemberUpdateDto;
+import com.example.thirdprojectback.security.CustomUserDetails;
 import com.example.thirdprojectback.service.MemberService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -36,6 +39,20 @@ public class MemberController {
         return ResponseEntity.ok(member);
     }
 
+    @GetMapping("/me")
+    public ResponseEntity<MemberResponseDto> getMyInfo(@AuthenticationPrincipal CustomUserDetails userDetails) {
+        Long userId = userDetails.getUserId(); // 또는 getId() 구조에 따라
+        MemberResponseDto member = memberService.getMemberById(userId);
+        return ResponseEntity.ok(member);
+    }
+    @PutMapping("/me")
+    public ResponseEntity<MemberResponseDto> updateMyInfo(
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            @RequestBody @Valid MemberUpdateDto dto) {
+        Long userId = userDetails.getUserId();
+        return ResponseEntity.ok(memberService.updateMember(userId, dto));
+    }
+
     // ✅ 전체 회원 조회 (GET) - 인증된 사용자만 접근 가능하도록 SecurityConfig에서 설정됨
     @GetMapping
     public ResponseEntity<List<MemberResponseDto>> getAllMembers() {
@@ -44,13 +61,13 @@ public class MemberController {
     }
 
     // 전체 수정: 모든 값 필요
-    @PutMapping("/{id}")
-    public ResponseEntity<MemberResponseDto> updateMember(
-            @PathVariable Long id,
-            @RequestBody @Valid MemberRequestDto dto // 필수
-    ) {
-        return ResponseEntity.ok(memberService.updateMember(id, dto));
-    }
+//    @PutMapping("/{id}")
+//    public ResponseEntity<MemberResponseDto> updateMember(
+//            @PathVariable Long id,
+//            @RequestBody @Valid MemberRequestDto dto // 필수
+//    ) {
+//        return ResponseEntity.ok(memberService.updateMember(id, dto));
+//    }
 
     // 부분 수정: 일부만 수정
     @PatchMapping("/{id}")
