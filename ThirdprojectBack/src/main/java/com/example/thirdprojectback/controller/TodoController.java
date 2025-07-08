@@ -38,12 +38,14 @@ public class TodoController {
     }
 
     // ✅ 월별 투두 조회 (예: 2025-07)
-    @GetMapping("/month/{userId}")
+    @GetMapping("/month")
     public ResponseEntity<List<TodoResponseDto>> month(
-            @PathVariable Long userId,
+            @AuthenticationPrincipal CustomUserDetails userDetails,
             @RequestParam String ym // yyyy-MM
     ) {
         YearMonth yearMonth = YearMonth.parse(ym);
+        Long userId = userDetails.getUserId();
+        System.out.println("debugging log");
         return ResponseEntity.ok(todoService.getMonthlyTodos(userId, yearMonth));
     }
 

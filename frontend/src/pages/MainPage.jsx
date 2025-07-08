@@ -9,7 +9,6 @@ import ErrToast from '../components/toast/ErrToast';
 import { fetchTodosByMonth } from "../api/todo";
 import Loading from '../components/loading/Loading';
 import Cookies from "js-cookie";
-import { jwtDecode } from "jwt-decode";
 
 const MainPage = () => {
   const [showModal, setShowModal] = useState(true);
@@ -33,23 +32,11 @@ const MainPage = () => {
     setTimeout(() => setShowErrToast(false), 2000);
   };
 
-  let userId = null;
-  const token = Cookies.get('jwtToken');
-  if (token) {
-    try {
-      const decoded = jwtDecode(token);
-      userId = decoded.userId;
-    } catch {
-      userId = null;
-    }
-  }
 
   // 월별 todo 동기화 함수
   const syncMonthTodos = () => {
     const ym = `${selectedDate.getFullYear()}-${String(selectedDate.getMonth() + 1).padStart(2, "0")}`;
-    if (userId) {
-      fetchTodosByMonth(userId, ym).then(res => setMonthTodos(res.data));
-    }
+  fetchTodosByMonth(ym).then(res => setMonthTodos(res.data));
   };
 
   return (
@@ -72,7 +59,6 @@ const MainPage = () => {
               selectedDate={selectedDate}
               setSelectedDate={setSelectedDate}
               setMonthTodos={setMonthTodos}
-              userId={userId}
               monthTodos={monthTodos}
             />
             <TodoList
