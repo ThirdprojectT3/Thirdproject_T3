@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Navigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import axios from '../api/axios';
@@ -6,7 +6,8 @@ import axios from '../api/axios';
 const PrivateRoute = ({ children }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [authenticated, setAuthenticated] = useState(false);
-
+  const hasAlertedRef = useRef(false);
+  
   useEffect(() => {
     const checkAuth = async () => {
       try {
@@ -27,9 +28,13 @@ const PrivateRoute = ({ children }) => {
   }
 
   if (!authenticated) {
-    alert('로그인이 필요합니다.');
-    return <Navigate to="/" replace />;
+    if (!hasAlertedRef.current) {
+      alert('로그인이 필요합니다.');
+      hasAlertedRef.current = true;
+    }
+    return <Navigate to="/login" replace />;
   }
+
 
   return children;
 };

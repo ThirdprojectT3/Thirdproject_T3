@@ -12,6 +12,7 @@ function App() {
   return (
     <Routes>
       {/* 공개 라우트 */}
+      <Route path="/login" element={<LoginPage />} />
       <Route path="/" element={<LoginPage />} />
       <Route path="/signup" element={<SignupPage />} />
 
