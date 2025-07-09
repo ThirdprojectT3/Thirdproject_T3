@@ -36,7 +36,7 @@ export default function UserCompareChart() {
 
   return (
     <div className="w-full">
-      <h2 className="text-xl font-bold text-center mb-4">{ageTitle}</h2>
+      <h2 style={{ textAlign: 'center', marginBottom: '16px', fontSize: '20px', fontWeight: 'bold' }}>{ageTitle}</h2>
 
       <ResponsiveContainer width="100%" height={300}>
         <BarChart data={chartData}>
