@@ -85,6 +85,18 @@ services:
     networks:
       - health-net
 
+  nginx-exporter:
+    image: nginx/nginx-prometheus-exporter:latest
+    container_name: nginx-exporter
+    command:
+      - '-nginx.scrape-uri=http://frontend/nginx_status'
+    ports:
+      - "9114:9113"
+    depends_on:
+      - frontend
+    networks:
+      - health-net
+
 volumes:
   mariadb-data:
   grafana-storage:
