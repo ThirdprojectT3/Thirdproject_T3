@@ -1,9 +1,9 @@
+// src/components/MainModal.jsx
 import React, { useEffect, useState } from 'react';
 import './MainModal.css';
 import { validNumberInput } from '../../utils/ValueValidation';
 import { postRecord } from '../../api/record';
 import Cookies from "js-cookie";
-
 import { fetchMyUserId } from '../../api/user';
 
 const workoutPlaces = ['헬스장', '집', '크로스핏', '쉬기'];
@@ -40,7 +40,6 @@ const MainModal = ({ onClose, triggerToast, triggerErrToast, setIsLoading, onSav
         }
       })
       .catch(() => {
-        // 인증 안 된 경우 등 fallback
         setShowModal(false);
         if (onClose) onClose();
       });
@@ -52,16 +51,7 @@ const MainModal = ({ onClose, triggerToast, triggerErrToast, setIsLoading, onSav
 
   const handleChange = (e) => {
     const { id, value } = e.target;
-    // 숫자 입력값은 유효성 검사
-    if (
-      id === 'weight' ||
-      id === 'fat' ||
-      id === 'muscle' ||
-      id === 'bmr' ||
-      id === 'bmi' ||
-      id === 'vai' ||
-      id === 'sleep'
-    ) {
+    if (['weight', 'fat', 'muscle', 'bmr', 'bmi', 'vai', 'sleep'].includes(id)) {
       const validValue = validNumberInput(value);
       setForm((prev) => ({ ...prev, [id]: validValue }));
     } else {
@@ -72,14 +62,13 @@ const MainModal = ({ onClose, triggerToast, triggerErrToast, setIsLoading, onSav
   const handlePlaceSelect = (place) => {
     setForm((prev) => ({
       ...prev,
-      place: place,
+      place,
       prompt: place === '쉬기' ? '' : prev.prompt,
     }));
   };
 
   const handleSubmitStep1 = (e) => {
     e.preventDefault();
-    // 필수값 체크
     const requiredFields = [
       { key: "weight", label: "몸무게" },
       { key: "fat", label: "체지방량" },
@@ -100,14 +89,12 @@ const MainModal = ({ onClose, triggerToast, triggerErrToast, setIsLoading, onSav
 
   const handleSubmitStep2 = async (e) => {
     e.preventDefault();
-    // 운동 위치 필수 체크
     if (!form.place || form.place.trim() === "") {
       if (triggerErrToast) triggerErrToast("운동 위치를 선택하세요.");
       return;
     }
-    // prompt는 제외(선택사항)
-    const today = new Date().toISOString().split('T')[0];
 
+    const today = new Date().toISOString().split('T')[0];
     if (setIsLoading) setIsLoading(true);
 
     try {
@@ -116,6 +103,7 @@ const MainModal = ({ onClose, triggerToast, triggerErrToast, setIsLoading, onSav
       Cookies.set(modalKey, today, { expires: 1 });
       setShowModal(false);
 
+      console.log("📦 서버 전송 form 데이터:", form);
       await postRecord(form);
       if (triggerToast) triggerToast('저장 성공!');
       if (onSaved) onSaved();
@@ -127,7 +115,6 @@ const MainModal = ({ onClose, triggerToast, triggerErrToast, setIsLoading, onSav
     }
   };
 
-
   if (!showModal) return null;
 
   return (
@@ -138,34 +125,28 @@ const MainModal = ({ onClose, triggerToast, triggerErrToast, setIsLoading, onSav
         {step === 1 && (
           <form className="styled-form" onSubmit={handleSubmitStep1}>
             <div className="two-column-grid">
-              <div className="input-group">
-                <label htmlFor="weight" className="label">몸무게 (kg)</label>
-                <input id="weight" type="number" placeholder="몸무게를 입력하세요" value={form.weight} onChange={handleChange} className="input" />
-              </div>
-              <div className="input-group">
-                <label htmlFor="fat" className="label">체지방량 (kg)</label>
-                <input id="fat" type="number" placeholder="체지방량을 입력하세요" value={form.fat} onChange={handleChange} className="input" />
-              </div>
-              <div className="input-group">
-                <label htmlFor="muscle" className="label">골격근량 (kg)</label>
-                <input id="muscle" type="number" placeholder="골격근량을 입력하세요" value={form.muscle} onChange={handleChange} className="input" />
-              </div>
-              <div className="input-group">
-                <label htmlFor="bmr" className="label">기초대사량 (kcal)</label>
-                <input id="bmr" type="number" placeholder="기초대사량을 입력하세요" value={form.bmr} onChange={handleChange} className="input" />
-              </div>
-              <div className="input-group">
-                <label htmlFor="bmi" className="label">BMI</label>
-                <input id="bmi" type="number" step="0.1" placeholder="BMI를 입력하세요" value={form.bmi} onChange={handleChange} className="input" />
-              </div>
-              <div className="input-group">
-                <label htmlFor="vai" className="label">내장 지방 지수</label>
-                <input id="vai" type="number" placeholder="내장 지방 지수를 입력하세요" value={form.vai} onChange={handleChange} className="input" />
-              </div>
-              <div className="input-group">
-                <label htmlFor="sleep" className="label">수면 시간</label>
-                <input id="sleep" type="number" placeholder="금일 수면 시간을 입력하세요" value={form.sleep} onChange={handleChange} className="input" />
-              </div>
+              {[
+                { id: "weight", label: "몸무게 (kg)" },
+                { id: "fat", label: "체지방량 (kg)" },
+                { id: "muscle", label: "골격근량 (kg)" },
+                { id: "bmr", label: "기초대사량 (kcal)" },
+                { id: "bmi", label: "BMI", step: "0.1" },
+                { id: "vai", label: "내장 지방 지수" },
+                { id: "sleep", label: "수면 시간" },
+              ].map(({ id, label, step }) => (
+                <div className="input-group" key={id}>
+                  <label htmlFor={id} className="label">{label}</label>
+                  <input
+                    id={id}
+                    type="number"
+                    step={step || "1"}
+                    placeholder={`${label}를 입력하세요`}
+                    value={form[id]}
+                    onChange={handleChange}
+                    className="input"
+                  />
+                </div>
+              ))}
             </div>
             <button className="save-button" type="submit">다음</button>
           </form>
@@ -187,9 +168,7 @@ const MainModal = ({ onClose, triggerToast, triggerErrToast, setIsLoading, onSav
                 ))}
               </div>
             </div>
-            {(form.place === '헬스장' ||
-              form.place === '집' ||
-              form.place === '크로스핏') && (
+            {['헬스장', '집', '크로스핏'].includes(form.place) && (
               <div className="input-group" style={{ width: '100%' }}>
                 <label htmlFor="prompt" className="label">운동 선호 부위 요청</label>
                 <input

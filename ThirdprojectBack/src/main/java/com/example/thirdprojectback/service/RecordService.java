@@ -32,8 +32,10 @@ public class RecordService {
     public AIResponseDto createRecord(Long userId, RecordRequestDto dto) {
         // 1. 오늘 날짜로 기록 저장
         Record savedRecord = recordRepository.save(toEntity(dto, userId));
-
+        Member member = memberRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("회원을 찾을 수 없습니다."));
         // 2. 최근 7일 기록 + todo 불러오기
+
         List<Map<String, Object>> records = fetchRecent7RecordsAsMap(userId);
         List<Map<String, Object>> todolists = fetchRecentTodosAsMap(userId);
 
@@ -41,8 +43,8 @@ public class RecordService {
         AIRequestDto request = AIRequestDto.builder()
                 .input(AIRequestDto.AIRequestInput.builder()
                         .user_id(userId)
-                        .goal("근력 향상")
-                        .diseases(List.of("당뇨", "고혈압"))
+                        .goal(member.getGoal().getDescription())
+                        .diseases(member.getDiseases())
                         .records(records)
                         .todolists(todolists)
                         .prompt(dto.getPrompt())
