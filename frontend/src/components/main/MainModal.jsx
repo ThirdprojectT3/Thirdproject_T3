@@ -148,7 +148,11 @@ const MainModal = ({ onClose, triggerToast, triggerErrToast, setIsLoading, onSav
                 </div>
               ))}
             </div>
-            <button className="save-button" type="submit">다음</button>
+            <button className="save-button" type="submit">
+              <span className="shadow"></span>
+              <span className="edge"></span>
+              <span className="front"><span>다음</span></span>
+            </button>
           </form>
         )}
         {step === 2 && (
@@ -182,8 +186,20 @@ const MainModal = ({ onClose, triggerToast, triggerErrToast, setIsLoading, onSav
               </div>
             )}
             <div className="button-row">
-              <button className="prev-button" type="button" onClick={() => setStep(1)}>이전</button>
-              <button className="save-button" type="submit">저장하기</button>
+              <button
+                className="prev-button"
+                type="button"
+                onClick={() => setStep(1)}
+              >
+                <span className="shadow"></span>
+                <span className="edge"></span>
+                <span className="front"><span>이전</span></span>
+              </button>
+              <button className="save-button" type="submit">
+                <span className="shadow"></span>
+                <span className="edge"></span>
+                <span className="front"><span>저장하기</span></span>
+              </button>
             </div>
           </form>
         )}
