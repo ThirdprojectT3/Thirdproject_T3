@@ -22,20 +22,22 @@ const Header = () => {
           <span>로그아웃</span>
         </div>
       </button>
-      <button className="header-button" onClick={() => navigate('/graph')}>
-        <div className="shadow"></div>
-        <div className="edge"></div>
-        <div className="front">
-          <span>통계분석</span>
-        </div>
-      </button>
-      <button className="header-button" onClick={() => navigate('/profile')}>
-        <div className="shadow"></div>
-        <div className="edge"></div>
-        <div className="front">
-          <span>내 정보</span>
-        </div>
-      </button>
+      <div className="button-group">
+        <button className="header-button" onClick={() => navigate('/graph')}>
+          <div className="shadow"></div>
+          <div className="edge"></div>
+          <div className="front">
+            <span>통계분석</span>
+          </div>
+        </button>
+        <button className="header-button" onClick={() => navigate('/profile')}>
+          <div className="shadow"></div>
+          <div className="edge"></div>
+          <div className="front">
+            <span>내 정보</span>
+          </div>
+        </button>
+      </div>
     </div>
   );
 };
