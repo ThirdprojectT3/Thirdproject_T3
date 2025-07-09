@@ -14,6 +14,7 @@ services:
       - DB_USERNAME=gym
       - DB_PASSWORD=gym
       - AI_SERVER_URL=http://ai-server:8003/healthai/invoke
+      - YOUTUBE_API_KEY=AIzaSyAdXFqXN-0ktctT6eP9coe9ew0LpxWZGcM
     networks:
       - health-net
 
