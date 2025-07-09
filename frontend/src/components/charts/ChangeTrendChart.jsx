@@ -26,8 +26,20 @@ export default function ChangeTrendChart() {
     fetchData();
   }, [category, duration]);
 
+  const getDurationLabel = (d) => {
+    if (d === '1w') return '1주일';
+    if (d === '1m') return '한달';
+    if (d === '3m') return '3개월';
+    return d;
+  };
+
   return (
     <div>
+      {/* 제목 */}
+      <h2 className="text-xl font-bold text-center mb-4">
+        최근 {getDurationLabel(duration)} 동안 {category} 변화
+      </h2>
+
       {/* 드롭다운 */}
       <select value={category} onChange={(e) => setCategory(e.target.value)}>
         {categories.map((c) => (
@@ -50,7 +62,7 @@ export default function ChangeTrendChart() {
             }}
             onClick={() => setDuration(d)}
           >
-            {d === '1w' ? '1주일' : d === '1m' ? '한달' : '3개월'}
+            {getDurationLabel(d)}
           </button>
         ))}
       </div>
