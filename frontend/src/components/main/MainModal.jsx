@@ -121,7 +121,7 @@ const MainModal = ({ onClose, triggerToast, triggerErrToast, setIsLoading, onSav
     <div className="modal-overlay">
       <div className="modal-content">
         <h2 className="modal-title">정보 입력</h2>
-        <div style={{ height: "6rem" }} />
+        <div style={{ height: "5px" }} />
         {step === 1 && (
           <form className="styled-form" onSubmit={handleSubmitStep1}>
             <div className="two-column-grid">
@@ -148,11 +148,13 @@ const MainModal = ({ onClose, triggerToast, triggerErrToast, setIsLoading, onSav
                 </div>
               ))}
             </div>
-            <button className="save-button" type="submit">
-              <span className="shadow"></span>
-              <span className="edge"></span>
-              <span className="front"><span>다음</span></span>
-            </button>
+            <div className="button-row">
+              <button className="save-button" type="submit">
+                <span className="shadow"></span>
+                <span className="edge"></span>
+                <span className="front"><span>다음</span></span>
+              </button>
+            </div>
           </form>
         )}
         {step === 2 && (

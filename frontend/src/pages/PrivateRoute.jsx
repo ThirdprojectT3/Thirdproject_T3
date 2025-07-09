@@ -13,7 +13,7 @@ const PrivateRoute = ({ children }) => {
       try {
         await axios.get('/auth/me'); // 백엔드에서 인증 확인
         setAuthenticated(true);
-      } catch (error) {
+      } catch {
         setAuthenticated(false);
       } finally {
         setIsLoading(false);

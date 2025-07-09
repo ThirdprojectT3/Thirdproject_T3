@@ -24,7 +24,6 @@
   background: #4285f4;
   border-radius: 10%;
   animation: dice3 7s ease-in-out infinite;
-  filter: drop-shadow(2px 3px 40px #444);
   margin-bottom: 18px;
 }
 

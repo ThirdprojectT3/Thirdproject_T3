@@ -70,8 +70,8 @@
 
 .input {
   border: 2px solid transparent;
-  width: 90%;
-  height: 100%;
+  width: 95%;
+  height: 20px;
   padding-left: 0.8em;
   outline: none;
   overflow: hidden;
@@ -82,7 +82,7 @@
 
 .input:hover,
 .input:focus {
-  border: 2px solid #4A9DEC;
+  border: 1px solid #4A9DEC;
   box-shadow: 0px 0px 0px 7px rgb(74, 157, 236, 0.2);
   background-color: white;
 }

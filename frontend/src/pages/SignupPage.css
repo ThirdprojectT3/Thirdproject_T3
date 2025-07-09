@@ -66,8 +66,8 @@
   outline: none;
   cursor: pointer;
   font-family: sans-serif;
-  width: 100%;           /* 기존 폼 너비에 맞춤 */
-  height: 48px;          /* 기존 크기와 유사하게 */
+  width: 100%;
+  height: 48px;
   margin-top: 10px;
   font-size: 14px;
 }
@@ -80,7 +80,7 @@
   width: 100%;
   height: 100%;
   background: #C3D1FF;
-  border-radius: 6px; /* 기존 8px → 기존 버튼 radius와 통일 */
+  border-radius: 6px;
   transform: translateY(2px);
   transition: transform 600ms cubic-bezier(0.3, 0.7, 0.4, 1);
 }
@@ -194,6 +194,18 @@
   margin-right: 4px;
 }
 
+.checkBox div {
+  width: 60px;
+  height: 60px;
+  background-color: #C3D1FF;
+  top: -52px;
+  left: -52px;
+  position: absolute;
+  transform: rotateZ(45deg);
+  z-index: 100;
+  transition: 300ms ease;
+}
+
 .checkBox input[type=checkbox]:checked + div {
   left: -10px;
   top: -10px;
@@ -203,10 +215,6 @@
   position: absolute;
   left: 50px;
   visibility: hidden;
-}
-
-.transition {
-  transition: 300ms ease;
 }
 
 .checkbox-label {

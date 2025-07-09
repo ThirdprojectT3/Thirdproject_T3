@@ -97,7 +97,7 @@ const SignupPage = () => {
 
           <div className="input-group">
             <label>비밀번호</label>
-            <input name="password" type="password" value={form.password} onChange={handleChange} placeholder="비밀번호를 입력하세요." />
+            <input name="password" type="password" value={form.password} onChange={handleChange} placeholder="비밀번호를 입력하세요. (8~20자)" />
           </div>
 
           <div className="input-group">
