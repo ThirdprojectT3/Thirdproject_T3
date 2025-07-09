@@ -28,5 +28,8 @@ public class Todo {
     @Column(columnDefinition = "TEXT")
     private String tip;
 
+    @Column(length = 500)
+    private String url;
+
     private boolean complete;
 }

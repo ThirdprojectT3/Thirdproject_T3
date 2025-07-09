@@ -18,7 +18,7 @@ async def search_tip_from_db(state: GenState) -> GenState:
 
     for i, (todo, _) in enumerate(rag_tasks):
         tip = results[i]
-        if "죄송" in tip or len(tip) < 30:
+        if "죄송" in tip or "없습니다" in tip or len(tip) < 30:
             no_tips.append({"todoItem": todo["todoItem"]})            
         found_tips.append({"todoItem": todo["todoItem"], "tip": tip})
 

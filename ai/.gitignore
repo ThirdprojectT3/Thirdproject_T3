@@ -1,5 +1,5 @@
 # 환경 변수
-.env
+ai/.env
 .env.local
 
 # IDE 설정
