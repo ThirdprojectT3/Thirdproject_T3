@@ -55,7 +55,8 @@ public class SecurityConfig {
                                 "/swagger-ui/**",
                                 "/v3/api-docs/**",
                                 "/h2-console/**",
-                                "/error"
+                                "/error",
+                                "/actuator/prometheus"
                         ).permitAll()
                         //.requestMatchers("/api/records/**").authenticated()
                         .anyRequest().authenticated()
