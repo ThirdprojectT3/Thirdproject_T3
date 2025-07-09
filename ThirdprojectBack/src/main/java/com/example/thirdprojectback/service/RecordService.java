@@ -9,6 +9,8 @@ import com.example.thirdprojectback.entity.Todolist;
 import com.example.thirdprojectback.repository.MemberRepository;
 import com.example.thirdprojectback.repository.RecordRepository;
 import com.example.thirdprojectback.repository.TodolistRepository;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -51,6 +53,13 @@ public class RecordService {
                         .place(dto.getPlace())
                         .build())
                 .build();
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            String json = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(request);
+            System.out.println("✅ AI 요청 JSON:\n" + json);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
 
         // 4. AI 서버 호출
         AIResponseDto aiResponse = aiService.getRecommendation(request);
