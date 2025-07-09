@@ -14,20 +14,19 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-
 @Configuration
 @RequiredArgsConstructor
 public class DataInitRunner {
-    private final PasswordEncoder passwordEncoder; // 비밀번호 인코딩
-
+    private final PasswordEncoder passwordEncoder;
     private final MemberRepository memberRepository;
     private final RecordRepository recordRepository;
     private final TodolistRepository todolistRepository;
+    private final DietRepository dietRepository;
 
     @Bean
     public CommandLineRunner initData() {
         return args -> {
-            // ✅ 5명의 사용자 생성
+            // ✅ 회원 5명 생성
             Member user1 = memberRepository.save(Member.builder()
                     .email("a@a.com")
                     .name("홍길동")
@@ -83,21 +82,28 @@ public class DataInitRunner {
                     .diseases(List.of("고지혈증"))
                     .build());
 
-            Random random = new Random();
             List<Member> users = List.of(user1, user2, user3, user4, user5);
-            String[] exerciseItems = {"스쿼트", "푸쉬업", "런지", "플랭크", "버피", "스트레칭"};
+            Random random = new Random();
 
-            // ✅ 각 사용자에 대해 30일치 기록 및 투두 생성
+            String[] exerciseItems = {"스쿼트", "푸쉬업", "런지", "플랭크", "버피", "스트레칭"};
+            String[][] youtubeData = {
+                    {"dQw4w9WgXcQ", "Rick Astley - Never Gonna Give You Up"},
+                    {"9bZkp7q19f0", "PSY - GANGNAM STYLE"},
+                    {"e-ORhEE9VVg", "Taylor Swift - Blank Space"},
+                    {"fRh_vgS2dFE", "Justin Bieber - Sorry"},
+                    {"3JZ_D3ELwOQ", "Ed Sheeran - Shape of You"}
+            };
+
             for (Member user : users) {
                 for (int i = 0; i < 30; i++) {
                     LocalDate date = LocalDate.now().minusDays(i);
 
-                    // 기록 저장
+                    // ✅ Record 생성
                     recordRepository.save(Record.builder()
                             .userId(user.getUserId())
                             .date(date)
-                            .weight(50L + random.nextInt(30)) // 50~80kg
-                            .fat(10.0 + random.nextDouble() * 15) // 10~25%
+                            .weight(50L + random.nextInt(30))
+                            .fat(10.0 + random.nextDouble() * 15)
                             .muscle(25.0 + random.nextDouble() * 10)
                             .bmr(1400.0 + random.nextDouble() * 400)
                             .bmi(18.0 + random.nextDouble() * 10)
@@ -105,7 +111,7 @@ public class DataInitRunner {
                             .sleep(5.0f + random.nextFloat() * 3.0f)
                             .build());
 
-                    // Todolist 및 Todo 생성
+                    // ✅ Todolist + Todo 생성
                     Todolist todolist = Todolist.builder()
                             .userId(user.getUserId())
                             .date(date)
@@ -113,24 +119,35 @@ public class DataInitRunner {
                             .build();
 
                     List<Todo> todos = new ArrayList<>();
-                    int todoCount = 1 + random.nextInt(3); // 1~3개
+                    int todoCount = 1 + random.nextInt(3);
 
                     for (int t = 0; t < todoCount; t++) {
                         String todoText = exerciseItems[random.nextInt(exerciseItems.length)] + " " + (10 + random.nextInt(30)) + "회";
+                        String[] yt = youtubeData[random.nextInt(youtubeData.length)];
 
                         todos.add(Todo.builder()
                                 .todolist(todolist)
                                 .todoitem(todoText)
                                 .complete(random.nextBoolean())
+                                .youtubeId(yt[0])
+                                .youtubeTitle(yt[1])
                                 .build());
                     }
 
                     todolist.setTodos(todos);
                     todolistRepository.save(todolist);
+
+                    // ✅ Diet 생성
+                    dietRepository.save(Diet.builder()
+                            .todolist(todolist)
+                            .breakfast("오트밀 + 바나나 + 달걀")
+                            .lunch("닭가슴살 샐러드 + 고구마")
+                            .dinner("연어 스테이크 + 샐러드")
+                            .build());
                 }
             }
 
-            System.out.println("사용자 5명 + 30일치 기록(record) 및 투두 데이터 삽입 완료!"+"테스트!");
+            System.out.println("✅ 5명 사용자 + 30일치 기록 + 투두 + 식단 + 유튜브 정보 초기화 완료");
         };
     }
 }

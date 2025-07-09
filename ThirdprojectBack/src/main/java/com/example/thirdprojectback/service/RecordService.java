@@ -58,7 +58,7 @@ public class RecordService {
         ObjectMapper mapper = new ObjectMapper();
         try {
             String json = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(request);
-            System.out.println("✅ AI 요청 JSON:\n" + json);
+            System.out.println("AI 요청 JSON:\n" + json);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
@@ -67,7 +67,7 @@ public class RecordService {
         AIResponseDto aiResponse = aiService.getRecommendation(request);
         System.out.println(aiResponse);
         // 5. AI가 응답한 todolists를 DB에 저장
-        saveAiResponse(userId, aiResponse.getTodolists(), aiResponse.getDiet());
+        saveAiResponse(userId,aiResponse.getCheering(), aiResponse.getTodolists(), aiResponse.getDiet());
 
         // 6. 프론트로 응답 전달
         return aiResponse;
@@ -311,10 +311,11 @@ public class RecordService {
     }
 
     @Transactional
-    public void saveAiResponse(Long userId, List<AIResponseDto.TodoItem> todoItems, List<AIResponseDto.DietItem> dietItems) {
+    public void saveAiResponse(Long userId,String cheering, List<AIResponseDto.TodoItem> todoItems, List<AIResponseDto.DietItem> dietItems) {
         Todolist todolist = Todolist.builder()
                 .userId(userId)
                 .date(LocalDate.now()) // 오늘 날짜
+                .cheer(cheering)
                 .allclear(false)
                 .build();
 

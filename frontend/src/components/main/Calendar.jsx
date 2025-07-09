@@ -12,13 +12,13 @@ const Calendar = ({ selectedDate, setSelectedDate, setMonthTodos, userId, monthT
     setSelectedDate(new Date(selectedDate.getFullYear(), selectedDate.getMonth() + 1, 1));
   };
 
-  useEffect(() => {
-    if (!userId) return;
-    const ym = `${selectedDate.getFullYear()}-${String(selectedDate.getMonth() + 1).padStart(2, "0")}`;
-    fetchTodosByMonth(userId, ym)
-      .then(res => setMonthTodos(res.data))
-      .catch(() => setMonthTodos([]));
-  }, [selectedDate, setMonthTodos, userId]);
+  // useEffect(() => {
+  //   if (!userId) return;
+  //   const ym = `${selectedDate.getFullYear()}-${String(selectedDate.getMonth() + 1).padStart(2, "0")}`;
+  //   fetchTodosByMonth(userId, ym)
+  //     .then(res => setMonthTodos(res.data))
+  //     .catch(() => setMonthTodos([]));
+  // }, [selectedDate, setMonthTodos, userId]);
 
   // 날짜별 todo 통계 계산 함수
   const getTodoStatsForDate = (dateObj) => {

@@ -27,6 +27,8 @@ public class Todolist {
     @Column(nullable = false)
     private LocalDate date;
 
+    private String cheer;
+
     private boolean allclear;
 
     @OneToMany(mappedBy = "todolist", cascade = CascadeType.ALL, orphanRemoval = true)

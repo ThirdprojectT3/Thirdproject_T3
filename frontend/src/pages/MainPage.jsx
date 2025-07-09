@@ -8,8 +8,8 @@ import Toast from '../components/toast/Toast';
 import ErrToast from '../components/toast/ErrToast';
 import { fetchTodosByMonth } from "../api/todo";
 import Loading from '../components/loading/Loading';
-import Cookies from "js-cookie";
-
+import CheeringPopup from '../components/cheering/CheeringPopup'; 
+import { fetchDietsByMonth } from "../api/diet";
 const MainPage = () => {
   const [showModal, setShowModal] = useState(true);
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -18,8 +18,12 @@ const MainPage = () => {
   const [showErrToast, setShowErrToast] = useState(false);
   const [errToastMessage, setErrToastMessage] = useState('');
   const [monthTodos, setMonthTodos] = useState([]);
+  const [monthDiets, setMonthDiets] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-
+  const [cheering, setCheering] = useState("");
+  const [showCheerPopup, setShowCheerPopup] = useState(false);
+  const [currentTodoMonth, setCurrentTodoMonth] = useState('');
+  const [currentDietMonth, setCurrentDietMonth] = useState('');
   const triggerToast = (msg) => {
     setToastMessage(msg);
     setShowToast(true);
@@ -31,18 +35,50 @@ const MainPage = () => {
     setShowErrToast(true);
     setTimeout(() => setShowErrToast(false), 2000);
   };
+ const handleSaved = (aiResponse) => {
+  if (aiResponse?.cheering) {
+    setCheering(aiResponse.cheering);
+    setShowCheerPopup(true);
+    setTimeout(() => setShowCheerPopup(false), 3000);
+  }
+  syncMonthTodos();
+  syncMonthDiets();
+  };
+const forceSyncMonthTodos = useCallback(() => {
+  const ym = `${selectedDate.getFullYear()}-${String(selectedDate.getMonth() + 1).padStart(2, "0")}`;
+  fetchTodosByMonth(ym).then(res => {
+    setMonthTodos(res.data);
+    setCurrentTodoMonth(ym); // 필요하면 이건 유지
+  });
+}, [selectedDate]);
 
-
+const forceSyncMonthDiets = useCallback(() => {
+  const ym = `${selectedDate.getFullYear()}-${String(selectedDate.getMonth() + 1).padStart(2, "0")}`;
+  fetchDietsByMonth(ym).then(res => {
+    setMonthDiets(res.data);
+    setCurrentDietMonth(ym); // 필요하면 이건 유지
+  });
+}, [selectedDate]);
   // 월별 todo 동기화 함수
-  const syncMonthTodos = useCallback(() => {
-    const ym = `${selectedDate.getFullYear()}-${String(selectedDate.getMonth() + 1).padStart(2, "0")}`;
-    fetchTodosByMonth(ym).then(res => setMonthTodos(res.data));
-  }, [selectedDate]);
+const syncMonthTodos = useCallback(() => {
+  const ym = `${selectedDate.getFullYear()}-${String(selectedDate.getMonth() + 1).padStart(2, "0")}`;
+  if (currentTodoMonth === ym) return; 
+  setCurrentTodoMonth(ym);
+  fetchTodosByMonth(ym).then(res => setMonthTodos(res.data));
+}, [selectedDate, currentTodoMonth]);
+
+const syncMonthDiets = useCallback(() => {
+  const ym = `${selectedDate.getFullYear()}-${String(selectedDate.getMonth() + 1).padStart(2, "0")}`;
+  if (currentDietMonth === ym) return; 
+  setCurrentDietMonth(ym);
+  fetchDietsByMonth(ym).then(res => setMonthDiets(res.data));
+}, [selectedDate, currentDietMonth]);
 
   // 메인 페이지 진입 시 달력 동기화
   useEffect(() => {
     syncMonthTodos();
-  }, [syncMonthTodos]);
+    syncMonthDiets();
+  }, [selectedDate]);
 
   return (
     <>
@@ -54,7 +90,7 @@ const MainPage = () => {
         triggerToast={triggerToast}
         triggerErrToast={triggerErrToast}
         setIsLoading={setIsLoading}
-        onSaved={syncMonthTodos}
+        onSaved={handleSaved}
       />}
       {!showModal && (
         <MainPageWrapper>
@@ -65,16 +101,32 @@ const MainPage = () => {
               setSelectedDate={setSelectedDate}
               setMonthTodos={setMonthTodos}
               monthTodos={monthTodos}
+              monthDiets={monthDiets}
             />
             <TodoList
               selectedDate={selectedDate}
               triggerErrToast={triggerErrToast}
               triggerToast={triggerToast}
               monthTodos={monthTodos}
-              onTodoAdded={syncMonthTodos}
+              onTodoAdded={() => {
+                forceSyncMonthTodos();
+                forceSyncMonthDiets();
+              }}
             />
           </MainContent>
-          <MealBox>식단</MealBox>
+          <MealBox>
+            {(() => {
+                const dateStr = selectedDate.toISOString().slice(0, 10);
+                const diet = monthDiets.find(d => d.date === dateStr);
+            return diet ? (
+            <div>
+              <p>🍳 아침: {diet.breakfast}</p>
+              <p>🍱 점심: {diet.lunch}</p>
+              <p>🍖 저녁: {diet.dinner}</p>
+            </div>
+            ) : "식단 정보 없음";
+            })()}
+          </MealBox>
         </MainPageWrapper>
       )}
     </>
