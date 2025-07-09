@@ -29,7 +29,10 @@ public class Todo {
     private String tip;
 
     @Column(length = 500)
-    private String url;
+    private String youtubeId;
+
+    @Column(length = 500)
+    private String youtubeTitle;
 
     private boolean complete;
 }

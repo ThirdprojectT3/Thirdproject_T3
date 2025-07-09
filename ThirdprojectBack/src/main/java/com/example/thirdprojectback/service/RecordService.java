@@ -30,6 +30,8 @@ public class RecordService {
     private final MemberRepository memberRepository;
 
     private final AIService aiService;
+    private final TodoService todoService;
+
     /* ---------- CREATE ---------- */
     public AIResponseDto createRecord(Long userId, RecordRequestDto dto) {
         // 1. 오늘 날짜로 기록 저장
@@ -317,15 +319,22 @@ public class RecordService {
                 .build();
 
         List<Todo> todos = todoItems.stream()
-                .map(item -> Todo.builder()
-                        .todolist(todolist)
-                        .todoitem(item.getTodoItem())
-                        .tip(item.getTip())
-                        .complete(false) // 기본값: 미완료
-                        .build())
+                .map(item -> {
+                    // 유튜브 API 호출해서 관련 영상 URL 가져오기
+                    String keyword = item.getTodoItem();
+                    Optional<YouTubeVideoDto> video = todoService.searchYoutube(keyword);
+
+                    return Todo.builder()
+                            .todolist(todolist)
+                            .todoitem(keyword)
+                            .tip(item.getTip())
+                            .youtubeId(video.map(YouTubeVideoDto::getVideoId).orElse(null))
+                            .youtubeTitle(video.map(YouTubeVideoDto::getTitle).orElse(null))
+                            .complete(false) // 기본값: 미완료
+                            .build();
+                })
                 .toList();
-        System.out.println("dietItems 출력");
-        System.out.println(dietItems);
+
         Diet diet = null;
         if (dietItems != null && !dietItems.isEmpty()) { // dietItems (리스트) 확인
             String breakfast = null;

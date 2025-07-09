@@ -2,16 +2,23 @@ package com.example.thirdprojectback.service;
 
 import com.example.thirdprojectback.dto.TodoRequestDto;
 import com.example.thirdprojectback.dto.TodoResponseDto;
+import com.example.thirdprojectback.dto.YouTubeResponseDto;
+import com.example.thirdprojectback.dto.YouTubeVideoDto;
 import com.example.thirdprojectback.entity.Todo;
 import com.example.thirdprojectback.entity.Todolist;
 import com.example.thirdprojectback.repository.TodoRepository;
 import com.example.thirdprojectback.repository.TodolistRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -20,6 +27,10 @@ public class TodoService {
 
     private final TodoRepository todoRepository;
     private final TodolistRepository todolistRepository;
+    private final RestTemplate restTemplate = new RestTemplate();
+
+    @Value("${youtube.api.key}")
+    private String apiKey;
 
     /* ---------- CREATE ---------- */
     public TodoResponseDto createTodo(TodoRequestDto dto, Long userId) {
@@ -101,6 +112,34 @@ public class TodoService {
         return todoRepository
                 .findAllByTodolist_UserIdAndTodolist_DateBetween(userId, start, end)
                 .stream().map(this::toDto).collect(Collectors.toList());
+    }
+
+    /*Youtube API 호출*/
+    public Optional<YouTubeVideoDto> searchYoutube(String keyword) {
+        String url = UriComponentsBuilder.fromHttpUrl("https://www.googleapis.com/youtube/v3/search")
+                .queryParam("part", "snippet")
+                .queryParam("q", keyword)
+                .queryParam("type", "video")
+                .queryParam("maxResults", 1)
+                .queryParam("fields", "items(id/videoId,snippet/title)")
+                .queryParam("key", apiKey)
+                .build()
+                .toUriString();
+
+        try {
+            ResponseEntity<YouTubeResponseDto> response = restTemplate.getForEntity(url, YouTubeResponseDto.class);
+            System.out.println("Response 전체: " + response);
+            System.out.println("Response Body: " + response.getBody());
+            System.out.println("YouTubeVideoDto(Optional): " + response.getBody().toYouTubeVideo());
+
+            if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
+                return response.getBody().toYouTubeVideo();
+            }
+        } catch (Exception e) {
+            System.out.println("유튜브 API 호출 실패: " + e.getMessage());
+        }
+
+        return Optional.empty();
     }
 
     /* ---------- Mapping ---------- */
