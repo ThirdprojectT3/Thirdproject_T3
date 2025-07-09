@@ -65,15 +65,21 @@
 
 .input {
   flex-grow: 1;
-  border: 1px solid #e0e0e0;
+  border: 1px solid transparent;
   padding: 12px;
   border-radius: 8px;
   font-size: 16px;
+  outline: none;
+  background-color: #F3F3F3;
+  border-radius: 5px;
+  transition: all 0.5s;
 }
 
+.input:hover,
 .input:focus {
-  outline: none;
-  border-color: #a5a5a5;
+  border: 1px solid #4A9DEC;
+  box-shadow: 0px 0px 0px 7px rgb(74, 157, 236, 20%);
+  background-color: white;
 }
 
 .add-button {
@@ -85,6 +91,7 @@
   cursor: pointer;
   font-size: 16px;
   transition: background-color 0.2s;
+  min-width: fit-content;
 }
 
 .add-button:hover {

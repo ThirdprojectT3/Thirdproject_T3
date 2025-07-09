@@ -41,8 +41,8 @@
   font-weight: bold;
   color: #666;
 }
-.weekday-0 { color: red; }
-.weekday-6 { color: blue; }
+.weekday-0 { color: #FF5858; }
+.weekday-6 { color: #587FFF; }
 
 .calendar-days-grid {
   display: grid;
@@ -50,6 +50,7 @@
   gap: 0px;
   row-gap: 12px;
   flex: 1;
+  font-weight: 900;
 }
 
 .day-wrapper {
@@ -88,8 +89,8 @@
   background: #000;
   color: #fff;
 }
-.day-circle.day-0:not(.selected) { color: red; }
-.day-circle.day-6:not(.selected) { color: blue; }
+.day-circle.day-0:not(.selected) { color: #FF5858; }
+.day-circle.day-6:not(.selected) { color: #587FFF; }
 .day-circle:hover {
   background: #ddd;
 }
