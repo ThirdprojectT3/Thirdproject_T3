@@ -1,7 +1,10 @@
 package com.example.thirdprojectback.service;
 
+import com.example.thirdprojectback.dto.DietDto;
+import com.example.thirdprojectback.dto.TodoResponseDto;
 import com.example.thirdprojectback.dto.TodolistResponseDto;
 import com.example.thirdprojectback.entity.Todolist;
+import com.example.thirdprojectback.service.DietService;
 import com.example.thirdprojectback.repository.TodolistRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -15,6 +18,7 @@ import java.util.stream.Collectors;
 public class TodolistService {
 
     private final TodolistRepository todolistRepository;
+    private final DietService dietService;
 
     /**
      * ✅ [1] 특정 날짜의 Todolist가 없으면 생성 후 반환
@@ -53,11 +57,31 @@ public class TodolistService {
 
     /* ✅ Entity → DTO 변환 */
     private TodolistResponseDto toDto(Todolist entity) {
+        DietDto dietDto = null;
+        if (entity.getDiet() != null) {
+            dietDto = dietService.getDietByTodolist(entity.getTodolistId());
+        }
+
+        List<TodoResponseDto> todoDtos = entity.getTodos().stream()
+                .map(todo -> TodoResponseDto.builder()
+                        .todoItemId(todo.getTodoItemId())
+                        .todolistId(entity.getTodolistId())
+                        .todoitem(todo.getTodoitem())
+                        .tip(todo.getTip())
+                        .youtubeId(todo.getYoutubeId())
+                        .youtubeTitle(todo.getYoutubeTitle())
+                        .complete(todo.isComplete())
+                        .date(entity.getDate())
+                        .build())
+                .collect(Collectors.toList());
+
         return TodolistResponseDto.builder()
                 .todolistId(entity.getTodolistId())
                 .userId(entity.getUserId())
                 .date(entity.getDate())
                 .allclear(entity.isAllclear())
+                .todos(todoDtos)
+                .diet(dietDto)
                 .build();
     }
 }

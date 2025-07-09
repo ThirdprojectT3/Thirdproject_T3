@@ -18,5 +18,5 @@ public class TodolistResponseDto {
     private LocalDate date;
     private boolean allclear;
     private List<TodoResponseDto> todos;
-    private Diet diet;
+    private DietDto diet;
 }

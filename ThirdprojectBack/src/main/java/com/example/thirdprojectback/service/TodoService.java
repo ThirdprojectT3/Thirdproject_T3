@@ -149,6 +149,8 @@ public class TodoService {
                 .todolistId(todo.getTodolist().getTodolistId())
                 .todoitem(todo.getTodoitem())
                 .tip(todo.getTip())
+                .youtubeId(todo.getYoutubeId())
+                .youtubeTitle(todo.getYoutubeTitle())
                 .complete(todo.isComplete())
                 .date(todo.getTodolist().getDate())
                 .build();
