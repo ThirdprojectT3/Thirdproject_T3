@@ -112,18 +112,38 @@ const SignupPage = () => {
 
           <div className="input-group">
             <label>Gender</label>
-            <div className="radio-group">
-              <label><input type="radio" name="gender" value="male" checked={form.gender === "male"} onChange={handleChange} /> Male</label>
-              <label><input type="radio" name="gender" value="female" checked={form.gender === "female"} onChange={handleChange} /> Female</label>
-              <label><input type="radio" name="gender" value="other" checked={form.gender === "other"} onChange={handleChange} /> Other</label>
+            <div className="radio-button">
+              <label>
+                <input type="radio" name="gender" value="male" checked={form.gender === "male"} onChange={handleChange}/>
+                <span className="radio"></span>
+                Male
+              </label>
+              <label>
+                <input type="radio" name="gender" value="female" checked={form.gender === "female"} onChange={handleChange}/>
+                <span className="radio"></span>
+                Female
+              </label>
+              <label>
+                <input type="radio" name="gender" value="other" checked={form.gender === "other"} onChange={handleChange}/>
+                <span className="radio"></span>
+                Other
+              </label>
             </div>
           </div>
 
           <div className="input-group">
             <label>Goal</label>
-            <div className="radio-group">
-              <label><input type="radio" name="goal" value="체중감량" checked={form.goal === "체중감량"} onChange={handleChange}/> 체중 감량</label>
-              <label><input type="radio" name="goal" value="근력향상" checked={form.goal === "근력향상"} onChange={handleChange}/> 근력 향상</label>
+            <div className="radio-button">
+              <label>
+                <input type="radio" name="goal" value="체중감량" checked={form.goal === "체중감량"} onChange={handleChange}/>
+                <span className="radio"></span>
+                체중 감량
+              </label>
+              <label>
+                <input type="radio" name="goal" value="근력향상" checked={form.goal === "근력향상"} onChange={handleChange}/>
+                <span className="radio"></span>
+                근력 향상
+              </label>
             </div>
           </div>
 
