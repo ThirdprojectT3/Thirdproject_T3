@@ -27,7 +27,7 @@ jobs:
         with:
           context: ./ThirdprojectBack
           push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/health-ai-backend:latest
+          tags: ${{ secrets.DOCKER_USERNAME }}/health-ai:backend-v1
 
       # frontend
       - name: Build and push frontend image
@@ -35,7 +35,7 @@ jobs:
         with:
           context: ./frontend
           push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/health-ai-frontend:latest
+          tags: ${{ secrets.DOCKER_USERNAME }}/health-ai:frontend-v1
 
       # ai server
       - name: Build and push AI server image
@@ -43,4 +43,4 @@ jobs:
         with:
           context: ./ai
           push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/health-ai-ai:latest
+          tags: ${{ secrets.DOCKER_USERNAME }}/health-ai:ai-v1
