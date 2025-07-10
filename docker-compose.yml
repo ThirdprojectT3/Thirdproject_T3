@@ -1,6 +1,8 @@
+version: "3.8"
+
 services:
   backend:
-    build: ./ThirdprojectBack
+    image: tp9ns/health-ai-backend:v1
     container_name: health-backend
     ports:
       - "8080:8080"
@@ -19,7 +21,7 @@ services:
       - health-net
 
   frontend:
-    build: ./frontend
+    image: tp9ns/health-ai-frontend:v1
     container_name: health-frontend
     ports:
       - "80:80"
@@ -27,7 +29,7 @@ services:
       - health-net
 
   ai-server:
-    build: ./ai
+    image: tp9ns/health-ai-ai:v1
     container_name: health-ai
     ports:
       - "8003:8003"

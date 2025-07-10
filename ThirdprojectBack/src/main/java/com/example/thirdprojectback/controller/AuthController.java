@@ -38,9 +38,9 @@ public class AuthController {
 
         Cookie cookie = new Cookie("jwtToken", token);
         cookie.setHttpOnly(true);
-        cookie.setSecure(true); // 프로덕션 환경에서만 true
+        cookie.setSecure(false); // 프로덕션 환경에서만 true
         cookie.setPath("/");
-        cookie.setMaxAge(24 * 60 * 60); // 1일
+        cookie.setMaxAge(24 * 60 * 60); // 1일 docker build -t tp9ns/health-ai:frontend-v1 .
 
         response.addCookie(cookie);
 
