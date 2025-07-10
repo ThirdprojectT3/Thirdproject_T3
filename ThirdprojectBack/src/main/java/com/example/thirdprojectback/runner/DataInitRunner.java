@@ -104,7 +104,7 @@ public class DataInitRunner {
 
             for (Member user : users) {
                 for (int i = 0; i < 30; i++) {
-                    LocalDate date = LocalDate.now().minusDays(i);
+                    LocalDate date = LocalDate.now().minusDays(i+1);
 
                     // ✅ Record 생성
                     recordRepository.save(Record.builder()
