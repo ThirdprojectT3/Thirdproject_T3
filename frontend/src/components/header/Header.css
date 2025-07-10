@@ -97,8 +97,8 @@
   );
 }
 .header-button-r .front {
-  padding: 12px 28px;
-  font-size: 1.25rem;
+  padding: 12px 32px;
+  font-size: 16px;
   color: white;
   background: #587FFF;
 }
