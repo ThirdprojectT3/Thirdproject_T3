@@ -1,98 +1,86 @@
 .calendar-wrapper {
   width: 100%;
-  height: 100%;
-  border: 1.5px solid #222;
-  border-radius: 8px;
-  padding: 28px 16px;
+  height:100%;
+  padding: 20px;
+  border-radius: 12px;
   background: #fff;
-  display: flex;
-  flex-direction: column;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
 }
 
 .calendar-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 16px;
-}
-
-.month-year {
-  font-size: 1.8rem;
+  font-size: 1.6rem;
   font-weight: bold;
+  margin-bottom: 20px;
 }
 
 .calendar-navigation button {
-  background: none;
+  background: #f0f0f0;
   border: none;
-  font-size: 1.2rem;
+  padding: 5px 12px;
+  border-radius: 6px;
   cursor: pointer;
-  margin: 0 8px;
+  font-size: 1rem;
+  transition: background 0.2s;
+}
+.calendar-navigation button:hover {
+  background: #ddd;
 }
 
 .calendar-weekdays {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  margin-bottom: 8px;
-}
-
-.calendar-weekday {
+  margin-bottom: 10px;
+  font-size: 0.95rem;
+  color: #888;
   text-align: center;
-  font-size: 1rem;
-  font-weight: bold;
-  color: #666;
 }
-.weekday-0 { color: #FF5858; }
-.weekday-6 { color: #587FFF; }
 
 .calendar-days-grid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  gap: 0px;
-  row-gap: 12px;
-  flex: 1;
-  font-weight: 900;
+  gap: 8px;
 }
 
 .day-wrapper {
   display: flex;
   flex-direction: column;
   align-items: center;
-}
-
-
-.top-circle {
-  width: 40px;
-  height: 40px;
-  border-radius: 10px;
-  background: #ddd;
-  margin-bottom: 4px;
-  cursor: pointer;
-  transition: background 0.2s, border 0.2s;
-  display: flex;
-  align-items: center;
   justify-content: center;
-  color: #fff; /* 숫자 흰색 */
-  font-size: 20px;
-  font-weight: bold;
-  border: 2px solid transparent;
+  padding: 6px 0;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s;
 }
-.top-circle.selected {
-  border: 2px solid #000; /* 선택 시 테두리 검정 */
+.day-wrapper.today {
+  border: 2px solid #bcdfff;
+  background: #eaf6ff;
 }
-.top-circle.day-0 { color: #fff; } /* 일요일도 흰색 */
-.top-circle.day-6 { color: #fff; } /* 토요일도 흰색 */
-
-/* .day-circle 관련 코드는 삭제하거나 주석 처리 */
-.day-circle,
-.day-circle.selected,
-.day-circle.day-0:not(.selected),
-.day-circle.day-6:not(.selected),
-.day-circle:hover,
-.day-circle.selected:hover {
-  display: none;
+.day-wrapper.selected {
+  background: #ddeaff;
 }
 
+.date-text {
+  font-size: 1rem;
+  margin-bottom: 4px;
+}
+
+.dots-wrapper {
+  display: flex;
+  gap: 2px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}
+
+/* 공백 채우기 */
 .empty-day {
-  width: 30px;
-  height: 30px;
+  height: 40px;
 }

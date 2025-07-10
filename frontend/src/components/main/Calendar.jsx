@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import './Calendar.css';
-import { fetchTodosByMonth } from "../../api/todo";
+import { fetchTodosByMonth } from '../../api/todo';
 
 const Calendar = ({ selectedDate, setSelectedDate, setMonthTodos, userId, monthTodos = [] }) => {
 
@@ -14,31 +14,32 @@ const Calendar = ({ selectedDate, setSelectedDate, setMonthTodos, userId, monthT
 
   useEffect(() => {
     if (!userId) return;
-    const ym = `${selectedDate.getFullYear()}-${String(selectedDate.getMonth() + 1).padStart(2, "0")}`;
+    const ym = `${selectedDate.getFullYear()}-${String(selectedDate.getMonth() + 1).padStart(2, '0')}`;
     fetchTodosByMonth(userId, ym)
       .then(res => setMonthTodos(res.data))
       .catch(() => setMonthTodos([]));
   }, [selectedDate, setMonthTodos, userId]);
 
-  // 날짜별 todo 통계 계산 함수
+  // 날짜별 todo 통계 계산
   const getTodoStatsForDate = (dateObj) => {
-    const dateStr = `${dateObj.getFullYear()}-${String(dateObj.getMonth() + 1).padStart(2, "0")}-${String(dateObj.getDate()).padStart(2, "0")}`;
+    const dateStr = `${dateObj.getFullYear()}-${String(dateObj.getMonth() + 1).padStart(2, '0')}-${String(dateObj.getDate()).padStart(2, '0')}`;
     const todos = monthTodos.filter(todo => todo.date === dateStr);
     const total = todos.length;
     const completed = todos.filter(todo => todo.complete).length;
     return { total, completed };
   };
 
-const getCircleColor = (total, completed) => {
-  if (total === 0) return "#e0e0e0"; // 회색(기본)
-  const ratio = completed / total;
-  if (ratio === 1) return "#4caf50"; // 100% 초록
-  if (ratio >= 0.8) return "#8bc34a"; // 80% 이상 연두
-  if (ratio >= 0.6) return "#cddc39"; // 60% 이상 연노랑
-  if (ratio >= 0.4) return "#ffeb3b"; // 40% 이상 노랑
-  if (ratio >= 0.2) return "#ff9800"; // 20% 이상 주황
-  return "#f44336"; // 20% 미만 빨강
-};
+  // 완료율에 따라 색상 결정
+  const getCircleColor = (total, completed) => {
+    if (total === 0) return "#e0e0e0"; // 회색
+    const ratio = completed / total;
+    if (ratio === 1) return "#4caf50"; // 초록
+    if (ratio >= 0.8) return "#8bc34a";
+    if (ratio >= 0.6) return "#cddc39";
+    if (ratio >= 0.4) return "#ffeb3b";
+    if (ratio >= 0.2) return "#ff9800";
+    return "#f44336"; // 빨강
+  };
 
   const renderDays = () => {
     const days = [];
@@ -51,23 +52,24 @@ const getCircleColor = (total, completed) => {
 
     for (let i = 1; i <= daysInMonth; i++) {
       const date = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), i);
-      const dayOfWeek = date.getDay();
+      const isToday = date.toDateString() === new Date().toDateString();
+      const isSelected = selectedDate.getDate() === i && selectedDate.getMonth() === date.getMonth();
+
       const { total, completed } = getTodoStatsForDate(date);
       const circleColor = getCircleColor(total, completed);
-      const isSelected = selectedDate.getDate() === i &&
-                        selectedDate.getMonth() === date.getMonth() &&
-                        selectedDate.getFullYear() === date.getFullYear();
 
       days.push(
-        <div className="day-wrapper" key={i}>
+        <div
+          key={i}
+          className={`day-wrapper ${isSelected ? 'selected' : ''} ${isToday ? 'today' : ''}`}
+          onClick={() => setSelectedDate(date)}
+        >
+          <div className="date-text">{i}</div>
           <div
-            className={`top-circle${isSelected ? ' selected' : ''} day-${dayOfWeek}`}
-            title={total > 0 ? `총 ${total}개, 완료 ${completed}개` : "할 일 없음"}
-            style={{ background: circleColor, color: "#fff" }}
-            onClick={() => setSelectedDate(date)}
-          >
-            {i}
-          </div>
+            className="dot"
+            style={{ backgroundColor: circleColor }}
+            title={total > 0 ? `총 ${total}개 중 ${completed}개 완료` : "할 일 없음"}
+          />
         </div>
       );
     }
@@ -81,18 +83,13 @@ const getCircleColor = (total, completed) => {
           {selectedDate.getFullYear()}년 {selectedDate.getMonth() + 1}월
         </div>
         <div className="calendar-navigation">
-          <button onClick={handlePrevMonth}>&lt;</button>
-          <button onClick={handleNextMonth}>&gt;</button>
+          <button onClick={handlePrevMonth}>◀</button>
+          <button onClick={handleNextMonth}>▶</button>
         </div>
       </div>
       <div className="calendar-weekdays">
         {['일', '월', '화', '수', '목', '금', '토'].map((day, index) => (
-          <div
-            className={`calendar-weekday weekday-${index}`}
-            key={index}
-          >
-            {day}
-          </div>
+          <div className="calendar-weekday" key={index}>{day}</div>
         ))}
       </div>
       <div className="calendar-days-grid">{renderDays()}</div>
