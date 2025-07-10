@@ -122,6 +122,7 @@ public class TodoService {
                 .queryParam("type", "video")
                 .queryParam("maxResults", 1)
                 .queryParam("fields", "items(id/videoId,snippet/title)")
+                .queryParam("videoEmbeddable", "true")
                 .queryParam("key", apiKey)
                 .build()
                 .toUriString();

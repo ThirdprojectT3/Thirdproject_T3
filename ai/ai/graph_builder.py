@@ -12,6 +12,9 @@ from ai.nodes import (
 )
 
 def tip_exists(state: GenState) -> str:
+    if state.get("place", "") == "쉬기":
+        return "no"
+    
     tips = state.get("todo_tips", [])
     print(tips)
     if not tips or any("죄송" in t["tip"] or "없습니다"in t["tip"] or len(t["tip"]) < 30 for t in tips):
