@@ -20,4 +20,19 @@ public class RecordResponseDto {
     private Double bmi;
     private Double vai;
     private LocalDate date;
+
+    public static RecordResponseDto from(com.example.thirdprojectback.entity.Record record) {
+        return RecordResponseDto.builder()
+                .id(record.getId())
+                .userId(record.getUserId())
+                .sleep(record.getSleep())
+                .weight(record.getWeight())
+                .fat(record.getFat())
+                .muscle(record.getMuscle())
+                .bmr(record.getBmr())
+                .bmi(record.getBmi())
+                .vai(record.getVai())
+                .date(record.getDate())
+                .build();
+    }
 }

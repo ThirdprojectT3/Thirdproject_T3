@@ -19,4 +19,6 @@ public interface RecordRepository extends JpaRepository<Record, Long> {
     List<Record> findByUserIdIn(List<Long> userIds);
 
     Optional<Record> findTopByUserIdOrderByDateDesc(Long userId);
+
+
 }

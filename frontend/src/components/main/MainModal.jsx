@@ -5,6 +5,7 @@ import { validNumberInput } from '../../utils/ValueValidation';
 import { postRecord } from '../../api/record';
 import Cookies from "js-cookie";
 import { fetchMyUserId } from '../../api/user';
+import { getLatestRecord } from '../../api/record';
 
 const workoutPlaces = ['헬스장', '집', '크로스핏', '쉬기'];
 
@@ -23,31 +24,50 @@ const MainModal = ({ onClose, triggerToast, triggerErrToast, setIsLoading, onSav
     place: '',
   });
 
-  useEffect(() => {
-    const today = new Date().toISOString().split('T')[0];
+useEffect(() => {
+  const today = new Date().toISOString().split('T')[0];
 
-    fetchMyUserId()
-      .then((userId) => {
-        const modalKey = `modalShownDate_${userId}`;
-        const modalShownDate = Cookies.get(modalKey);
+  fetchMyUserId()
+    .then(async (userId) => {
+      const modalKey = `modalShownDate_${userId}`;
+      const modalShownDate = Cookies.get(modalKey);
 
-        if (modalShownDate !== today) {
-          setShowModal(true);
-          document.body.style.overflow = 'hidden';
-        } else {
-          setShowModal(false);
-          if (onClose) onClose();
+      if (modalShownDate !== today) {
+        try {
+          const latestRecord = await getLatestRecord();
+          if (latestRecord) {
+            setForm((prev) => ({
+              ...prev,
+              weight: latestRecord.weight || '',
+              fat: latestRecord.fat || '',
+              muscle: latestRecord.muscle || '',
+              bmr: latestRecord.bmr || '',
+              bmi: latestRecord.bmi || '',
+              vai: latestRecord.vai || '',
+              sleep: latestRecord.sleep || '',
+            }));
+          }
+        } catch (err) {
+          console.error("최신 기록 불러오기 실패", err);
         }
-      })
-      .catch(() => {
+
+        setShowModal(true);
+        document.body.style.overflow = 'hidden';
+      } else {
         setShowModal(false);
         if (onClose) onClose();
-      });
+      }
+    })
+    .catch(() => {
+      setShowModal(false);
+      if (onClose) onClose();
+    });
 
-    return () => {
-      document.body.style.overflow = '';
-    };
-  }, [onClose]);
+  return () => {
+    document.body.style.overflow = '';
+  };
+}, [onClose]);
+
 
   const handleChange = (e) => {
     const { id, value } = e.target;

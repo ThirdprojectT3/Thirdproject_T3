@@ -90,6 +90,13 @@ public class RecordService {
         return recordRepository.findAll(pageable).map(this::toDto);
     }
 
+
+    public RecordResponseDto getLatestRecord(Long userId) {
+        Record latest = recordRepository.findTopByUserIdOrderByDateDesc(userId)
+                .orElseThrow(() -> new IllegalArgumentException("기록이 존재하지 않습니다."));
+        return RecordResponseDto.from(latest);
+    }
+
     /* ---------- UPDATE ---------- */
     public RecordResponseDto updateRecord(Long id, Long userId, RecordRequestDto dto) {
         Record record = recordRepository.findById(id)

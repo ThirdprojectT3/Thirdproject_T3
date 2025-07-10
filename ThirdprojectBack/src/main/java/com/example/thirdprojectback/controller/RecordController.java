@@ -87,6 +87,10 @@ public class RecordController {
     public Map<String, Object> getTotalAnalysis(@AuthenticationPrincipal CustomUserDetails userDetails) {
         return recordService.getTotalAnalysis(userDetails.getUserId());
     }
-
+    @GetMapping("/latest")
+    public RecordResponseDto getLatestRecord(@AuthenticationPrincipal CustomUserDetails userDetails) {
+        Long userId = userDetails.getUserId();
+        return recordService.getLatestRecord(userId);
+    }
 
 }
