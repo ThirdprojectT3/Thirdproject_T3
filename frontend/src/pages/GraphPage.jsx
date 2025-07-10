@@ -8,7 +8,7 @@ export default function GraphPage() {
   const navigate = useNavigate();
 
   return (
-    <div className="graphPageWrapper">
+    <div className="graphPageBackground"> {/* ✅ 전체 배경 */}
       <button className="homeButton" onClick={() => navigate('/main')}>
         <div className="shadow"></div>
         <div className="edge"></div>
@@ -17,11 +17,16 @@ export default function GraphPage() {
         </div>
       </button>
 
-      {/* 막대그래프 */}
-      <UserCompareChart />
+      <div className="graphPageWrapper">
+        <div className="graphBox">
+          <UserCompareChart />
+        </div>
 
-      {/* 꺾은선 그래프 */}
-      <ChangeTrendChart />
+        <div className="graphBox">
+          <ChangeTrendChart />
+        </div>
+      </div>
     </div>
   );
 }
+
