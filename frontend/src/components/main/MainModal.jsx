@@ -24,8 +24,8 @@ const MainModal = ({ onClose, triggerToast, triggerErrToast, setIsLoading, onSav
     place: '',
   });
 
-useEffect(() => {
-  const today = new Date().toISOString().split('T')[0];
+  useEffect(() => {
+    const today = new Date().toISOString().split('T')[0];
 
   fetchMyUserId()
     .then(async (userId) => {
@@ -121,13 +121,15 @@ useEffect(() => {
       const userId = await fetchMyUserId();
       const modalKey = userId ? `modalShownDate_${userId}` : 'modalShownDate';
       Cookies.set(modalKey, today, { expires: 1 });
-      setShowModal(false);
 
       console.log("📦 서버 전송 form 데이터:", form);
       const res = await postRecord(form);
       if (triggerToast) triggerToast('저장 성공!');
 
-      if (onSaved) onSaved(res.data);
+      if (onSaved) await onSaved(res.data);
+      setShowModal(false);
+
+      window.location.reload();
     } catch {
       if (triggerErrToast) triggerErrToast('저장 실패!');
     } finally {

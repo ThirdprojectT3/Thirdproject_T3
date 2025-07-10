@@ -1,8 +1,6 @@
-import React, { useEffect } from 'react';
 import './Calendar.css';
-import { fetchTodosByMonth } from '../../api/todo';
 
-const Calendar = ({ selectedDate, setSelectedDate, setMonthTodos, userId, monthTodos = [] }) => {
+const Calendar = ({ selectedDate, setSelectedDate, monthTodos = [] }) => {
 
   const handlePrevMonth = () => {
     setSelectedDate(new Date(selectedDate.getFullYear(), selectedDate.getMonth() - 1, 1));
@@ -11,14 +9,6 @@ const Calendar = ({ selectedDate, setSelectedDate, setMonthTodos, userId, monthT
   const handleNextMonth = () => {
     setSelectedDate(new Date(selectedDate.getFullYear(), selectedDate.getMonth() + 1, 1));
   };
-
-  // useEffect(() => {
-  //   if (!userId) return;
-  //   const ym = `${selectedDate.getFullYear()}-${String(selectedDate.getMonth() + 1).padStart(2, "0")}`;
-  //   fetchTodosByMonth(userId, ym)
-  //     .then(res => setMonthTodos(res.data))
-  //     .catch(() => setMonthTodos([]));
-  // }, [selectedDate, setMonthTodos, userId]);
 
   // 날짜별 todo 통계 계산
   const getTodoStatsForDate = (dateObj) => {
