@@ -6,10 +6,14 @@ import asyncio
 
 @timeit
 async def search_tip_from_db(state: GenState) -> GenState:
+    place = state.get("place", "")
+    if "쉬기" == place:
+        return {**state, "todo_tips": [], "_no_tips": state["todo_items"] }
+    
     found_tips = []
     no_tips = []
-
     rag_tasks = []
+    
     for todo in state["todo_items"]:
         query = f"{todo['todoItem']} 운동의 올바른 수행 팁을 알려줘 ex) 1. ~~~ 2. ~~~ 3. ~~~"
         rag_tasks.append((todo, aquery_tip_rag(query)))
