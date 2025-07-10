@@ -26,33 +26,65 @@ export default function ChangeTrendChart() {
     fetchData();
   }, [category, duration]);
 
+  const getDurationLabel = (d) => {
+    if (d === '1w') return '1주일';
+    if (d === '1m') return '한달';
+    if (d === '3m') return '3개월';
+    return d;
+  };
+
   return (
     <div>
-      {/* 드롭다운 */}
-      <select value={category} onChange={(e) => setCategory(e.target.value)}>
-        {categories.map((c) => (
-          <option key={c} value={c}>{c}</option>
-        ))}
-      </select>
+      {/* 제목 */}
+      <h2 style={{ textAlign: 'center', marginBottom: '16px', fontSize: '20px', fontWeight: 'bold' }}>
+        최근 {getDurationLabel(duration)} 동안 {category} 변화
+      </h2>
 
-      {/* 기간 선택 버튼 */}
-      <div style={{ marginTop: '12px', marginBottom: '12px' }}>
-        {['1w', '1m', '3m'].map((d) => (
-          <button
-            key={d}
-            style={{
-              marginRight: '8px',
-              background: duration === d ? '#bdbdbd' : '#e0e0e0',
-              border: 'none',
-              borderRadius: '6px',
-              padding: '6px 16px',
-              cursor: 'pointer',
-            }}
-            onClick={() => setDuration(d)}
-          >
-            {d === '1w' ? '1주일' : d === '1m' ? '한달' : '3개월'}
-          </button>
-        ))}
+      <div style={{
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginBottom: '16px',
+      }}>
+
+        {/* 버튼들 */}
+        <div>
+          {['1w', '1m', '3m'].map((d) => (
+            <button
+              key={d}
+              style={{
+                marginRight: '8px',
+                background: duration === d ? '#bdbdbd' : '#e0e0e0',
+                border: 'none',
+                borderRadius: '6px',
+                padding: '6px 16px',
+                cursor: 'pointer',
+              }}
+              onClick={() => setDuration(d)}
+            >
+              {getDurationLabel(d)}
+            </button>
+          ))}
+        </div>
+
+        {/* 드롭다운 */}
+        <select
+          value={category}
+          onChange={(e) => setCategory(e.target.value)}
+          style={{
+            padding: "8px 16px",
+            fontSize: "16px",
+            border: "1px solid #ccc",
+            borderRadius: "8px",
+            backgroundColor: "#ffffff",
+            outline: "none",
+            cursor: "pointer",
+          }}
+        >
+          {categories.map((c) => (
+            <option key={c} value={c}>{c}</option>
+          ))}
+        </select>
       </div>
 
       {/* 꺾은선 그래프 */}
