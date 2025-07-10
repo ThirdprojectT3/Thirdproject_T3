@@ -54,19 +54,16 @@ const getCircleColor = (total, completed) => {
       const dayOfWeek = date.getDay();
       const { total, completed } = getTodoStatsForDate(date);
       const circleColor = getCircleColor(total, completed);
+      const isSelected = selectedDate.getDate() === i &&
+                        selectedDate.getMonth() === date.getMonth() &&
+                        selectedDate.getFullYear() === date.getFullYear();
 
-        days.push(
+      days.push(
         <div className="day-wrapper" key={i}>
           <div
-            className="top-circle"
+            className={`top-circle${isSelected ? ' selected' : ''} day-${dayOfWeek}`}
             title={total > 0 ? `총 ${total}개, 완료 ${completed}개` : "할 일 없음"}
-            style={{ background: circleColor }}
-            onClick={() => setSelectedDate(date)}
-          >
-            {/* 숫자 표시 제거 */}
-          </div>
-          <div
-            className={`day-circle${selectedDate.getDate() === i ? ' selected' : ''} day-${dayOfWeek}`}
+            style={{ background: circleColor, color: "#fff" }}
             onClick={() => setSelectedDate(date)}
           >
             {i}

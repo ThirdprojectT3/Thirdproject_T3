@@ -13,8 +13,9 @@
   gap: 10px;
 }
 
-/* 입체 버튼 구조 */
-.header-button {
+/* 공통 입체 버튼 구조 */
+.header-button,
+.header-button-r {
   position: relative;
   border: none;
   background: transparent;
@@ -26,26 +27,48 @@
 }
 
 /* Shadow layer */
-.header-button .shadow {
+.header-button .shadow,
+.header-button-r .shadow {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: #D9D9D9;
   border-radius: 8px;
   transform: translateY(2px);
   transition: transform 600ms cubic-bezier(0.3, 0.7, 0.4, 1);
 }
 
 /* Edge layer */
-.header-button .edge {
+.header-button .edge,
+.header-button-r .edge {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
   border-radius: 8px;
+}
+
+/* Front layer */
+.header-button .front,
+.header-button-r .front {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  transform: translateY(-4px);
+  transition: transform 600ms cubic-bezier(0.3, 0.7, 0.4, 1);
+  font-weight: 500;
+  min-width: 120px;
+}
+
+/* 개별 색상/스타일 */
+.header-button .shadow {
+  background: #D9D9D9;
+}
+.header-button .edge {
   background: linear-gradient(
     to left,
     #777777 0%,
@@ -54,46 +77,56 @@
     #777777 100%
   );
 }
-
-/* Front layer */
 .header-button .front {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   font-size: 16px;
   color: white;
   background: #A3A3A3;
-  border-radius: 8px;
-  transform: translateY(-4px);
-  transition: transform 600ms cubic-bezier(0.3, 0.7, 0.4, 1);
-  font-weight: 500;
   padding: 12px 32px;
-  min-width: 120px;
+}
+
+.header-button-r .shadow {
+  background: #C3D1FF;
+}
+.header-button-r .edge {
+  background: linear-gradient(
+    to left,
+    #3564FF 0%,
+    #3564FF 8%,
+    #3564FF 92%,
+    #3564FF 100%
+  );
+}
+.header-button-r .front {
+  padding: 12px 28px;
+  font-size: 1.25rem;
+  color: white;
+  background: #587FFF;
 }
 
 /* Hover and active states */
-.header-button:hover .shadow {
+.header-button:hover .shadow,
+.header-button-r:hover .shadow {
   transform: translateY(4px);
   transition: transform 250ms cubic-bezier(0.3, 0.7, 0.4, 1.5);
 }
-
-.header-button:hover .front {
+.header-button:hover .front,
+.header-button-r:hover .front {
   transform: translateY(-6px);
   transition: transform 250ms cubic-bezier(0.3, 0.7, 0.4, 1.5);
 }
-
-.header-button:active .shadow {
+.header-button:active .shadow,
+.header-button-r:active .shadow {
   transform: translateY(1px);
   transition: transform 34ms;
 }
-
-.header-button:active .front {
+.header-button:active .front,
+.header-button-r:active .front {
   transform: translateY(-2px);
   transition: transform 34ms;
 }
 
 /* Disable text selection */
-.header-button .front span {
+.header-button .front span,
+.header-button-r .front span {
   user-select: none;
 }

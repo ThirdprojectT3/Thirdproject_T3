@@ -59,43 +59,37 @@
   align-items: center;
 }
 
+
 .top-circle {
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
   background: #ddd;
   margin-bottom: 4px;
   cursor: pointer;
-  transition: background 0.2s;
-}
-.top-circle:hover {
-  background: #bbb;
-}
-
-.day-circle {
-  width: 20px;
-  height: 20px;
+  transition: background 0.2s, border 0.2s;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 50%;
-  background: #fff;
-  color: #000;
-  font-size: 0.85rem;
-  cursor: pointer;
-  transition: background 0.2s, color 0.2s;
+  color: #fff; /* 숫자 흰색 */
+  font-size: 20px;
+  font-weight: bold;
+  border: 2px solid transparent;
 }
-.day-circle.selected {
-  background: #000;
-  color: #fff;
+.top-circle.selected {
+  border: 2px solid #000; /* 선택 시 테두리 검정 */
 }
-.day-circle.day-0:not(.selected) { color: #FF5858; }
-.day-circle.day-6:not(.selected) { color: #587FFF; }
-.day-circle:hover {
-  background: #ddd;
-}
+.top-circle.day-0 { color: #fff; } /* 일요일도 흰색 */
+.top-circle.day-6 { color: #fff; } /* 토요일도 흰색 */
+
+/* .day-circle 관련 코드는 삭제하거나 주석 처리 */
+.day-circle,
+.day-circle.selected,
+.day-circle.day-0:not(.selected),
+.day-circle.day-6:not(.selected),
+.day-circle:hover,
 .day-circle.selected:hover {
-  background: #444;
+  display: none;
 }
 
 .empty-day {

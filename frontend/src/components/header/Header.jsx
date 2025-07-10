@@ -23,14 +23,14 @@ const Header = () => {
         </div>
       </button>
       <div className="button-group">
-        <button className="header-button" onClick={() => navigate('/graph')}>
+        <button className="header-button-r" onClick={() => navigate('/graph')}>
           <div className="shadow"></div>
           <div className="edge"></div>
           <div className="front">
             <span>통계분석</span>
           </div>
         </button>
-        <button className="header-button" onClick={() => navigate('/profile')}>
+        <button className="header-button-r" onClick={() => navigate('/profile')}>
           <div className="shadow"></div>
           <div className="edge"></div>
           <div className="front">
