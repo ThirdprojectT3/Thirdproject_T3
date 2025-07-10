@@ -87,4 +87,6 @@ public class RecordController {
     public Map<String, Object> getTotalAnalysis(@AuthenticationPrincipal CustomUserDetails userDetails) {
         return recordService.getTotalAnalysis(userDetails.getUserId());
     }
+
+
 }

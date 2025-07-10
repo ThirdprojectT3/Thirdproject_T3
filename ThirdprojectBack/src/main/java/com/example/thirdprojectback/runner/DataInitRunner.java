@@ -93,6 +93,14 @@ public class DataInitRunner {
                     {"fRh_vgS2dFE", "Justin Bieber - Sorry"},
                     {"3JZ_D3ELwOQ", "Ed Sheeran - Shape of You"}
             };
+            String[] tips = {
+                    "동작을 천천히 하며 근육을 느껴보세요.",
+                    "호흡을 일정하게 유지하며 반복하세요.",
+                    "자세를 무너뜨리지 않는 게 중요해요.",
+                    "운동 전 스트레칭은 필수예요!",
+                    "15회씩 나누어 여러 세트로 해보세요.",
+                    "중간에 물 한잔 마셔주세요."
+            };
 
             for (Member user : users) {
                 for (int i = 0; i < 30; i++) {
@@ -124,6 +132,7 @@ public class DataInitRunner {
                     for (int t = 0; t < todoCount; t++) {
                         String todoText = exerciseItems[random.nextInt(exerciseItems.length)] + " " + (10 + random.nextInt(30)) + "회";
                         String[] yt = youtubeData[random.nextInt(youtubeData.length)];
+                        String tip = tips[random.nextInt(tips.length)];
 
                         todos.add(Todo.builder()
                                 .todolist(todolist)
@@ -131,6 +140,7 @@ public class DataInitRunner {
                                 .complete(random.nextBoolean())
                                 .youtubeId(yt[0])
                                 .youtubeTitle(yt[1])
+                                .tip(tip) // ✅ tip 정보 추가
                                 .build());
                     }
 
@@ -147,7 +157,7 @@ public class DataInitRunner {
                 }
             }
 
-            System.out.println("✅ 5명 사용자 + 30일치 기록 + 투두 + 식단 + 유튜브 정보 초기화 완료");
+            System.out.println("✅ 5명 사용자 + 30일치 기록 + 투두 + 식단 + 유튜브 + 팁 초기화 완료");
         };
     }
 }

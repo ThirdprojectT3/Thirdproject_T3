@@ -127,12 +127,63 @@ const syncMonthDiets = useCallback(() => {
             ) : "식단 정보 없음";
             })()}
           </MealBox>
+{(() => {
+  const dateStr = selectedDate.toISOString().slice(0, 10);
+  const todayTodos = monthTodos.filter(todo => todo.date === dateStr);
+  const youtubeTodos = todayTodos.filter(todo => todo.youtubeId);
+
+  return youtubeTodos.length > 0 ? (
+  <VideoBox>
+    <h2 style={{ marginBottom: "16px" }}>🎬 운동 추천 영상</h2>
+    <VideoGrid>
+      {youtubeTodos.map(todo => (
+        <VideoCard key={todo.todoItemId}>
+          <iframe
+            src={`https://www.youtube.com/embed/${todo.youtubeId}`}
+            title={todo.youtubeTitle}
+            frameBorder="0"
+            allowFullScreen
+          />
+          <p>{todo.youtubeTitle}</p>
+        </VideoCard>
+      ))}
+    </VideoGrid>
+  </VideoBox>
+  ) : null;
+})()}
         </MainPageWrapper>
       )}
     </>
   );
 };
+const VideoBox = styled.div`
+  min-width: 100%;
+  margin-top: 24px;
+  padding: 24px;
+  border: 2px solid #444;
+  border-radius: 12px;
+  background: #fafafa;
+`;
+const VideoGrid = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  justify-content: center;
+`;
 
+const VideoCard = styled.div`
+  width: 320px;
+  iframe {
+    width: 100%;
+    height: 180px;
+    border-radius: 8px;
+  }
+  p {
+    font-size: 14px;
+    margin-top: 8px;
+    text-align: center;
+  }
+`;
 const MainPageWrapper = styled.div`
   min-height: 100vh;
   background: #fff;
