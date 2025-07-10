@@ -47,16 +47,20 @@ const LoginPage = () => {
         <h1 className="login-title">로그인</h1>
         <form className="login-form" onSubmit={handleSubmit}>
           <div className="input-group">
-            <label>Email</label>
-            <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Value" />
+            <label>이메일</label>
+            <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="이메일을 입력하세요." />
           </div>
 
           <div className="input-group">
-            <label>Password</label>
-            <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Value" />
+            <label>비밀번호</label>
+            <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="이름을 입력하세요." />
           </div>
 
-          <button className="login-button" type="submit">Sign In</button>
+          <button className="login-button" type="submit">
+            <span className="shadow"></span>
+            <span className="edge"></span>
+            <span className="front"><span>로그인</span></span>
+          </button>
         </form>
 
         <p className="signup-link" onClick={() => navigate("/signup")}>

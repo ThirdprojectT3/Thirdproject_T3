@@ -9,7 +9,13 @@ export default function GraphPage() {
 
   return (
     <div className="graphPageWrapper">
-      <button className="homeButton" onClick={() => navigate('/main')}>뒤로가기</button>
+      <button className="homeButton" onClick={() => navigate('/main')}>
+        <div className="shadow"></div>
+        <div className="edge"></div>
+        <div className="front">
+          <span>home</span>
+        </div>
+      </button>
 
       {/* 막대그래프 */}
       <UserCompareChart />

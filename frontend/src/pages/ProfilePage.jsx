@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
-import Cookies from "js-cookie";
 import { getUserInfo, patchUserInfo } from "../api/userinfo";
 import ErrToast from "../components/toast/ErrToast";
 import "./ProfilePage.css";
@@ -105,48 +104,64 @@ const ProfilePage = () => {
         <h1 className="profile-title">내 정보 수정</h1>
         <form className="profile-form" onSubmit={handleUpdate}>
           <div className="input-group">
-            <label>Email</label>
+            <label>이메일</label>
             <input name="email" value={form.email} onChange={handleChange} />
           </div>
 
           <div className="input-group">
-            <label>Name</label>
+            <label>이름</label>
             <input name="name" value={form.name} onChange={handleChange} />
           </div>
 
           <div className="input-group">
-            <label>Password</label>
+            <label>비밀번호</label>
             <input name="password" type="password" value={form.password} onChange={handleChange} placeholder="새 비밀번호 입력" />
           </div>
 
           <div className="input-group">
-            <label>Height</label>
+            <label>키 (cm)</label>
             <input name="height" type="number" value={form.height} onChange={handleChange} />
           </div>
 
           <div className="input-group">
-            <label>Age</label>
+            <label>나이</label>
             <input name="age" type="number" value={form.age} onChange={handleChange} />
           </div>
 
           <div className="input-group">
-            <label>Gender</label>
-            <div className="radio-group">
-              {["male", "female", "other"].map((genderOption) => (
-                <label key={genderOption}>
-                  <input type="radio" name="gender" value={genderOption} checked={form.gender === genderOption} onChange={handleChange} />
-                  {genderOption.charAt(0).toUpperCase() + genderOption.slice(1)}
-                </label>
-              ))}
+            <label>성별</label>
+            <div className="radio-button">
+              <label>
+                <input type="radio" name="gender" value="male" checked={form.gender === "male"} onChange={handleChange}/>
+                <span className="radio"></span>
+                남성
+              </label>
+              <label>
+                <input type="radio" name="gender" value="female" checked={form.gender === "female"} onChange={handleChange}/>
+                <span className="radio"></span>
+                여성
+              </label>
+              <label>
+                <input type="radio" name="gender" value="other" checked={form.gender === "other"} onChange={handleChange}/>
+                <span className="radio"></span>
+                기타
+              </label>
             </div>
           </div>
 
           <div className="input-group">
-            <label>Goal</label>
-            <div className="radio-group">
+            <label>목표</label>
+            <div className="radio-button">
               {["체중감량", "근력향상"].map((goalOption) => (
                 <label key={goalOption}>
-                  <input type="radio" name="goal" value={goalOption} checked={form.goal === goalOption} onChange={handleChange} />
+                  <input
+                    type="radio"
+                    name="goal"
+                    value={goalOption}
+                    checked={form.goal === goalOption}
+                    onChange={handleChange}
+                  />
+                  <span className="radio"></span>
                   {goalOption}
                 </label>
               ))}
@@ -157,8 +172,17 @@ const ProfilePage = () => {
             <label>질병 (해당되는 항목 선택)</label>
             <div className="checkbox-group">
               {diseasesList.map((disease) => (
-                <label key={disease}>
-                  <input type="checkbox" name="diseases" value={disease} checked={form.diseases.includes(disease)} onChange={handleDiseaseChange} />
+                <label key={disease} className="checkbox-label">
+                  <span className="checkBox">
+                    <input
+                      type="checkbox"
+                      name="diseases"
+                      value={disease}
+                      checked={form.diseases.includes(disease)}
+                      onChange={handleDiseaseChange}
+                    />
+                    <div className="transition" />
+                  </span>
                   {disease}
                 </label>
               ))}
@@ -166,8 +190,16 @@ const ProfilePage = () => {
           </div>
 
           <div className="button-group">
-            <button className="submit-button" type="submit">수정하기</button>
-            <button className="cancel-button" type="button" onClick={handleCancel}>취소</button>
+            <button className="submit-button" type="submit">
+              <span className="shadow"></span>
+              <span className="edge"></span>
+              <span className="front"><span>수정하기</span></span>
+            </button>
+            <button className="cancel-button" type="button" onClick={handleCancel}>
+              <span className="shadow"></span>
+              <span className="edge"></span>
+              <span className="front"><span>취소</span></span>
+            </button>
           </div>
         </form>
       </div>

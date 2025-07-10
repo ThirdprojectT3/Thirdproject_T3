@@ -33,7 +33,7 @@ const SignupPage = () => {
     height: "",
     age: "",
     gender: "male",
-    goal: "체중 감량",
+    goal: "체중감량",
     diseases: [],
   });
 
@@ -86,44 +86,64 @@ const SignupPage = () => {
         <h1 className="signup-title">회원가입</h1>
         <form className="signup-form" onSubmit={handleSubmit}>
           <div className="input-group">
-            <label>Email</label>
-            <input name="email" value={form.email} onChange={handleChange} placeholder="Value" />
+            <label>이메일</label>
+            <input name="email" value={form.email} onChange={handleChange} placeholder="이메일을 입력하세요." />
           </div>
 
           <div className="input-group">
-            <label>Name</label>
-            <input name="name" value={form.name} onChange={handleChange} placeholder="Value" />
+            <label>이름</label>
+            <input name="name" value={form.name} onChange={handleChange} placeholder="이름을 입력하세요." />
           </div>
 
           <div className="input-group">
-            <label>Password</label>
-            <input name="password" type="password" value={form.password} onChange={handleChange} placeholder="Value" />
+            <label>비밀번호</label>
+            <input name="password" type="password" value={form.password} onChange={handleChange} placeholder="비밀번호를 입력하세요. (8~20자)" />
           </div>
 
           <div className="input-group">
-            <label>Height</label>
-            <input name="height" type="number" value={form.height} onChange={handleChange} placeholder="Value" />
+            <label>키 (cm)</label>
+            <input name="height" type="number" value={form.height} onChange={handleChange} placeholder="키를 입력하세요." />
           </div>
 
           <div className="input-group">
-            <label>Age</label>
-            <input name="age" type="number" value={form.age} onChange={handleChange} placeholder="Value" />
+            <label>나이</label>
+            <input name="age" type="number" value={form.age} onChange={handleChange} placeholder="나이를 입력하세요." />
           </div>
 
           <div className="input-group">
-            <label>Gender</label>
-            <div className="radio-group">
-              <label><input type="radio" name="gender" value="male" checked={form.gender === "male"} onChange={handleChange} /> Male</label>
-              <label><input type="radio" name="gender" value="female" checked={form.gender === "female"} onChange={handleChange} /> Female</label>
-              <label><input type="radio" name="gender" value="other" checked={form.gender === "other"} onChange={handleChange} /> Other</label>
+            <label>성별</label>
+            <div className="radio-button">
+              <label>
+                <input type="radio" name="gender" value="male" checked={form.gender === "male"} onChange={handleChange}/>
+                <span className="radio"></span>
+                남성
+              </label>
+              <label>
+                <input type="radio" name="gender" value="female" checked={form.gender === "female"} onChange={handleChange}/>
+                <span className="radio"></span>
+                여성
+              </label>
+              <label>
+                <input type="radio" name="gender" value="other" checked={form.gender === "other"} onChange={handleChange}/>
+                <span className="radio"></span>
+                기타
+              </label>
             </div>
           </div>
 
           <div className="input-group">
-            <label>Goal</label>
-            <div className="radio-group">
-              <label><input type="radio" name="goal" value="체중감량" checked={form.goal === "체중감량"} onChange={handleChange}/> 체중 감량</label>
-              <label><input type="radio" name="goal" value="근력향상" checked={form.goal === "근력향상"} onChange={handleChange}/> 근력 향상</label>
+            <label>목표</label>
+            <div className="radio-button">
+              <label>
+                <input type="radio" name="goal" value="체중감량" checked={form.goal === "체중감량"} onChange={handleChange}/>
+                <span className="radio"></span>
+                체중 감량
+              </label>
+              <label>
+                <input type="radio" name="goal" value="근력향상" checked={form.goal === "근력향상"} onChange={handleChange}/>
+                <span className="radio"></span>
+                근력 향상
+              </label>
             </div>
           </div>
 
@@ -132,20 +152,27 @@ const SignupPage = () => {
             <div className="checkbox-group">
               {diseasesList.map((disease) => (
                 <label key={disease} className="checkbox-label">
-                  <input
-                    type="checkbox"
-                    name="diseases"
-                    value={disease}
-                    checked={form.diseases.includes(disease)}
-                    onChange={handleDiseaseChange}
-                  />
+                  <span className="checkBox transition">
+                    <input
+                      type="checkbox"
+                      name="diseases"
+                      value={disease}
+                      checked={form.diseases.includes(disease)}
+                      onChange={handleDiseaseChange}
+                    />
+                    <div />
+                  </span>
                   {disease}
                 </label>
               ))}
             </div>
           </div>
 
-          <button className="signup-button" type="submit">Sign Up</button>
+          <button className="signup-button" type="submit">
+            <span className="shadow"></span>
+            <span className="edge"></span>
+            <span className="front"><span>회원가입</span></span>
+          </button>
         </form>
         <p className="login-link" onClick={() => navigate("/")}>
           로그인으로 돌아가기
