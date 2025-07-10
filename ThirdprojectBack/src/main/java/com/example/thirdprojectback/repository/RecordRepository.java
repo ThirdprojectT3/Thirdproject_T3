@@ -20,5 +20,5 @@ public interface RecordRepository extends JpaRepository<Record, Long> {
 
     Optional<Record> findTopByUserIdOrderByDateDesc(Long userId);
 
-
+    boolean existsByUserIdAndDate(Long userId, LocalDate date);
 }
