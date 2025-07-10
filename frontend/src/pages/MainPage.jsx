@@ -24,6 +24,13 @@ const MainPage = () => {
   const [showCheerPopup, setShowCheerPopup] = useState(false);
   const [currentTodoMonth, setCurrentTodoMonth] = useState('');
   const [currentDietMonth, setCurrentDietMonth] = useState('');
+
+  const getLocalDateString = (date) => {
+    return date.getFullYear() + '-' +
+      String(date.getMonth() + 1).padStart(2, '0') + '-' +
+      String(date.getDate()).padStart(2, '0');
+  };
+
   const triggerToast = (msg) => {
     setToastMessage(msg);
     setShowToast(true);
@@ -35,56 +42,61 @@ const MainPage = () => {
     setShowErrToast(true);
     setTimeout(() => setShowErrToast(false), 2000);
   };
- const handleSaved = (aiResponse) => {
-  if (aiResponse?.cheering) {
-    setCheering(aiResponse.cheering);
-    setShowCheerPopup(true);
-    setTimeout(() => setShowCheerPopup(false), 3000);
-  }
-  syncMonthTodos();
-  syncMonthDiets();
+
+  const handleSaved = (aiResponse) => {
+    if (aiResponse?.cheering) {
+      setCheering(aiResponse.cheering);
+      setShowCheerPopup(true);
+    } else {
+      window.location.reload();
+    }
   };
-const forceSyncMonthTodos = useCallback(() => {
-  const ym = `${selectedDate.getFullYear()}-${String(selectedDate.getMonth() + 1).padStart(2, "0")}`;
-  fetchTodosByMonth(ym).then(res => {
-    setMonthTodos(res.data);
-    setCurrentTodoMonth(ym); // 필요하면 이건 유지
-  });
-}, [selectedDate]);
 
-const forceSyncMonthDiets = useCallback(() => {
-  const ym = `${selectedDate.getFullYear()}-${String(selectedDate.getMonth() + 1).padStart(2, "0")}`;
-  fetchDietsByMonth(ym).then(res => {
-    setMonthDiets(res.data);
-    setCurrentDietMonth(ym); // 필요하면 이건 유지
-  });
-}, [selectedDate]);
+  const forceSyncMonthTodos = useCallback(() => {
+    const ym = `${selectedDate.getFullYear()}-${String(selectedDate.getMonth() + 1).padStart(2, "0")}`;
+    fetchTodosByMonth(ym).then(res => {
+      setMonthTodos(res.data);
+      setCurrentTodoMonth(ym); // 필요하면 이건 유지
+    });
+  }, [selectedDate]);
+
+  const forceSyncMonthDiets = useCallback(() => {
+    const ym = `${selectedDate.getFullYear()}-${String(selectedDate.getMonth() + 1).padStart(2, "0")}`;
+    fetchDietsByMonth(ym).then(res => {
+      setMonthDiets(res.data);
+      setCurrentDietMonth(ym); // 필요하면 이건 유지
+    });
+  }, [selectedDate]);
   // 월별 todo 동기화 함수
-const syncMonthTodos = useCallback(() => {
-  const ym = `${selectedDate.getFullYear()}-${String(selectedDate.getMonth() + 1).padStart(2, "0")}`;
-  if (currentTodoMonth === ym) return; 
-  setCurrentTodoMonth(ym);
-  fetchTodosByMonth(ym).then(res => setMonthTodos(res.data));
-}, [selectedDate, currentTodoMonth]);
+  const syncMonthTodos = useCallback(() => {
+    const ym = `${selectedDate.getFullYear()}-${String(selectedDate.getMonth() + 1).padStart(2, "0")}`;
+    if (currentTodoMonth === ym) return; 
+    setCurrentTodoMonth(ym);
+    fetchTodosByMonth(ym).then(res => setMonthTodos(res.data));
+  }, [selectedDate, currentTodoMonth]);
 
-const syncMonthDiets = useCallback(() => {
-  const ym = `${selectedDate.getFullYear()}-${String(selectedDate.getMonth() + 1).padStart(2, "0")}`;
-  if (currentDietMonth === ym) return; 
-  setCurrentDietMonth(ym);
-  fetchDietsByMonth(ym).then(res => setMonthDiets(res.data));
-}, [selectedDate, currentDietMonth]);
+  const syncMonthDiets = useCallback(() => {
+    const ym = `${selectedDate.getFullYear()}-${String(selectedDate.getMonth() + 1).padStart(2, "0")}`;
+    if (currentDietMonth === ym) return; 
+    setCurrentDietMonth(ym);
+    fetchDietsByMonth(ym).then(res => setMonthDiets(res.data));
+  }, [selectedDate, currentDietMonth]);
 
   // 메인 페이지 진입 시 달력 동기화
   useEffect(() => {
     syncMonthTodos();
-    syncMonthDiets();
   }, [selectedDate]);
+
+  useEffect(() => {
+    syncMonthDiets();
+  }, []);
 
   return (
     <>
       {isLoading && <Loading fullscreen />}
       {showToast && <Toast message={toastMessage} />}
       {showErrToast && <ErrToast message={errToastMessage} onClose={() => setShowErrToast(false)} />}
+      {showCheerPopup && <CheeringPopup message={cheering} />}
       {showModal && <MainModal 
         onClose={() => setShowModal(false)}
         triggerToast={triggerToast}
@@ -116,41 +128,41 @@ const syncMonthDiets = useCallback(() => {
           </MainContent>
           <MealBox>
             {(() => {
-                const dateStr = selectedDate.toISOString().slice(0, 10);
-                const diet = monthDiets.find(d => d.date === dateStr);
-            return diet ? (
-            <div>
-              <p>🍳 아침: {diet.breakfast}</p>
-              <p>🍱 점심: {diet.lunch}</p>
-              <p>🍖 저녁: {diet.dinner}</p>
-            </div>
-            ) : "식단 정보 없음";
+              const dateStr = getLocalDateString(selectedDate);
+              const diet = monthDiets.find(d => d.date === dateStr);
+              return diet ? (
+              <div>
+                <p>🍳 아침: {diet.breakfast}</p>
+                <p>🍱 점심: {diet.lunch}</p>
+                <p>🍖 저녁: {diet.dinner}</p>
+              </div>
+              ) : "식단 정보 없음";
             })()}
           </MealBox>
-{(() => {
-  const dateStr = selectedDate.toISOString().slice(0, 10);
-  const todayTodos = monthTodos.filter(todo => todo.date === dateStr);
-  const youtubeTodos = todayTodos.filter(todo => todo.youtubeId);
+          {(() => {
+            const dateStr = getLocalDateString(selectedDate);
+            const todayTodos = monthTodos.filter(todo => todo.date === dateStr);
+            const youtubeTodos = todayTodos.filter(todo => todo.youtubeId);
 
-  return youtubeTodos.length > 0 ? (
-  <VideoBox>
-    <h2 style={{ marginBottom: "16px" }}>🎬 운동 추천 영상</h2>
-    <VideoGrid>
-      {youtubeTodos.map(todo => (
-        <VideoCard key={todo.todoItemId}>
-          <iframe
-            src={`https://www.youtube.com/embed/${todo.youtubeId}`}
-            title={todo.youtubeTitle}
-            frameBorder="0"
-            allowFullScreen
-          />
-          <p>{todo.youtubeTitle}</p>
-        </VideoCard>
-      ))}
-    </VideoGrid>
-  </VideoBox>
-  ) : null;
-})()}
+            return youtubeTodos.length > 0 ? (
+            <VideoBox>
+              <h2 style={{ marginBottom: "16px" }}>🎬 운동 추천 영상</h2>
+              <VideoGrid>
+                {youtubeTodos.map(todo => (
+                  <VideoCard key={todo.todoItemId}>
+                    <iframe
+                      src={`https://www.youtube.com/embed/${todo.youtubeId}`}
+                      title={todo.youtubeTitle}
+                      frameBorder="0"
+                      allowFullScreen
+                    />
+                    <p>{todo.youtubeTitle}</p>
+                  </VideoCard>
+                ))}
+              </VideoGrid>
+            </VideoBox>
+            ) : null;
+          })()}
         </MainPageWrapper>
       )}
     </>
