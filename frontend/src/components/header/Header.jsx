@@ -15,13 +15,15 @@ const Header = () => {
 
   return (
     <div className="header-container">
-      <button className="header-button" onClick={handleLogout}>
-        <div className="shadow"></div>
-        <div className="edge"></div>
-        <div className="front">
-          <span>로그아웃</span>
-        </div>
-      </button>
+      <div className="button-group">
+        <button className="header-button" onClick={handleLogout}>
+          <div className="shadow"></div>
+          <div className="edge"></div>
+          <div className="front">
+            <span>로그아웃</span>
+          </div>
+        </button>
+      </div>
       <div className="button-group">
         <button className="header-button-r" onClick={() => navigate('/graph')}>
           <div className="shadow"></div>

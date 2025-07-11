@@ -1,4 +1,3 @@
-// components/main/MealInfo.jsx
 import React from 'react';
 import './Meal.css';
 

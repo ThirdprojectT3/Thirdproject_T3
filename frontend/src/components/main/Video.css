@@ -10,7 +10,11 @@
 }
 
 .video-title {
+  text-align: left;    /* 왼쪽 정렬 */
   margin-bottom: 16px;
+  font-size: 32px;     /* 글자 크기 키우기 */
+  font-weight: bold;   /* 굵게 */
+  margin-top: 10px;    /* 위 여백 */
 }
 
 .video-grid {
