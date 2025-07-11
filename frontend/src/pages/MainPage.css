@@ -10,3 +10,8 @@
   gap: 32px;
   margin-bottom: 32px;
 }
+
+.calendar-wrapper,
+.todo-container {
+  min-height: 520px;
+}
