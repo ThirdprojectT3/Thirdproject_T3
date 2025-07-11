@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Navigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import axios from '../api/axios';
+import Loading from '../components/loading/Loading';
 
 const PrivateRoute = ({ children }) => {
   const [isLoading, setIsLoading] = useState(true);
@@ -24,7 +25,7 @@ const PrivateRoute = ({ children }) => {
   }, []);
 
   if (isLoading) {
-    return <div>로딩 중...</div>; // 로딩 표시
+    return <Loading message="로딩 중..." fullscreen />;
   }
 
   if (!authenticated) {
