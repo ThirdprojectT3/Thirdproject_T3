@@ -3,9 +3,8 @@ import React, { useEffect, useState } from 'react';
 import './MainModal.css';
 import { validNumberInput } from '../../utils/ValueValidation';
 import { postRecord } from '../../api/record';
-import Cookies from "js-cookie";
 import { fetchMyUserId } from '../../api/user';
-import { getLatestRecord } from '../../api/record';
+import { getLatestRecord ,checkTodayRecord} from '../../api/record';
 
 const workoutPlaces = ['헬스장', '집', '크로스핏', '쉬기'];
 
@@ -24,50 +23,48 @@ const MainModal = ({ onClose, triggerToast, triggerErrToast, setIsLoading, onSav
     place: '',
   });
 
-useEffect(() => {
-  const today = new Date().toISOString().split('T')[0];
-
-  fetchMyUserId()
-    .then(async (userId) => {
-      const modalKey = `modalShownDate_${userId}`;
-      const modalShownDate = Cookies.get(modalKey);
-
-      if (modalShownDate !== today) {
-        try {
-          const latestRecord = await getLatestRecord();
-          if (latestRecord) {
-            setForm((prev) => ({
-              ...prev,
-              weight: latestRecord.weight || '',
-              fat: latestRecord.fat || '',
-              muscle: latestRecord.muscle || '',
-              bmr: latestRecord.bmr || '',
-              bmi: latestRecord.bmi || '',
-              vai: latestRecord.vai || '',
-              sleep: latestRecord.sleep || '',
-            }));
+  useEffect(() => {
+    const initModal = async () => {
+      try {
+        const userId = await fetchMyUserId();
+        const { data } = await checkTodayRecord(); // 오늘 기록 여부 확인
+        if (!data.exists) {
+          try {
+            const latest = await getLatestRecord();
+            if (latest) {
+              setForm((prev) => ({
+                ...prev,
+                weight: latest.weight || '',
+                fat: latest.fat || '',
+                muscle: latest.muscle || '',
+                bmr: latest.bmr || '',
+                bmi: latest.bmi || '',
+                vai: latest.vai || '',
+                sleep: latest.sleep || '',
+              }));
+            }
+          } catch (err) {
+            console.error("최신 기록 불러오기 실패", err);
           }
-        } catch (err) {
-          console.error("최신 기록 불러오기 실패", err);
-        }
 
-        setShowModal(true);
-        document.body.style.overflow = 'hidden';
-      } else {
+          setShowModal(true);
+          document.body.style.overflow = 'hidden';
+        } else {
+          setShowModal(false);
+          if (onClose) onClose();
+        }
+      } catch (err) {
+        console.error("모달 초기화 실패", err);
         setShowModal(false);
         if (onClose) onClose();
       }
-    })
-    .catch(() => {
-      setShowModal(false);
-      if (onClose) onClose();
-    });
+    };
 
-  return () => {
-    document.body.style.overflow = '';
-  };
-}, [onClose]);
-
+    initModal();
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [onClose]);
 
   const handleChange = (e) => {
     const { id, value } = e.target;
@@ -114,20 +111,15 @@ useEffect(() => {
       return;
     }
 
-    const today = new Date().toISOString().split('T')[0];
+
     if (setIsLoading) setIsLoading(true);
-
     try {
-      const userId = await fetchMyUserId();
-      const modalKey = userId ? `modalShownDate_${userId}` : 'modalShownDate';
-      Cookies.set(modalKey, today, { expires: 1 });
-      setShowModal(false);
-
       console.log("📦 서버 전송 form 데이터:", form);
       const res = await postRecord(form);
       if (triggerToast) triggerToast('저장 성공!');
-
-      if (onSaved) onSaved(res.data);
+      if (onSaved) await onSaved(res.data);
+      setShowModal(false);
+      window.location.reload();
     } catch {
       if (triggerErrToast) triggerErrToast('저장 실패!');
     } finally {

@@ -1,0 +1,12 @@
+/* MainPage.css */
+.main-page-wrapper {
+  min-height: 100vh;
+  background: #E8EEFF;
+  padding: 32px;
+}
+
+.main-content {
+  display: flex;
+  gap: 32px;
+  margin-bottom: 32px;
+}

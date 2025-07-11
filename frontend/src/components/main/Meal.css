@@ -1,0 +1,50 @@
+.meal-box {
+  max-width: 100%;
+  min-height: 180px;
+  border: none;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 20px 32px 32px 32px;
+  margin-bottom: 32px;
+}
+
+.meal-title {
+  text-align: left;
+  margin-bottom: 16px;
+  font-size: 32px;
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+.meal-list {
+  max-width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0 20px;
+}
+
+.meal-item {
+  border-radius: 12px;
+  padding: 20px 20px;
+  margin: 8px 0;
+  font-size: 24px;
+  display: inline-block;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  width: 100%;
+}
+
+.breakfast {
+  background-color: #F0D4C2;
+}
+
+.lunch {
+  background-color: #C7EBCA;
+}
+
+.dinner {
+  background-color: #C7C8EE;
+}

@@ -118,6 +118,12 @@ public class RecordService {
         return toDto(recordRepository.save(record));
     }
 
+    public boolean hasTodayRecord(Long userId) {
+        LocalDate today = LocalDate.now();
+        return recordRepository.existsByUserIdAndDate(userId, today);
+    }
+
+
     /* ---------- DELETE ---------- */
     public void deleteRecord(Long id, Long userId) {
         Record record = recordRepository.findById(id)

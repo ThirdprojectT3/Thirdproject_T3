@@ -1,8 +1,6 @@
-import React, { useEffect } from 'react';
 import './Calendar.css';
-import { fetchTodosByMonth } from '../../api/todo';
 
-const Calendar = ({ selectedDate, setSelectedDate, setMonthTodos, userId, monthTodos = [] }) => {
+const Calendar = ({ selectedDate, setSelectedDate, monthTodos = [] }) => {
 
   const handlePrevMonth = () => {
     setSelectedDate(new Date(selectedDate.getFullYear(), selectedDate.getMonth() - 1, 1));
@@ -11,14 +9,6 @@ const Calendar = ({ selectedDate, setSelectedDate, setMonthTodos, userId, monthT
   const handleNextMonth = () => {
     setSelectedDate(new Date(selectedDate.getFullYear(), selectedDate.getMonth() + 1, 1));
   };
-
-  // useEffect(() => {
-  //   if (!userId) return;
-  //   const ym = `${selectedDate.getFullYear()}-${String(selectedDate.getMonth() + 1).padStart(2, "0")}`;
-  //   fetchTodosByMonth(userId, ym)
-  //     .then(res => setMonthTodos(res.data))
-  //     .catch(() => setMonthTodos([]));
-  // }, [selectedDate, setMonthTodos, userId]);
 
   // 날짜별 todo 통계 계산
   const getTodoStatsForDate = (dateObj) => {
@@ -31,7 +21,7 @@ const Calendar = ({ selectedDate, setSelectedDate, setMonthTodos, userId, monthT
 
   // 완료율에 따라 색상 결정
   const getCircleColor = (total, completed) => {
-    if (total === 0) return "#e0e0e0"; // 회색
+    if (total === 0) return "#ffffff"; // 흰색
     const ratio = completed / total;
     if (ratio === 1) return "#4caf50"; // 초록
     if (ratio >= 0.8) return "#8bc34a";
@@ -52,6 +42,7 @@ const Calendar = ({ selectedDate, setSelectedDate, setMonthTodos, userId, monthT
 
     for (let i = 1; i <= daysInMonth; i++) {
       const date = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), i);
+      const dayOfWeek = date.getDay(); // 요일 (0: 일, 6: 토)
       const isToday = date.toDateString() === new Date().toDateString();
       const isSelected = selectedDate.getDate() === i && selectedDate.getMonth() === date.getMonth();
 
@@ -64,7 +55,9 @@ const Calendar = ({ selectedDate, setSelectedDate, setMonthTodos, userId, monthT
           className={`day-wrapper ${isSelected ? 'selected' : ''} ${isToday ? 'today' : ''}`}
           onClick={() => setSelectedDate(date)}
         >
-          <div className="date-text">{i}</div>
+          <div className={`date-text ${dayOfWeek === 0 ? 'sunday' : dayOfWeek === 6 ? 'saturday' : ''}`}>
+            {i}
+          </div>
           <div
             className="dot"
             style={{ backgroundColor: circleColor }}
@@ -83,13 +76,13 @@ const Calendar = ({ selectedDate, setSelectedDate, setMonthTodos, userId, monthT
           {selectedDate.getFullYear()}년 {selectedDate.getMonth() + 1}월
         </div>
         <div className="calendar-navigation">
-          <button onClick={handlePrevMonth}>◀</button>
-          <button onClick={handleNextMonth}>▶</button>
+          <button onClick={handlePrevMonth}>&lt;</button>
+          <button onClick={handleNextMonth}>&gt;</button>
         </div>
       </div>
       <div className="calendar-weekdays">
         {['일', '월', '화', '수', '목', '금', '토'].map((day, index) => (
-          <div className="calendar-weekday" key={index}>{day}</div>
+          <div className={`calendar-weekday weekday-${index}`} key={index}>{day}</div>
         ))}
       </div>
       <div className="calendar-days-grid">{renderDays()}</div>

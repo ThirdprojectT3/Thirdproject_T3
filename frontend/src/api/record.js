@@ -30,3 +30,5 @@ export const getLatestRecord = () => {
       return null;
     });
 };
+
+export const checkTodayRecord = () => axios.get('/records/today-exists');

@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -91,6 +92,16 @@ public class RecordController {
     public RecordResponseDto getLatestRecord(@AuthenticationPrincipal CustomUserDetails userDetails) {
         Long userId = userDetails.getUserId();
         return recordService.getLatestRecord(userId);
+    }
+    @GetMapping("/today-exists")
+    public ResponseEntity<Map<String, Boolean>> checkTodayExists(@AuthenticationPrincipal CustomUserDetails userDetails) {
+        Long userId = userDetails.getUserId();
+        boolean exists = recordService.hasTodayRecord(userId);
+
+        Map<String, Boolean> result = new HashMap<>();
+        result.put("exists", exists);
+
+        return ResponseEntity.ok(result);
     }
 
 }
