@@ -2,7 +2,7 @@ name: Build and Push All Service Images
 
 on:
   push:
-    branches: [main, dev]
+    branches: [main]
 
 jobs:
   build-and-push:
@@ -44,3 +44,15 @@ jobs:
           context: ./ai
           push: true
           tags: ${{ secrets.DOCKER_USERNAME }}/health-ai:ai-v1
+      # Deploy to EC2 via SSH
+      - name: Deploy on EC2
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            cd ~/health-ai
+            docker compose pull
+            docker compose up -d
+            docker image prune -a
