@@ -5,7 +5,7 @@ import {
 } from 'recharts';
 import { getUserAnalysis } from '../../api/charts';
 
-export default function UserCompareChart() {
+export default function UserCompareChart({ onError }) {
   const [chartData, setChartData] = useState([]);
   const [ageTitle, setAgeTitle] = useState('평균과 비교하기'); // 제목만 저장
 
@@ -26,8 +26,8 @@ export default function UserCompareChart() {
 
         setChartData(data);
         setAgeTitle(`${age}살의 평균과 비교하기`); // 제목만 저장
-      } catch (error) {
-        console.error('사용자 분석 데이터 불러오기 실패:', error);
+      } catch {
+        if (onError) onError('사용자 분석 데이터 불러오기 실패');
       }
     }
 

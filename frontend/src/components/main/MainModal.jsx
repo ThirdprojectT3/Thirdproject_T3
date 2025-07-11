@@ -3,7 +3,6 @@ import React, { useEffect, useState } from 'react';
 import './MainModal.css';
 import { validNumberInput } from '../../utils/ValueValidation';
 import { postRecord } from '../../api/record';
-import { fetchMyUserId } from '../../api/user';
 import { getLatestRecord ,checkTodayRecord} from '../../api/record';
 
 const workoutPlaces = ['헬스장', '집', '크로스핏', '쉬기'];
@@ -26,7 +25,6 @@ const MainModal = ({ onClose, triggerToast, triggerErrToast, setIsLoading, onSav
   useEffect(() => {
     const initModal = async () => {
       try {
-        const userId = await fetchMyUserId();
         const { data } = await checkTodayRecord(); // 오늘 기록 여부 확인
         if (!data.exists) {
           try {
@@ -43,8 +41,8 @@ const MainModal = ({ onClose, triggerToast, triggerErrToast, setIsLoading, onSav
                 sleep: latest.sleep || '',
               }));
             }
-          } catch (err) {
-            console.error("최신 기록 불러오기 실패", err);
+          } catch {
+            return null;
           }
 
           setShowModal(true);
@@ -53,8 +51,8 @@ const MainModal = ({ onClose, triggerToast, triggerErrToast, setIsLoading, onSav
           setShowModal(false);
           if (onClose) onClose();
         }
-      } catch (err) {
-        console.error("모달 초기화 실패", err);
+      } catch {
+        if (triggerErrToast) triggerErrToast("모달 초기화 실패");
         setShowModal(false);
         if (onClose) onClose();
       }
@@ -114,7 +112,6 @@ const MainModal = ({ onClose, triggerToast, triggerErrToast, setIsLoading, onSav
 
     if (setIsLoading) setIsLoading(true);
     try {
-      console.log("📦 서버 전송 form 데이터:", form);
       const res = await postRecord(form);
       if (triggerToast) triggerToast('저장 성공!');
       if (onSaved) await onSaved(res);

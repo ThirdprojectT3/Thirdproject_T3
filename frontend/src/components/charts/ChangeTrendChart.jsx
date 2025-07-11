@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { LineChart, Line, XAxis, YAxis, Tooltip, Legend, CartesianGrid, ResponsiveContainer } from 'recharts';
 import { getGraphData } from '../../api/charts';
 
-export default function ChangeTrendChart() {
+export default function ChangeTrendChart({ onError }) {
   const [category, setCategory] = useState('체지방');
   const [duration, setDuration] = useState('1w');
   const [chartData, setChartData] = useState([]);
@@ -18,8 +18,8 @@ export default function ChangeTrendChart() {
           값: item.value,
         }));
         setChartData(formattedData);
-      } catch (error) {
-        console.error('그래프 데이터 불러오기 실패:', error);
+      } catch {
+        if (onError) onError('그래프 데이터 불러오기 실패');
       }
     }
 
