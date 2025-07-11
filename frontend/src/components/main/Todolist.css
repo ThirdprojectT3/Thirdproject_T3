@@ -1,0 +1,253 @@
+.todo-container {
+  width: 100%;
+  max-width: 400px;
+  height: 520px;  /* ✅ calendar와 동일하게 고정 */
+  padding: 20px;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;  /* 위 아래 여백 맞춤 */
+}
+
+.title {
+  font-size: 32px;
+  font-weight: bold;
+  margin-bottom: 20px;
+  color: #000000;
+}
+
+.todo-list-wrapper {
+  flex-grow: 1;
+  overflow-y: auto; /* ✅ 세로 스크롤만 */
+  overflow-x: hidden; /* ✅ 가로 스크롤 방지 */
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  padding: 22px 16px;
+}
+
+.todo-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.todo-text-wrapper {
+  flex-grow: 1;
+}
+
+.checkbox.container {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  background: white;
+  border-radius: 6px;
+  position: relative;
+  transition: background-color 0.2s;
+  padding: 0;
+  border: none;
+}
+
+.checkbox.container input {
+  display: none;
+}
+
+.checkbox.container svg {
+  overflow: visible;
+  width: 24px;
+  height: 24px;
+  position: absolute;
+  top: 2px;
+  left: 2px;
+}
+
+.checkbox.container .path {
+  fill: none;
+  stroke: #3564FF;
+  stroke-width: 6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: stroke-dasharray 0.5s ease, stroke-dashoffset 0.5s ease;
+  stroke-dasharray: 241 9999999;
+  stroke-dashoffset: 0;
+}
+
+.checkbox.container input:checked ~ svg .path {
+  stroke-dasharray: 70.5096664428711 9999999;
+  stroke-dashoffset: -262.2723388671875;
+}
+
+.checkbox.container input:checked ~ svg {
+  /* 체크 시 배경색 변경 */
+  background: white;
+  border-radius: 6px;
+}
+
+.todo-text {
+  font-size: 18px;
+  color: #000000;
+  user-select: none;
+}
+
+.todo-text.completed {
+  color: #a5a5a5;
+  text-decoration: line-through;
+}
+
+.add-todo-wrapper {
+  display: flex;
+  margin-top: 30px;
+  gap: 10px;
+}
+
+.input {
+  flex-grow: 1;
+  border: 1px solid transparent;
+  padding: 12px;
+  border-radius: 8px;
+  font-size: 16px;
+  outline: none;
+  background-color: #F3F3F3;
+  border-radius: 5px;
+  transition: all 0.5s;
+}
+
+.input:hover,
+.input:focus {
+  border: 1px solid #4A9DEC;
+  box-shadow: 0px 0px 0px 7px rgb(74, 157, 236, 20%);
+  background-color: white;
+}
+
+.add-button {
+  --plus_sideLength: 46px;
+  --plus_topRightTriangleSideLength: 14px;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid white;
+  width: var(--plus_sideLength);
+  height: var(--plus_sideLength);
+  background-color: #587FFF;
+  overflow: hidden;
+  padding: 0;
+  border-radius: 3px;
+  transition: background-color 0.2s; 
+}
+
+.add-button::before {
+  position: absolute;
+  content: "";
+  top: 0;
+  right: 0;
+  width: 0;
+  height: 0;
+  border-width: 0 var(--plus_topRightTriangleSideLength) var(--plus_topRightTriangleSideLength) 0;
+  border-style: solid;
+  border-color: transparent #C3D1FF transparent transparent;
+  transition-timing-function: ease-in-out;
+  transition-duration: 0.2s;
+}
+
+.add-button:hover {
+  cursor: pointer;
+}
+
+.add-button:hover::before {
+  --plus_topRightTriangleSideLength: calc(var(--plus_sideLength) * 2);
+}
+
+.add-button:focus-visible::before {
+  --plus_topRightTriangleSideLength: calc(var(--plus_sideLength) * 2);
+}
+
+.add-button > .plusIcon {
+  fill: white;
+  width: calc(var(--plus_sideLength) * 0.7);
+  height: calc(var(--plus_sideLength) * 0.7);
+  z-index: 1;
+  transition-timing-function: ease-in-out;
+  transition-duration: 0.2s;
+}
+
+.add-button:hover > .plusIcon {
+  fill: black;
+  transform: rotate(180deg);
+}
+
+.add-button:focus-visible > .plusIcon {
+  fill: black;
+  transform: rotate(180deg);
+}
+
+.delete-button {
+  background-color: transparent;
+  position: relative;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.delete-button::after {
+  content: '삭제';
+  position: absolute;
+  white-space: nowrap;
+  top: -140%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: fit-content;
+  height: fit-content;
+  background-color: rgb(168, 7, 7);
+  padding: 4px 8px;
+  border-radius: 5px;
+  transition: .2s linear;
+  transition-delay: .2s;
+  color: white;
+  text-transform: uppercase;
+  font-size: 12px;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.icon {
+  transform: scale(1.2);
+  transition: .2s linear;
+}
+
+.delete-button:hover > .icon {
+  transform: scale(1.5);
+}
+
+.delete-button:hover > .icon path {
+  fill: rgb(168, 7, 7);
+}
+
+.delete-button:hover::after {
+  visibility: visible;
+  opacity: 1;
+  top: -160%;
+}
+
+.tip-popup {
+  position: fixed;
+  background: #222;
+  color: #fff;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  z-index: 9999;
+  pointer-events: none;
+  white-space: pre-line;
+  max-width: 250px;
+}

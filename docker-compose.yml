@@ -1,0 +1,106 @@
+services:
+  backend:
+    build: ./ThirdprojectBack
+    container_name: health-backend
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mariadb
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+      - DB_HOST=mariadb
+      - DB_PORT=3306
+      - DB_DATABASE=healthdb
+      - DB_USERNAME=gym
+      - DB_PASSWORD=gym
+      - AI_SERVER_URL=http://ai-server:8003/healthai/invoke
+      - YOUTUBE_API_KEY=${YOUTUBE_API_KEY}
+    networks:
+      - health-net
+
+  frontend:
+    build: ./frontend
+    container_name: health-frontend
+    ports:
+      - "80:80"
+    networks:
+      - health-net
+
+  ai-server:
+    build: ./ai
+    container_name: health-ai
+    ports:
+      - "8003:8003"
+    env_file:
+      - ./ai/ai/.env
+    networks:
+      - health-net
+
+  mariadb:
+    image: mariadb:10.9
+    container_name: health-db
+    restart: always
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=healthdb
+      - MYSQL_USER=gym
+      - MYSQL_PASSWORD=gym
+    ports:
+      - "3306:3306"
+    volumes:
+      - mariadb-data:/var/lib/mysql
+    networks:
+      - health-net
+
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+    ports:
+      - "9090:9090"
+    networks:
+      - health-net
+
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    ports:
+      - "3010:3000"
+    environment:
+      - GF_SECURITY_ADMIN_USER=shieldus
+      - GF_SECURITY_ADMIN_PASSWORD=shieldus
+    volumes:
+      - grafana-storage:/var/lib/grafana
+    networks:
+      - health-net
+
+  node-exporter:
+    image: prom/node-exporter
+    container_name: node-exporter
+    ports:
+      - "9113:9100"
+    networks:
+      - health-net
+
+  nginx-exporter:
+    image: nginx/nginx-prometheus-exporter:latest
+    container_name: nginx-exporter
+    command:
+      - '-nginx.scrape-uri=http://frontend/nginx_status'
+    ports:
+      - "9114:9113"
+    depends_on:
+      - frontend
+    networks:
+      - health-net
+
+volumes:
+  mariadb-data:
+  grafana-storage:
+
+networks:
+  health-net:
+    driver: bridge

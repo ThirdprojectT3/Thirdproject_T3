@@ -1,0 +1,51 @@
+.loading-overlay {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  background: rgba(255,255,255);
+  z-index: 3000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.loading-inline {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 120px;
+}
+
+.loader {
+  width: 60px;
+  height: 60px;
+  background: #4285f4;
+  border-radius: 10%;
+  animation: dice3 7s ease-in-out infinite;
+  margin-bottom: 18px;
+}
+
+@keyframes dice3 {
+  from, to {
+    transform: translateX(-50px) rotateX(0deg);
+  }
+  25% {
+    background: #db4437;
+  }
+  50% {
+    background: #f4b400;
+    transform: translateX(50px) rotate(360deg);
+  }
+  75% {
+    background: #0f9d58;
+  }
+}
+
+.loading-message {
+  font-size: 1.2rem;
+  color: #222;
+  font-weight: 500;
+  margin-top: 20px;
+}
