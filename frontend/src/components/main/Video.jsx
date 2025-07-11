@@ -1,4 +1,3 @@
-// components/main/VideoRecommendations.jsx
 import React from 'react';
 import './Video.css';
 

@@ -8,6 +8,8 @@ import GraphPage from './pages/GraphPage';
 
 import PrivateRoute from './pages/PrivateRoute';
 
+import './App.css';
+
 function App() {
   return (
     <Routes>

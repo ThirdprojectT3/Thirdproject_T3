@@ -33,6 +33,18 @@ export default function ChangeTrendChart() {
     return d;
   };
 
+  const baseColors = {
+    '1w': '#F0D4C2',
+    '1m': '#C7EBCA',
+    '3m': '#C7C8EE',
+  };
+
+  const selectedColors = {
+    '1w': '#E8B898', // 선택 시 조금 더 진한 색
+    '1m': '#9EDFAE',
+    '3m': '#A6A8E0',
+  };
+
   return (
     <div>
       {/* 제목 */}
@@ -54,11 +66,13 @@ export default function ChangeTrendChart() {
               key={d}
               style={{
                 marginRight: '8px',
-                background: duration === d ? '#bdbdbd' : '#e0e0e0',
+                background: duration === d ? selectedColors[d] : baseColors[d],
                 border: 'none',
                 borderRadius: '6px',
                 padding: '6px 16px',
                 cursor: 'pointer',
+                color: '#333',
+                fontWeight: duration === d ? 'bold' : 'normal', // 선택 시 강조 효과
               }}
               onClick={() => setDuration(d)}
             >

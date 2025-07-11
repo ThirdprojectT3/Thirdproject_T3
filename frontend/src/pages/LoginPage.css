@@ -1,13 +1,15 @@
 /* 전체 배경 */
 .login-wrapper {
   background-color: #E8EEFF; /* ✅ 배경색 */
-  height: 100vh;
-  width: 100vw;
+  min-height: 100vh;
+  width: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
   padding: 20px;
   box-sizing: border-box;
+  overflow: auto;
+  height: auto;
 }
 
 /* 흰색 박스 */
