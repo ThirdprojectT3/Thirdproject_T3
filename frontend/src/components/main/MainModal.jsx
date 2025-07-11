@@ -32,13 +32,13 @@ const MainModal = ({ onClose, triggerToast, triggerErrToast, setIsLoading, onSav
             if (latest) {
               setForm((prev) => ({
                 ...prev,
-                weight: latest.weight || '',
-                fat: latest.fat || '',
-                muscle: latest.muscle || '',
-                bmr: latest.bmr || '',
-                bmi: latest.bmi || '',
-                vai: latest.vai || '',
-                sleep: latest.sleep || '',
+                weight: validNumberInput(latest.weight),
+                fat: validNumberInput(latest.fat),
+                muscle: validNumberInput(latest.muscle),
+                bmr: validNumberInput(latest.bmr),
+                bmi: validNumberInput(latest.bmi),
+                vai: validNumberInput(latest.vai),
+                sleep: validNumberInput(latest.sleep),
               }));
             }
           } catch {
@@ -151,7 +151,7 @@ const MainModal = ({ onClose, triggerToast, triggerErrToast, setIsLoading, onSav
                     type="number"
                     step={step || "1"}
                     placeholder={`${label}를 입력하세요`}
-                    value={form[id]}
+                    value={form[id] ?? ''}
                     onChange={handleChange}
                     className="input"
                   />

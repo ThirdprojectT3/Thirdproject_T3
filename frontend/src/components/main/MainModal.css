@@ -25,6 +25,8 @@
   gap: 1.5rem;
   align-items: center;
   position: relative;
+  overflow-x: auto;
+  overflow-y: auto;
 }
 
 .modal-title {
