@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { LineChart, Line, XAxis, YAxis, Tooltip, Legend, CartesianGrid, ResponsiveContainer } from 'recharts';
 import { getGraphData } from '../../api/charts';
+import { validNumberInput } from '../../utils/ValueValidation';
 
 export default function ChangeTrendChart({ onError }) {
   const [category, setCategory] = useState('체지방');
@@ -15,7 +16,7 @@ export default function ChangeTrendChart({ onError }) {
         const res = await getGraphData(duration, category);
         const formattedData = res.myRecords.map(item => ({
           date: item.date,
-          값: item.value,
+          값: Number(validNumberInput(item.value)),
         }));
         setChartData(formattedData);
       } catch {

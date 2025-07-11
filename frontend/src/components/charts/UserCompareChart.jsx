@@ -4,6 +4,7 @@ import {
   Legend, CartesianGrid, ResponsiveContainer
 } from 'recharts';
 import { getUserAnalysis } from '../../api/charts';
+import { validNumberInput } from '../../utils/ValueValidation';
 
 export default function UserCompareChart({ onError }) {
   const [chartData, setChartData] = useState([]);
@@ -16,12 +17,12 @@ export default function UserCompareChart({ onError }) {
         const { myrecord, average, age } = res;
 
         const data = [
-          { name: '체중', 나: myrecord.weight, 평균: average.weight },
-          { name: '체지방', 나: myrecord.fat, 평균: average.fat },
-          { name: '골격근량', 나: myrecord.muscle, 평균: average.muscle },
-          { name: '기초대사량', 나: myrecord.bmr, 평균: average.bmr },
-          { name: 'BMI', 나: myrecord.bmi, 평균: average.bmi },
-          { name: '내장지방', 나: myrecord.vai, 평균: average.vai },
+          { name: '체중', 나: Number(validNumberInput(myrecord.weight)), 평균: Number(validNumberInput(average.weight)) },
+          { name: '체지방', 나: Number(validNumberInput(myrecord.fat)), 평균: Number(validNumberInput(average.fat)) },
+          { name: '골격근량', 나: Number(validNumberInput(myrecord.muscle)), 평균: Number(validNumberInput(average.muscle)) },
+          { name: '기초대사량', 나: Number(validNumberInput(myrecord.bmr)), 평균: Number(validNumberInput(average.bmr)) },
+          { name: 'BMI', 나: Number(validNumberInput(myrecord.bmi)), 평균: Number(validNumberInput(average.bmi)) },
+          { name: '내장지방', 나: Number(validNumberInput(myrecord.vai)), 평균: Number(validNumberInput(average.vai)) },
         ];
 
         setChartData(data);
