@@ -15,7 +15,7 @@
   border-radius: 8px;
   width: 80vw;
   max-width: 1152px;
-  min-width: 520px;
+  min-width: 0;
   height: 80vh;
   max-height: 819.2px;
   min-height: 150px;
@@ -48,6 +48,7 @@
   flex: 1 1 auto;
   justify-content: flex-start;
   position: relative;
+  padding-bottom: 5rem;
 }
 
 .two-column-grid {
@@ -55,6 +56,14 @@
   grid-template-columns: 1fr 1fr;
   gap: 0.5rem 2rem;
   width: 100%;
+  min-width: 0;
+}
+
+@media (max-width: 700px) {
+  .two-column-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem 0;
+  }
 }
 
 .input-group {
