@@ -55,6 +55,7 @@ const MainPage = () => {
       window.location.reload();
     }
   };
+
   const forceSyncMonthTodos = useCallback(() => {
     const ym = `${selectedDate.getFullYear()}-${String(selectedDate.getMonth() + 1).padStart(2, '0')}`;
     fetchTodosByMonth(ym).then(res => {
