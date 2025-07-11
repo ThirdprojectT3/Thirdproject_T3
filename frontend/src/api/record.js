@@ -25,8 +25,7 @@ export const getLatestRecord = () => {
   return axios
     .get("/records/latest", { withCredentials: true })
     .then((res) => res.data)
-    .catch((err) => {
-      console.error("최신 기록 불러오기 실패", err);
+    .catch(() => {
       return null;
     });
 };

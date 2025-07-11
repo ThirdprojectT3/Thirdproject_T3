@@ -110,7 +110,7 @@ const MainPage = () => {
         />
       ) : (
         <div className="main-page-wrapper">
-          <Header />
+          <Header triggerErrToast={triggerErrToast} />
           <div className="main-content">
             <Calendar
               selectedDate={selectedDate}

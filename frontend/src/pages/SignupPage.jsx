@@ -39,7 +39,7 @@ const SignupPage = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setForm({ ...form, [name]: value });
+    setForm({ ...form, [name]: value.replace(/\s/g, "") });
   };
 
   const handleDiseaseChange = (e) => {
@@ -59,7 +59,6 @@ const SignupPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("회원가입 시도", form);
     try {
       const res = await postRegister({
         email: form.email,
@@ -73,7 +72,6 @@ const SignupPage = () => {
       });
       navigate("/", { state: { toastMessage: res.message || "회원가입 성공!" } });
     } catch (error) {
-      console.error(error);
       setErrToastMessage(error.response?.data?.error?.message || "회원가입 실패");
       setShowErrToast(true);
       setTimeout(() => setShowErrToast(false), 2000);

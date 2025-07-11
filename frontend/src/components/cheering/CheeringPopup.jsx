@@ -1,28 +1,26 @@
-// src/components/cheering/CheeringPopup.jsx
 import React from 'react';
-import styled from 'styled-components';
-
-const Popup = styled.div`
-  position: fixed;
-  top: 15%;
-  left: 50%;
-  transform: translate(-50%, 0);
-  background: #fff;
-  border: 2px solid #4caf50;
-  border-radius: 12px;
-  padding: 20px 30px;
-  z-index: 9999;
-  box-shadow: 0 0 10px rgba(0,0,0,0.3);
-  font-size: 18px;
-  font-weight: 500;
-  color: #333;
-`;
+import './CheeringPopup.css';
 
 const CheeringPopup = ({ message }) => {
+  const handleClose = () => {
+    window.location.reload();
+  };
+
   return (
-    <Popup>
-      🎉 {message}
-    </Popup>
+    <>
+      <div className="cheer-overlay" />
+      <div className="cheer-popup">
+        <button className="cheer-close-btn" onClick={handleClose} aria-label="닫기">&times;</button>
+        <div className="cheer-message">🎉 {message}</div>
+        <div className="cheer-btn-wrapper">
+          <button onClick={handleClose} className="button">
+            <span className="shadow"></span>
+            <span className="edge"></span>
+            <span className="front"><span>화이팅!</span></span>
+          </button>
+        </div>
+      </div>
+    </>
   );
 };
 

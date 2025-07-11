@@ -27,14 +27,11 @@ const LoginPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("로그인 시도");
 
     try {
       await postLogin({ email, password });
-      console.log("로그인 성공");
       navigate("/main");
     } catch (error) {
-      console.error(error);
       setErrToastMessage(error.response?.data?.error?.message || "로그인 실패");
       setShowErrToast(true);
       setTimeout(() => setShowErrToast(false), 2000);

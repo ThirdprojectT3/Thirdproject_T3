@@ -37,8 +37,7 @@ const ProfilePage = () => {
           goal: res.goal,
           diseases: res.diseases || [],
         });
-      } catch (error) {
-        console.error("내 정보 조회 실패", error);
+      } catch {
         setErrToastMessage("내 정보 불러오기 실패");
         setShowErrToast(true);
         setTimeout(() => setShowErrToast(false), 2000);
@@ -86,8 +85,7 @@ const ProfilePage = () => {
 
     await patchUserInfo(updateData);
     navigate("/main", { state: { toastMessage: "정보 수정 성공!" } });
-  } catch (error) {
-    console.error("정보 수정 실패", error);
+  } catch {
     setErrToastMessage("정보 수정 실패");
     setShowErrToast(true);
     setTimeout(() => setShowErrToast(false), 2000);

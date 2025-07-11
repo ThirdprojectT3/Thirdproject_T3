@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { LineChart, Line, XAxis, YAxis, Tooltip, Legend, CartesianGrid, ResponsiveContainer } from 'recharts';
 import { getGraphData } from '../../api/charts';
+import { validNumberInput } from '../../utils/ValueValidation';
 
-export default function ChangeTrendChart() {
+export default function ChangeTrendChart({ onError }) {
   const [category, setCategory] = useState('체지방');
   const [duration, setDuration] = useState('1w');
   const [chartData, setChartData] = useState([]);
@@ -15,11 +16,11 @@ export default function ChangeTrendChart() {
         const res = await getGraphData(duration, category);
         const formattedData = res.myRecords.map(item => ({
           date: item.date,
-          값: item.value,
+          값: Number(validNumberInput(item.value)),
         }));
         setChartData(formattedData);
-      } catch (error) {
-        console.error('그래프 데이터 불러오기 실패:', error);
+      } catch {
+        if (onError) onError('그래프 데이터 불러오기 실패');
       }
     }
 
@@ -31,6 +32,18 @@ export default function ChangeTrendChart() {
     if (d === '1m') return '한달';
     if (d === '3m') return '3개월';
     return d;
+  };
+
+  const baseColors = {
+    '1w': '#F0D4C2',
+    '1m': '#C7EBCA',
+    '3m': '#C7C8EE',
+  };
+
+  const selectedColors = {
+    '1w': '#E8B898', // 선택 시 조금 더 진한 색
+    '1m': '#9EDFAE',
+    '3m': '#A6A8E0',
   };
 
   return (
@@ -54,11 +67,13 @@ export default function ChangeTrendChart() {
               key={d}
               style={{
                 marginRight: '8px',
-                background: duration === d ? '#bdbdbd' : '#e0e0e0',
+                background: duration === d ? selectedColors[d] : baseColors[d],
                 border: 'none',
                 borderRadius: '6px',
                 padding: '6px 16px',
                 cursor: 'pointer',
+                color: '#333',
+                fontWeight: duration === d ? 'bold' : 'normal', // 선택 시 강조 효과
               }}
               onClick={() => setDuration(d)}
             >

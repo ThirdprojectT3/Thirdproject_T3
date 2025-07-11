@@ -2,7 +2,7 @@
   position: fixed;
   top: 0; left: 0;
   width: 100vw; height: 100vh;
-  background: rgba(0,0,0,0.5);
+  background: #E8EEFF;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -11,13 +11,13 @@
 
 .modal-content {
   background: #fff;
-  padding: 2rem;
+  padding: 1.5rem; /* ✅ 여백 살짝 줄임 */
   border-radius: 8px;
-  width: 80vw;
-  max-width: 1152px;
-  min-width: 520px;
-  height: 80vh;
-  max-height: 819.2px;
+  width: 70vw; /* ✅ 80vw → 70vw 로 축소 */
+  max-width: 768px; /* ✅ 최대 폭을 더 줄임 (기존 1152px → 768px) */
+  min-width: 0;
+  height: 80vh; /* ✅ 높이도 살짝 줄임 */
+  max-height: 700px; /* ✅ 기존 819.2px → 700px */
   min-height: 150px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.2);
   display: flex;
@@ -25,7 +25,10 @@
   gap: 1.5rem;
   align-items: center;
   position: relative;
+  overflow-x: auto;
+  overflow-y: auto;
 }
+
 
 .modal-title {
   font-size: 2.5rem;
@@ -46,6 +49,7 @@
   flex: 1 1 auto;
   justify-content: flex-start;
   position: relative;
+  padding-bottom: 5rem;
 }
 
 .two-column-grid {
@@ -53,6 +57,14 @@
   grid-template-columns: 1fr 1fr;
   gap: 0.5rem 2rem;
   width: 100%;
+  min-width: 0;
+}
+
+@media (max-width: 700px) {
+  .two-column-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem 0;
+  }
 }
 
 .input-group {

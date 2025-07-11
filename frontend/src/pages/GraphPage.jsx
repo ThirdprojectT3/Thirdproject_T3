@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import UserCompareChart from '../components/charts/UserCompareChart';
 import ChangeTrendChart from '../components/charts/ChangeTrendChart';
@@ -6,6 +6,13 @@ import './GraphPage.css';
 
 export default function GraphPage() {
   const navigate = useNavigate();
+  const [errToastMessage, setErrToastMessage] = useState('');
+  const [showErrToast, setShowErrToast] = useState(false);
+
+  const handleChartError = (msg) => {
+    setErrToastMessage(msg);
+    setShowErrToast(true);
+  };
 
   return (
     <div className="graphPageBackground"> {/* ✅ 전체 배경 */}
@@ -19,13 +26,19 @@ export default function GraphPage() {
 
       <div className="graphPageWrapper">
         <div className="graphBox">
-          <UserCompareChart />
+          <UserCompareChart onError={handleChartError}/>
         </div>
 
         <div className="graphBox">
-          <ChangeTrendChart />
+          <ChangeTrendChart onError={handleChartError} />
         </div>
       </div>
+      {showErrToast && (
+        <ErrToast
+          message={errToastMessage}
+          onClose={() => setShowErrToast(false)}
+        />
+      )}
     </div>
   );
 }

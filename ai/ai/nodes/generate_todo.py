@@ -35,8 +35,14 @@ def generate_todo(state: GenState) -> GenState:
         items = ", ".join([item["todo"] for item in day["items"]])
         instruction += f"- {day['date']}: {items}\n"
 
-    instruction +=(f"이를 종합해 적절한 운동을 3~4개 추천해줘. 각 운동은 한 줄로 운동 종목만 말해줘," 
-                   f"**설명 없이 운동 이름만 줄마다 하나씩 출력하세요. 다른 말은 절대 하지 마세요.** 예:1.스쿼트\n2.푸쉬업\n3.플랭크\n 예시처럼 출력해줘")
+    instruction +=(
+        f"\n이를 종합해 오늘 사용자에게 적절한 운동을 **반드시 3개 이상, 최대 4개까지** 추천해줘.\n"
+        f"각 운동은 다음 형식으로 출력해:\n"
+        f"운동 이름 - 세트 수 x 반복 횟수 또는 시간\n"
+        f"예시:스쿼트 - 3세트 x 15회\n"
+        f"예시:플랭크 - 3세트 x 30초 유지\n"
+        f"절대 설명이나 부가적인 말은 하지 말고, 반드시 위 형식으로 출력해. "
+    )
 
     response = llm.invoke(instruction).content
     todo_items = []
