@@ -1,14 +1,14 @@
 .todo-container {
   width: 100%;
-  height: 100%;
   max-width: 400px;
-  /* margin: 50px auto; */
+  height: 520px;  /* ✅ calendar와 동일하게 고정 */
   padding: 20px;
   background-color: #ffffff;
   border-radius: 12px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
+  justify-content: space-between;  /* 위 아래 여백 맞춤 */
 }
 
 .title {
@@ -19,9 +19,13 @@
 }
 
 .todo-list-wrapper {
+  flex-grow: 1;
+  overflow-y: auto; /* ✅ 세로 스크롤만 */
+  overflow-x: hidden; /* ✅ 가로 스크롤 방지 */
   display: flex;
   flex-direction: column;
   gap: 15px;
+  padding: 22px 16px;
 }
 
 .todo-item {
