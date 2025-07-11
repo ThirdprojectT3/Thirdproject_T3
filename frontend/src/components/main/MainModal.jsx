@@ -117,9 +117,9 @@ const MainModal = ({ onClose, triggerToast, triggerErrToast, setIsLoading, onSav
       console.log("📦 서버 전송 form 데이터:", form);
       const res = await postRecord(form);
       if (triggerToast) triggerToast('저장 성공!');
-      if (onSaved) await onSaved(res.data);
+      if (onSaved) await onSaved(res);
       setShowModal(false);
-      window.location.reload();
+      // window.location.reload();
     } catch {
       if (triggerErrToast) triggerErrToast('저장 실패!');
     } finally {
