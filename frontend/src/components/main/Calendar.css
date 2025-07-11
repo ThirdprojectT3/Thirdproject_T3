@@ -16,8 +16,8 @@
   margin-bottom: 20px;
 }
 .month-year {
-  font-size: 2rem;   /* 기존보다 조금 키움 */
-  margin-left: 18px; /* 왼쪽 여백 추가 */
+  font-size: 2rem;
+  margin-left: 18px;
 }
 .calendar-navigation button {
   background: none;

@@ -3,7 +3,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import './MainPage.css';
 import MainModal from '../components/main/MainModal';
 import Header from '../components/header/Header';
-import TodoList from '../components/main/TodoList';
+import TodoList from '../components/main/Todolist';
 import Calendar from '../components/main/Calendar';
 import Toast from '../components/toast/Toast';
 import ErrToast from '../components/toast/ErrToast';
