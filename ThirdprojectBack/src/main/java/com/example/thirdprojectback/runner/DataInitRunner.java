@@ -119,7 +119,7 @@ public class DataInitRunner {
                             .sleep(5.0f + random.nextFloat() * 3.0f)
                             .build());
 
-                    // ✅ Todolist + Todo 생성
+
                     Todolist todolist = Todolist.builder()
                             .userId(user.getUserId())
                             .date(date)
