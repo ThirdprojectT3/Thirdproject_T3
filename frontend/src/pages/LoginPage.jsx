@@ -50,7 +50,7 @@ const LoginPage = () => {
 
           <div className="input-group">
             <label>비밀번호</label>
-            <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="이름을 입력하세요." />
+            <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="비밀번호를 입력하세요." />
           </div>
 
           <button className="login-button" type="submit">
