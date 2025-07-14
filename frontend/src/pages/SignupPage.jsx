@@ -9,6 +9,7 @@ const SignupPage = () => {
   const navigate = useNavigate();
   const [showErrToast, setShowErrToast] = useState(false);
   const [errToastMessage, setErrToastMessage] = useState("");
+  const [passwordError, setPasswordError] = useState(false);
 
   useEffect(() => {
     const token = Cookies.get('jwtToken');
@@ -39,7 +40,19 @@ const SignupPage = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setForm({ ...form, [name]: value.replace(/\s/g, "") });
+    if (name === "password") {
+      setForm({ ...form, [name]: value.replace(/\s/g, "") });
+      setPasswordError(value.replace(/\s/g, "").length > 0 && (value.length < 8 || value.length > 20));
+    } else if (name === "height" || name === "age") {
+      const onlyNum = value.replace(/[^0-9]/g, "");
+      if (onlyNum === "" || onlyNum === "0") {
+        setForm({ ...form, [name]: "" });
+      } else {
+        setForm({ ...form, [name]: String(Number(onlyNum)) });
+      }
+    } else {
+      setForm({ ...form, [name]: value.replace(/\s/g, "") });
+    }
   };
 
   const handleDiseaseChange = (e) => {
@@ -96,6 +109,11 @@ const SignupPage = () => {
           <div className="input-group">
             <label>비밀번호</label>
             <input name="password" type="password" value={form.password} onChange={handleChange} placeholder="비밀번호를 입력하세요. (8~20자)" />
+            {passwordError && (
+              <div style={{ color: "red", fontSize: "14px", marginTop: "4px" }}>
+                비밀번호는 8~20자여야 합니다.
+              </div>
+            )}
           </div>
 
           <div className="input-group">
